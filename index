@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours CIEL - Électronique & Systèmes Embarqués</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4A90E2;
+            --secondary: #5BA3F5;
+            --accent: #FF9A56;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+            --soft-bg: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #E8F4F8 0%, #D4E7F5 50%, #C8E0F0 100%);
+            min-height: 100vh;
+            color: #2C3E50;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 15px rgba(74, 144, 226, 0.1);
+            padding: 40px 50px;
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(74, 144, 226, 0.1);
+            font-weight: 600;
+        }
+
+        header .subtitle {
+            color: var(--accent);
+            font-size: 1.5em;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #5A6C7D;
+            font-size: 1.1em;
+        }
+
+        .level-nav {
+            background: rgba(255, 255, 255, 0.88);
+            max-width: 1200px;
+            margin: 40px auto;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(74, 144, 226, 0.12);
+        }
+
+        .level-nav h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 35px;
+            font-size: 2em;
+            font-weight: 500;
+        }
+
+        .level-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(91, 163, 245, 0.15) 100%);
+            color: var(--dark);
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.15);
+            border: 2px solid rgba(74, 144, 226, 0.2);
+        }
+
+        .level-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(74, 144, 226, 0.25);
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2) 0%, rgba(91, 163, 245, 0.2) 100%);
+        }
+
+        .level-card.seconde { 
+            background: linear-gradient(135deg, rgba(255, 154, 86, 0.15) 0%, rgba(255, 123, 123, 0.15) 100%); 
+            border-color: rgba(255, 154, 86, 0.25);
+        }
+        .level-card.seconde:hover { 
+            background: linear-gradient(135deg, rgba(255, 154, 86, 0.22) 0%, rgba(255, 123, 123, 0.22) 100%); 
+            border-color: #FF9A56;
+        }
+        
+        .level-card.ciel1 { 
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%); 
+            border-color: rgba(79, 172, 254, 0.25);
+        }
+        .level-card.ciel1:hover { 
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.22) 0%, rgba(0, 242, 254, 0.22) 100%); 
+            border-color: #4FACFE;
+        }
+        
+        .level-card.ciel2 { 
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.15) 0%, rgba(56, 249, 215, 0.15) 100%); 
+            border-color: rgba(67, 233, 123, 0.25);
+        }
+        .level-card.ciel2:hover { 
+            background: linear-gradient(135deg, rgba(67, 233, 123, 0.22) 0%, rgba(56, 249, 215, 0.22) 100%); 
+            border-color: #43E97B;
+        }
+
+        .level-card .icon { font-size: 3em; margin-bottom: 15px; }
+        .level-card h3 { font-size: 1.8em; margin-bottom: 10px; font-weight: 600; }
+        .level-card p { font-size: 1.05em; opacity: 0.85; margin-bottom: 15px; }
+        .level-card .info {
+            background: rgba(74, 144, 226, 0.08);
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            margin-top: 15px;
+            color: var(--dark);
+        }
+        .level-card .lock-icon { font-size: 1.3em; margin-top: 10px; opacity: 0.6; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .modal-content .level-name {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .modal-buttons { display: flex; gap: 15px; }
+
+        .modal-content button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit { background: var(--primary); color: white; }
+        .btn-submit:hover { background: var(--secondary); transform: translateY(-2px); }
+        .btn-cancel { background: #e0e0e0; color: #666; }
+        .btn-cancel:hover { background: #d0d0d0; }
+
+        .error-message {
+            color: #f44336;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 50px auto;
+            padding: 0 30px;
+        }
+
+        .level-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(74, 144, 226, 0.15);
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .section-header .description {
+            color: #5A6C7D;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .period-title {
+            color: var(--primary);
+            font-size: 1.6em;
+            font-weight: 500;
+            margin: 50px 0 30px 0;
+            padding: 20px 25px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.08), rgba(91, 163, 245, 0.08));
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .course-card {
+            background: white;
+            border: 2px solid rgba(74, 144, 226, 0.15);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(74, 144, 226, 0.2);
+            border-color: var(--primary);
+        }
+
+        .course-card.tp::before { background: linear-gradient(90deg, #4FACFE, #5BC1FF); }
+        .course-card.projet::before { background: linear-gradient(90deg, #FF9A56, #FFB082); }
+
+        .course-type {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .course-card.tp .course-type { background: #4FACFE; }
+        .course-card.projet .course-type { background: #FF9A56; }
+
+        .course-card h3 {
+            color: var(--dark);
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .duration {
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .description {
+            color: #5A6C7D;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #67E97B, #56D868);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .pfmp-banner {
+            background: linear-gradient(135deg, rgba(255, 154, 86, 0.85), rgba(255, 123, 123, 0.85));
+            color: white;
+            padding: 35px;
+            border-radius: 18px;
+            text-align: center;
+            margin: 50px 0;
+            box-shadow: 0 8px 25px rgba(255, 154, 86, 0.25);
+        }
+
+        .pfmp-banner h3 {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .pfmp-banner p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .back-button {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 14px 35px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05em;
+            margin-top: 50px;
+            transition: all 0.3s;
+        }
+
+        .back-button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(74, 144, 226, 0.3);
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 50px;
+            text-align: center;
+            color: #5A6C7D;
+            margin-top: 80px;
+            backdrop-filter: blur(10px);
+        }
+
+        footer h3 {
+            color: var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        footer p {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Cours CIEL</h1>
+        <p class="subtitle">Électronique & Systèmes Embarqués</p>
+        <p>Plateforme pédagogique - Année 2024-2025</p>
+    </header>
+
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <h2>Accès protégé</h2>
+            <p class="level-name" id="levelName"></p>
+            <input type="password" id="passwordInput" placeholder="Entrez le mot de passe">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+                <button class="btn-submit" onclick="checkPassword()">Valider</button>
+            </div>
+            <p class="error-message" id="errorMessage">Mot de passe incorrect</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="levelNav" class="level-nav">
+            <h2>Choisissez votre niveau</h2>
+            <div class="level-buttons">
+                <div class="level-card seconde" onclick="showPasswordModal('seconde')">
+                    <div class="icon">⚡</div>
+                    <h3>SECONDE</h3>
+                    <p>Électricité Fondamentale & Habilitation</p>
+                    <div class="info">
+                        Bases électricité • TP pratiques • Habilitation B1V • NFC 15-100
+                    </div>
+                    <div class="lock-icon">🔒</div>
+                </div>
+
+                <div class="level-card ciel1" onclick="showPasswordModal('ciel1')">
+                    <div class="icon">💻</div>
+                    <h3>1CIEL1</h3>
+                    <p>Logique & Systèmes Réseaux</p>
+                    <div class="info">
+                        Logique combinatoire • Active Directory • VLAN & Routage • Habilitation BR
+                    </div>
+                    <div class="lock-icon">🔒</div>
+                </div>
+
+                <div class="level-card ciel2" onclick="showPasswordModal('ciel2')">
+                    <div class="icon">🔌</div>
+                    <h3>1CIEL2</h3>
+                    <p>Électronique Appliquée & PCB</p>
+                    <div class="info">
+                        Composants • Arduino • KiCad • Filtres • Projet professionnel
+                    </div>
+                    <div class="lock-icon">🔒</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION SECONDE -->
+        <div id="seconde" class="level-section">
+            <div class="section-header">
+                <h2>SECONDE - Électricité Fondamentale & Habilitation</h2>
+                <p class="description">Acquisition des bases en électricité, travaux pratiques et formation à l'habilitation électrique</p>
+            </div>
+
+            <h3 class="period-title">Septembre - Janvier : Électricité Fondamentale + TP</h3>
+            <div class="courses-grid">
+                <a href="seconde/cours-electricite-base.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Bases de l'Électricité</h3>
+                    <p class="duration">20 heures</p>
+                    <p class="description">Tension, courant, résistance, loi d'Ohm, puissance électrique, circuit série et parallèle.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/tp-pince-amperemetrique.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Pince Ampèremétrique & Mesures</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Utilisation de la pince ampèremétrique, multimètre, mesures en sécurité.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/tp-outils-electricien.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Outils de l'Électricien</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Dénudeur, pince coupante, tournevis testeur, dominos, utilisation sécurisée.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/tp-simple-allumage.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Simple Allumage</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Montage simple allumage, câblage phase/neutre/terre, schémas développés.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/tp-double-allumage.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Double Allumage & Va-et-Vient</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Montage va-et-vient, double allumage, câblage navettes, schémas architecturaux.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/tp-prises-electriques.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Installation de Prises Électriques</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Câblage prises 16A, raccordement terre, repiquage, normes de sécurité.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/cours-schemas-electriques.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Schémas Électriques</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Lecture de schémas développés, architecturaux, unifilaires, symboles normalisés.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/cours-tableau-electrique.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Tableau Électrique Domestique</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Disjoncteur général, différentiel 30mA, protection circuits, répartition phases.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Janvier : Formation Habilitation Électrique</h3>
+            <div class="courses-grid">
+                <a href="seconde/cours-habilitation-epreuv.html" class="course-card">
+                    <span class="course-type">Formation</span>
+                    <h3>Formation Habilitation - Site Epreuv</h3>
+                    <p class="duration">14 heures</p>
+                    <p class="description">Formation en ligne Epreuv : risques électriques, EPI, consignation, mesures de sécurité.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/cours-habilitation-cours.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Cours Habilitation Électrique</h3>
+                    <p class="duration">14 heures</p>
+                    <p class="description">Prévention risques, zones danger, procédures, EPI, premiers secours, réglementation.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <div class="pfmp-banner">
+                <h3>PFMP - Février (4 semaines)</h3>
+                <p>Période de Formation en Milieu Professionnel - Mise en pratique des compétences électriques</p>
+            </div>
+
+            <h3 class="period-title">Mars : Suite Électricité - Norme NFC 15-100</h3>
+            <div class="courses-grid">
+                <a href="seconde/cours-nfc15100.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Norme NFC 15-100</h3>
+                    <p class="duration">12 heures</p>
+                    <p class="description">Installations électriques basse tension, sections de câbles, protection différentielle, locaux humides.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/evaluation-b1v.html" class="course-card projet">
+                    <span class="course-type">Évaluation</span>
+                    <h3>Évaluation Habilitation B1V</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Évaluation pratique et théorique pour l'obtention de l'habilitation B1V.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Avril - Juin : Bases en Électronique</h3>
+            <div class="courses-grid">
+                <a href="seconde/cours-composants-base.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Composants Électroniques de Base</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Résistances, condensateurs, diodes, LED, lecture code couleur, valeurs normalisées.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/tp-breadboard-led.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Breadboard & Circuits LED</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Utilisation breadboard, montage circuits simples LED, calcul résistances de limitation.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/cours-loi-ohm-electronique.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Loi d'Ohm en Électronique</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Applications loi d'Ohm, calculs courants/tensions, diviseur de tension, pont diviseur.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="seconde/projet-montage-electronique.html" class="course-card projet">
+                    <span class="course-type">Projet</span>
+                    <h3>Mini-Projet : Montage Électronique Simple</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Réalisation montage avec LED, résistances, interrupteur. Schéma, câblage, tests.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <a href="#" class="back-button" onclick="backToMenu(); return false;">← Retour au menu</a>
+        </div>
+
+        <!-- SECTION 1CIEL1 -->
+        <div id="ciel1" class="level-section">
+            <div class="section-header">
+                <h2>1CIEL1 - Logique & Systèmes Réseaux</h2>
+                <p class="description">Logique combinatoire avancée, virtualisation, administration réseau et habilitation BR</p>
+            </div>
+
+            <h3 class="period-title">Septembre : Systèmes de Codages Numériques + Logique Combinatoire</h3>
+            <div class="courses-grid">
+                <a href="1ciel1/cours-codages-numeriques.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Systèmes de Codages Numériques</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Binaire, décimal, hexadécimal, octal. Conversions entre bases, ASCII, codage BCD, Gray.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/cours-logique-combinatoire.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Révisions Logique Combinatoire</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Portes logiques AND, OR, NOT, NAND, NOR, XOR. Tables de vérité, algèbre de Boole.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/tp-logique-proteus.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Simulation Logique avec Proteus</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Simulation circuits logiques, vérification tables de vérité, chronogrammes.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <div class="pfmp-banner">
+                <h3>PFMP 3 - Octobre (4 semaines)</h3>
+                <p>Mise en œuvre des compétences en environnement professionnel - Livret de suivi PFMP</p>
+            </div>
+
+            <h3 class="period-title">Novembre - Janvier : Logique Combinatoire Avancée + Mini-Projet Coffre-Fort</h3>
+            <div class="courses-grid">
+                <a href="1ciel1/cours-logique-combinatoire-avancee.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Logique Combinatoire Avancée</h3>
+                    <p class="duration">12 heures</p>
+                    <p class="description">Multiplexeurs, démultiplexeurs, décodeurs, encodeurs, comparateurs, circuits arithmétiques.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/cours-simplification-karnaugh.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Simplification par Karnaugh</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Tables de Karnaugh, simplification fonctions logiques, optimisation circuits.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/tp-circuits-combinatoires.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Circuits Combinatoires Complexes</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Montage multiplexeurs, décodeurs, tests fonctionnels, chronogrammes réels.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/projet-coffre-fort.html" class="course-card projet">
+                    <span class="course-type">Mini-Projet</span>
+                    <h3>Mini-Projet : Coffre-Fort Électronique</h3>
+                    <p class="duration">20 heures</p>
+                    <p class="description">Conception circuit logique combinatoire, simulation, prototype, documentation complète.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Février - Mars : Active Directory & Virtualisation</h3>
+            <div class="courses-grid">
+                <a href="1ciel1/cours-virtualisation.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Introduction à la Virtualisation</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Concepts virtualisation, hyperviseurs Type 1/2, VirtualBox, VMware, configuration VMs.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/cours-windows-server.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Windows Server & Active Directory</h3>
+                    <p class="duration">12 heures</p>
+                    <p class="description">Installation Windows Server, rôles serveur, contrôleur domaine, DNS, DHCP.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/cours-active-directory.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Administration Active Directory</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Gestion utilisateurs, groupes, unités organisationnelles, GPO, stratégies de groupe.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/tp-installation-ad.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Installation & Configuration AD</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Installation contrôleur domaine, création domaine, configuration DNS/DHCP.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/tp-gestion-utilisateurs-ad.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Gestion Utilisateurs & GPO</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Création utilisateurs/groupes, OU, application GPO, droits d'accès.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <div class="pfmp-banner">
+                <h3>PFMP 4 - Mars-Avril (4 semaines)</h3>
+                <p>Mise en œuvre des compétences en environnement professionnel - Livret de suivi PFMP</p>
+            </div>
+
+            <h3 class="period-title">Mai : VLAN & Routage</h3>
+            <div class="courses-grid">
+                <a href="1ciel1/cours-vlan.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Réseaux VLAN</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Segmentation réseau, VLAN natifs, tagged/untagged, trunk ports, inter-VLAN routing.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/cours-routage-base.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Bases du Routage IP</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Tables de routage, routage statique/dynamique, passerelles, sous-réseaux.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/tp-configuration-vlan.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Configuration VLAN sur Switch</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Configuration switchs Cisco/HP, création VLANs, assignation ports, tests connectivité.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/tp-routage-intervlan.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Routage Inter-VLAN</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Configuration routeur, router-on-a-stick, communication entre VLANs.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Juin : Habilitation BR + Projet Professionnel Final</h3>
+            <div class="courses-grid">
+                <a href="1ciel1/formation-habilitation-br.html" class="course-card">
+                    <span class="course-type">Formation</span>
+                    <h3>Formation Habilitation BR</h3>
+                    <p class="duration">14 heures</p>
+                    <p class="description">Habilitation électrique BR, interventions BT, consignation, mesures sécurité, EPI.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel1/projet-professionnel-final.html" class="course-card projet">
+                    <span class="course-type">Projet</span>
+                    <h3>Projet Professionnel de Fin d'Année</h3>
+                    <p class="duration">30 heures</p>
+                    <p class="description">Projet complet synthétisant toutes les compétences : logique, réseaux, virtualisation. Documentation technique, soutenance orale avec grille CCF.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <a href="#" class="back-button" onclick="backToMenu(); return false;">← Retour au menu</a>
+        </div>
+
+        <!-- SECTION 1CIEL2 -->
+        <div id="ciel2" class="level-section">
+            <div class="section-header">
+                <h2>1CIEL2 - Électronique Appliquée & Conception PCB</h2>
+                <p class="description">Composants électroniques, microcontrôleurs Arduino, conception PCB avec KiCad et projet professionnel</p>
+            </div>
+
+            <h3 class="period-title">Septembre : Composants Électroniques Fondamentaux</h3>
+            <div class="courses-grid">
+                <a href="1ciel2/cours-resistances.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Résistances & Code Couleur</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Types de résistances, code couleur, valeurs normalisées, tolérances, puissance dissipée.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-diodes.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Diodes & Applications</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Fonctionnement diodes, polarisation, applications redressement, protection, LED.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/tp-mesures-composants.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Mesures & Tests Composants</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Mesure résistances, test diodes, utilisation multimètre mode diode.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <div class="pfmp-banner">
+                <h3>PFMP 3 - Octobre (4 semaines)</h3>
+                <p>Mise en œuvre des compétences en environnement professionnel - Livret de suivi PFMP</p>
+            </div>
+
+            <h3 class="period-title">Novembre : Transistors, Relais & Redressement</h3>
+            <div class="courses-grid">
+                <a href="1ciel2/cours-transistors.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Transistors Bipolaires & MOSFET</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Fonctionnement transistors NPN/PNP, MOSFET, amplification, commutation, calculs polarisation.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-relais.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Relais Électromécaniques</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Principe relais, bobine, contacts NO/NF, commande transistor, diode de roue libre.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-redressement.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Redressement & Alimentation</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Redressement simple/double alternance, pont de diodes, filtrage capacitif, régulateurs.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/tp-commande-relais.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Commande de Relais par Transistor</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Montage transistor + relais, protection diode, tests commande charge puissante.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/tp-pont-redresseur.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Alimentation Redressée & Filtrée</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Réalisation pont de diodes, filtrage, mesures oscilloscope, calcul taux ondulation.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Novembre - Février : Signaux & Arduino</h3>
+            <div class="courses-grid">
+                <a href="1ciel2/cours-signaux.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Signaux Analogiques et Numériques</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Signaux analogiques, numériques, PWM, filtrage simple, fréquence et amplitude.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-arduino-complet.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Introduction Arduino</h3>
+                    <p class="duration">12 heures</p>
+                    <p class="description">Syntaxe C++, E/S digitales/analogiques, PWM, structure de code, organigrammes.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/tp-acquisition-signaux.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Acquisition de Signaux Arduino</h3>
+                    <p class="duration">4 heures</p>
+                    <p class="description">Lecture analogique ADC, traitement signal, affichage moniteur série.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/projet-led-arduino.html" class="course-card projet">
+                    <span class="course-type">Mini-Projet</span>
+                    <h3>Mini-Projet : LED Clignotante Arduino</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Programme simple allumage/clignotement LED, organigramme, carnet de bord technique.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Mars - Mai : Conception Carte PCB avec KiCad</h3>
+            <div class="courses-grid">
+                <a href="1ciel2/cours-kicad-introduction.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Introduction à KiCad</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Interface KiCad, création schéma électrique, symboles, bibliothèques, nomenclature.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-routage-pcb.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Routage de Carte PCB</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Empreintes, placement composants, routage pistes, plans de masse, règles DRC.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/tp-carte-arduino-uno.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Recréation Carte Arduino Uno</h3>
+                    <p class="duration">12 heures</p>
+                    <p class="description">Schéma complet Arduino Uno sous KiCad, routage PCB, cahier des charges.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-export-gerber.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Export Fichiers Gerber & Fabrication</h3>
+                    <p class="duration">3 heures</p>
+                    <p class="description">Nomenclature BOM, export fichiers Gerber, préparation fabrication industrielle.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/projet-carte-complete.html" class="course-card projet">
+                    <span class="course-type">Projet</span>
+                    <h3>Projet Carte PCB Complète</h3>
+                    <p class="duration">10 heures</p>
+                    <p class="description">Conception complète d'une carte, routage, nomenclature, dossier technique complet.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <div class="pfmp-banner">
+                <h3>PFMP 4 - Mars-Avril (4 semaines)</h3>
+                <p>Mise en œuvre des compétences en environnement professionnel - Livret de suivi PFMP</p>
+            </div>
+
+            <h3 class="period-title">Mai : Filtrage Électronique Avancé</h3>
+            <div class="courses-grid">
+                <a href="1ciel2/cours-filtres-passifs.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Filtres Passifs RC/RL/RLC</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Filtres passe-bas, passe-haut, passe-bande, fréquence de coupure, diagrammes de Bode.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/cours-filtres-actifs-aop.html" class="course-card">
+                    <span class="course-type">Cours</span>
+                    <h3>Filtres Actifs (AOP)</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Amplificateurs opérationnels, filtres actifs ordre 1 et 2, gain.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/tp-simulation-mesure-filtres.html" class="course-card tp">
+                    <span class="course-type">TP</span>
+                    <h3>TP - Simulation & Mesure Filtres</h3>
+                    <p class="duration">6 heures</p>
+                    <p class="description">Simulation Proteus, réalisation breadboard, mesures oscilloscope.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+
+                <a href="1ciel2/projet-filtre-cahier-charges.html" class="course-card projet">
+                    <span class="course-type">Mini-Projet</span>
+                    <h3>Conception Filtre sur Cahier des Charges</h3>
+                    <p class="duration">8 heures</p>
+                    <p class="description">Conception filtre selon spécifications, calculs, simulation, tests de performance.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <h3 class="period-title">Mai - Juin : Projet Professionnel Final</h3>
+            <div class="courses-grid">
+                <a href="1ciel2/projet-professionnel-final.html" class="course-card projet">
+                    <span class="course-type">Projet</span>
+                    <h3>Projet Professionnel de Fin d'Année</h3>
+                    <p class="duration">25 heures</p>
+                    <p class="description">Projet complet synthétisant toutes les compétences : analyse système, conception circuits, réalisation prototype, tests validation, documentation technique, soutenance orale avec grille CCF.</p>
+                    <span class="badge">Disponible</span>
+                </a>
+            </div>
+
+            <a href="#" class="back-button" onclick="backToMenu(); return false;">← Retour au menu</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <h3>Plateforme Pédagogique CIEL</h3>
+        <p><strong>Cours d'Électronique & Systèmes Embarqués</strong></p>
+        <p>Ressources pour Seconde, 1CIEL1 et 1CIEL2</p>
+        <p style="margin-top: 20px;">
+            Cours élaborés par <strong>Yahia Isddiken</strong><br>
+            
+        </p>
+        <p style="margin-top: 20px; font-size: 0.9em; color: #999;">
+            Contact : <a href="isddiken05@gmail.com" style="color: var(--accent); text-decoration: none;"><span class="__cf_email__" data-cfemail="29504841404807405a4d4d40424c47694c51484459454c074a4644">[email&#160;protected]</span></a>
+        </p>
+        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+            Année scolaire 2024-2025 | Dernière mise à jour : Janvier 2026
+        </p>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    const passwords = {
+        'seconde': 'seconde2025',
+        'ciel1': 'ciel1_2025',
+        'ciel2': 'ciel2_2025'
+    };
+    
+    let currentLevel = '';
+    
+    function showPasswordModal(level) {
+        currentLevel = level;
+        const names = {
+            'seconde': 'Seconde - Électricité & Habilitation',
+            'ciel1': '1CIEL1 - Logique & Réseaux',
+            'ciel2': '1CIEL2 - Électronique Appliquée'
+        };
+        document.getElementById('levelName').textContent = names[level];
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('errorMessage').style.display = 'none';
+        document.getElementById('passwordModal').style.display = 'block';
+        document.getElementById('passwordInput').focus();
+    }
+    
+    function closeModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+    }
+    
+    function checkPassword() {
+        const pwd = document.getElementById('passwordInput').value;
+        
+        if (pwd === passwords[currentLevel]) {
+            closeModal();
+            document.getElementById('levelNav').style.display = 'none';
+            document.querySelectorAll('.level-section').forEach(s => s.style.display = 'none');
+            
+            const section = document.getElementById(currentLevel);
+            if (section) {
+                section.style.display = 'block';
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 200);
+            }
+        } else {
+            document.getElementById('errorMessage').style.display = 'block';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+    }
+    
+    function backToMenu() {
+        document.querySelectorAll('.level-section').forEach(s => s.style.display = 'none');
+        document.getElementById('levelNav').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            checkPassword();
+        }
+    });
+    
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('passwordModal');
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    </script>
+
+</body>
+</html>
