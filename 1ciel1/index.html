@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1CIEL1 - Cours CIEL</title>
-    <link rel="stylesheet" href="../style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seconde - Cours CIEL</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+
+<!-- 🔐 FORMULAIRE MOT DE PASSE -->
+<div id="login">
+  <input type="password" id="pwd" placeholder="Mot de passe">
+  <button onclick="check()">Valider</button>
+</div>
+
+<!-- 🔒 CONTENU PROTÉGÉ -->
+<div id="content" style="display:none;">
 
 <header>
     <h1>🔌 1CIEL1 - Logique Combinatoire, Réseaux & Cybersécurité</h1>
@@ -195,6 +204,22 @@
 <footer>
     <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
 </footer>
+<script>
+async function check() {
+  const password = document.getElementById('pwd').value;
 
+  const res = await fetch('/.netlify/functions/check-ciel1', {
+    method: 'POST',
+    body: JSON.stringify({ password })
+  });
+
+  if (res.ok) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  } else {
+    alert('Mot de passe incorrect');
+  }
+}
+</script>
 </body>
 </html>
