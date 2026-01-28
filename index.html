@@ -145,8 +145,60 @@
             header h1 { font-size: 2em; }
             .level-buttons { grid-template-columns: 1fr; }
         }
+        #login {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-box {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
     </style>
 </head>
+
+<!-- 🔐 MODAL MOT DE PASSE -->
+<div id="login" style="display:none;">
+  <div class="login-box">
+    <h2 id="login-title"></h2>
+    <input type="password" id="pwd" placeholder="Mot de passe">
+    <button onclick="check()">Valider</button>
+  </div>
+</div>
+
 <body>
 
     <header>
@@ -159,21 +211,21 @@
         <div class="level-nav">
             <h2>Choisissez votre niveau</h2>
             <div class="level-buttons">
-                <a href="seconde/index.html" class="level-card seconde">
+                <a href="seconde/index.html" class="level-card seconde" onclick="openLogin('seconde')">
                     <span class="icon">⚡</span>
                     <h3>Seconde</h3>
                     <p>Électricité & Habilitation</p>
                     <div class="info">Électricité fondamentale + Habilitation B1V + NFC 15-100 + Bases électronique</div>
                 </a>
-
-                <a href="1ciel1/index.html" class="level-card ciel1">
+                <a href="1ciel1/index.html" class="level-card ciel1" onclick="openLogin('ciel1')">
+                
                     <span class="icon">🔌</span>
                     <h3>1CIEL1</h3>
                     <p>Logique & Réseaux</p>
                     <div class="info">Logique combinatoire + VLAN + Active Directory + Habilitation BR + Projet</div>
                 </a>
 
-                <a href="1ciel2/index.html" class="level-card ciel2">
+               <a href="1ciel2/index.html" class="level-card ciel2" onclick="openLogin('ciel2')">
                     <span class="icon">🤖</span>
                     <h3>1CIEL2</h3>
                     <p>Électronique Appliquée</p>
@@ -198,6 +250,46 @@
             Année scolaire 2024-2025 | Dernière mise à jour : Janvier 2026
         </p>
     </footer>
+<script>
+let currentLevel = '';
+
+function openLogin(level) {
+  currentLevel = level;
+  document.getElementById('login').style.display = 'flex';
+
+  const titles = {
+    seconde: '🔐 Accès Seconde',
+    ciel1: '🔐 Accès 1CIEL1',
+    ciel2: '🔐 Accès 1CIEL2'
+  };
+
+  document.getElementById('login-title').textContent = titles[level];
+}
+
+async function check() {
+  const password = document.getElementById('pwd').value;
+
+  const res = await fetch(`/.netlify/functions/check-${currentLevel}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password })
+  });
+
+  if (res.ok) {
+    localStorage.setItem(`access-${currentLevel}`, 'ok');
+
+    const routes = {
+      seconde: '/seconde/',
+      ciel1: '/1ciel1/',
+      ciel2: '/1ciel2/'
+    };
+
+    window.location.href = routes[currentLevel];
+  } else {
+    alert('Mot de passe incorrect');
+  }
+}
+</script>
 
 </body>
 </html>
