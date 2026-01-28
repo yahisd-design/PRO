@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cours CIEL - Électronique & Systèmes Embarqués</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00878F;
+            --secondary: #00979D;
+            --accent: #E47128;
+            --dark: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 40px 50px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            color: var(--accent);
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 30px;
+        }
+
+        .level-nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .level-nav h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2em;
+        }
+
+        .level-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 3px solid transparent;
+            text-decoration: none;
+            display: block;
+        }
+
+        .level-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .level-card.seconde { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .level-card.ciel1 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .level-card.ciel2 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .level-card .icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .level-card h3 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .level-card p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .level-card .info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        footer {
+            background: rgba(30, 30, 30, 0.98);
+            color: white;
+            text-align: center;
+            padding: 40px 30px;
+            margin-top: 60px;
+        }
+
+        footer h3 { color: var(--primary); margin-bottom: 15px; }
+        footer p { margin: 8px 0; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2em; }
+            .level-buttons { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>📚 Cours CIEL</h1>
+        <p class="subtitle">Électronique & Systèmes Embarqués</p>
+        <p>Ressources pédagogiques pour les classes de Seconde et 1ère CIEL</p>
+    </header>
+
+    <div class="container">
+        <div class="level-nav">
+            <h2>Choisissez votre niveau</h2>
+            <div class="level-buttons">
+                <a href="seconde/index.html" class="level-card seconde">
+                    <span class="icon">⚡</span>
+                    <h3>Seconde</h3>
+                    <p>Électricité & Habilitation</p>
+                    <div class="info">Électricité fondamentale + Habilitation B1V + NFC 15-100 + Bases électronique</div>
+                </a>
+
+                <a href="1ciel1/index.html" class="level-card ciel1">
+                    <span class="icon">🔌</span>
+                    <h3>1CIEL1</h3>
+                    <p>Logique & Réseaux</p>
+                    <div class="info">Logique combinatoire + VLAN + Active Directory + Habilitation BR + Projet</div>
+                </a>
+
+                <a href="1ciel2/index.html" class="level-card ciel2">
+                    <span class="icon">🤖</span>
+                    <h3>1CIEL2</h3>
+                    <p>Électronique Appliquée</p>
+                    <div class="info">Composants + Arduino + KiCad + Filtrage + Projet professionnel</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <h3>🎓 Plateforme Pédagogique CIEL</h3>
+        <p><strong>Cours d'Électronique & Systèmes Embarqués</strong></p>
+        <p>Ressources pour Seconde, 1CIEL1 et 1CIEL2</p>
+        <p style="margin-top: 20px;">
+            Cours élaborés par <strong>Yahia Isddiken</strong><br>
+            Basés sur le manuel Edurobot.ch
+        </p>
+        <p style="margin-top: 20px; font-size: 0.9em; color: #999;">
+            📧 Contact : <a href="mailto:yahia.isddiken@lycee.fr" style="color: var(--accent); text-decoration: none;">yahia.isddiken@lycee.fr</a>
+        </p>
+        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+            Année scolaire 2024-2025 | Dernière mise à jour : Janvier 2026
+        </p>
+    </footer>
+
+</body>
+</html>
