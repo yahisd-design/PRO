@@ -1,0 +1,8 @@
+/seconde/index.html
+  Basic-Auth: admin:123
+
+/1ciel1/index.html
+  Basic-Auth: admin:345
+
+/1ciel2/index.html
+  Basic-Auth: admin:678
