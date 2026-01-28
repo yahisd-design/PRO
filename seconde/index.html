@@ -1,20 +1,27 @@
-<input type="password" id="pwd" placeholder="Mot de passe">
-<button onclick="check()">Valider</button>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seconde - Cours CIEL</title>
-    <link rel="stylesheet" href="../style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seconde - Cours CIEL</title>
+  <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 
+<!-- 🔐 FORMULAIRE MOT DE PASSE -->
+<div id="login">
+  <input type="password" id="pwd" placeholder="Mot de passe">
+  <button onclick="check()">Valider</button>
+</div>
+
+<!-- 🔒 CONTENU PROTÉGÉ -->
+<div id="content" style="display:none;">
+
 <header>
-    <h1>⚡ Seconde - Électricité & Habilitation Électrique</h1>
-    <p class="subtitle">Année 2024-2025</p>
-    <a href="../index.html" class="back-button">← Retour à l'accueil</a>
+  <h1>⚡ Seconde - Électricité & Habilitation Électrique</h1>
+  <p class="subtitle">Année 2024-2025</p>
+  <a href="../index.html" class="back-button">← Retour à l'accueil</a>
 </header>
 
 <div class="container">
@@ -181,7 +188,10 @@
 <footer>
     <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
 </footer>
-    <script>
+   
+</div>
+
+<script>
 async function check() {
   const password = document.getElementById('pwd').value;
 
@@ -191,6 +201,7 @@ async function check() {
   });
 
   if (res.ok) {
+    document.getElementById('login').style.display = 'none';
     document.getElementById('content').style.display = 'block';
   } else {
     alert('Mot de passe incorrect');
@@ -200,3 +211,4 @@ async function check() {
 
 </body>
 </html>
+
