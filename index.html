@@ -12,203 +12,368 @@
         }
 
         :root {
-            --primary: #00878F;
-            --secondary: #00979D;
-            --accent: #E47128;
-            --dark: #1e1e1e;
+            --primary: #00d4ff;
+            --secondary: #00f2fe;
+            --accent: #ff6b9d;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
         }
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
         }
 
         header {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            padding: 40px 50px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 50px 50px;
             text-align: center;
-            border-bottom: 5px solid var(--primary);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
         }
 
         header h1 {
-            color: var(--primary);
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
             font-weight: 700;
+            letter-spacing: -1px;
         }
 
         header .subtitle {
-            color: var(--accent);
-            font-size: 1.5em;
+            color: #ffd700;
+            font-size: 1.6em;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         header p {
-            color: #666;
-            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.2em;
+            font-weight: 300;
         }
 
         .container {
             max-width: 1200px;
-            margin: 50px auto;
+            margin: 60px auto;
             padding: 0 30px;
+            position: relative;
+            z-index: 10;
         }
 
         .level-nav {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 50px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .level-nav h2 {
-            color: var(--primary);
+            color: #ffffff;
             text-align: center;
-            margin-bottom: 40px;
-            font-size: 2em;
+            margin-bottom: 50px;
+            font-size: 2.5em;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
         }
 
         .level-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
         }
 
         .level-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             color: white;
-            padding: 40px;
-            border-radius: 15px;
+            padding: 45px 35px;
+            border-radius: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            border: 3px solid transparent;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
             text-decoration: none;
             display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .level-card:hover::before {
+            opacity: 1;
         }
 
         .level-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
             border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.25);
         }
 
-        .level-card.seconde { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .level-card.ciel1 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .level-card.ciel2 { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .level-card.seconde { 
+            border-left: 5px solid #f5576c;
+        }
+        
+        .level-card.ciel1 { 
+            border-left: 5px solid #00f2fe;
+        }
+        
+        .level-card.ciel2 { 
+            border-left: 5px solid #38f9d7;
+        }
 
         .level-card .icon {
-            font-size: 5em;
+            font-size: 5.5em;
             margin-bottom: 20px;
             display: block;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
         }
 
         .level-card h3 {
-            font-size: 2.2em;
+            font-size: 2.4em;
             margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
         }
 
         .level-card p {
-            font-size: 1.2em;
+            font-size: 1.3em;
             opacity: 0.95;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-weight: 400;
         }
 
         .level-card .info {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 1em;
-            margin-top: 20px;
-            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.05em;
+            margin-top: 25px;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 300;
         }
 
         footer {
-            background: rgba(30, 30, 30, 0.98);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             color: white;
             text-align: center;
-            padding: 40px 30px;
-            margin-top: 60px;
+            padding: 50px 30px;
+            margin-top: 80px;
+            border-top: 2px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            z-index: 10;
         }
 
-        footer h3 { color: var(--primary); margin-bottom: 15px; }
-        footer p { margin: 8px 0; line-height: 1.6; }
+        footer h3 { 
+            color: #ffd700; 
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        footer p { 
+            margin: 10px 0; 
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        footer a {
+            color: #ffd700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ffed4e;
+            text-decoration: underline;
+        }
+
+        #login {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 40px;
+            width: 350px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .login-box h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-size: 1.1em;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-box button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-box button:active {
+            transform: translateY(0);
+        }
 
         @media (max-width: 768px) {
-            header h1 { font-size: 2em; }
+            header h1 { font-size: 2.2em; }
+            header .subtitle { font-size: 1.3em; }
             .level-buttons { grid-template-columns: 1fr; }
-			
+            .level-nav { padding: 30px 20px; }
+            .container { margin: 30px auto; }
+            .login-box { width: 90%; max-width: 350px; }
         }
-		#login {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-}
 
-.login-box {
-  background:white;
-  padding:30px;
-  width:300px;
-  border-radius:10px;
-  text-align:center;
-}
+        /* Animations subtiles */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
 
-.login-box input {
-  width:100%;
-  padding:10px;
-  margin-bottom:15px;
-}
+        .level-card .icon {
+            animation: float 3s ease-in-out infinite;
+        }
 
-.login-box button {
-  width:100%;
-  padding:10px;
-  background:var(--primary);
-  color:white;
-  border:none;
-  cursor:pointer;
-}
+        .level-card:nth-child(1) .icon { animation-delay: 0s; }
+        .level-card:nth-child(2) .icon { animation-delay: 0.5s; }
+        .level-card:nth-child(3) .icon { animation-delay: 1s; }
     </style>
 </head>
 <body>
-
-
     <header>
         <h1>📚 Cours CIEL</h1>
         <p class="subtitle">Électronique & Systèmes Embarqués</p>
         <p>Ressources pédagogiques pour les classes de Seconde et 1ère CIEL</p>
     </header>
 
-
-
+    <div class="container">
         <div class="level-nav">
             <h2>Choisissez votre niveau</h2>
             <div class="level-buttons">
-                <a href="#" class="level-card" onclick="openLogin(event,'seconde')">⚡ Seconde</a>
+                <a href="#" class="level-card seconde" onclick="openLogin(event,'seconde')">
                     <span class="icon">⚡</span>
                     <h3>Seconde</h3>
                     <p>Électricité & Habilitation</p>
                     <div class="info">Électricité fondamentale + Habilitation B1V + NFC 15-100 + Bases électronique</div>
                 </a>
 
-               <a href="#" class="level-card" onclick="openLogin(event,'ciel1')">🔌 1CIEL1</a>
+                <a href="#" class="level-card ciel1" onclick="openLogin(event,'ciel1')">
                     <span class="icon">🔌</span>
                     <h3>1CIEL1</h3>
                     <p>Logique & Réseaux</p>
                     <div class="info">Logique combinatoire + VLAN + Active Directory + Habilitation BR + Projet</div>
                 </a>
 
-              <a href="#" class="level-card" onclick="openLogin(event,'ciel2')">🤖 1CIEL2</a>
+                <a href="#" class="level-card ciel2" onclick="openLogin(event,'ciel2')">
                     <span class="icon">🤖</span>
                     <h3>1CIEL2</h3>
                     <p>Électronique Appliquée</p>
@@ -217,15 +382,16 @@
             </div>
         </div>
     </div>
-    <div class="container">
-	<!-- POPUP -->
-<div id="login">
-  <div class="login-box">
-    <h2 id="login-title"></h2>
-    <input type="password" id="pwd" placeholder="Mot de passe">
-    <button onclick="check()">Valider</button>
-  </div>
-</div>
+
+    <!-- POPUP -->
+    <div id="login">
+        <div class="login-box">
+            <h2 id="login-title"></h2>
+            <input type="password" id="pwd" placeholder="Mot de passe">
+            <button onclick="check()">Valider</button>
+        </div>
+    </div>
+
     <footer>
         <h3>🎓 Plateforme Pédagogique CIEL</h3>
         <p><strong>Cours d'Électronique & Systèmes Embarqués</strong></p>
@@ -233,55 +399,67 @@
         <p style="margin-top: 20px;">
             Cours élaborés par <strong>Yahia Isddiken</strong><br>
         </p>
-        <p style="margin-top: 20px; font-size: 0.9em; color: #999;">
-            📧 Contact : <a href="mailto:yahia.isddiken@lycee.fr" style="color: var(--accent); text-decoration: none;">yahia.isddiken@lycee.fr</a>
+        <p style="margin-top: 20px; font-size: 0.9em;">
+            📧 Contact : <a href="mailto:yahia.isddiken@lycee.fr">yahia.isddiken@lycee.fr</a>
         </p>
-        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+        <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.8;">
             Année scolaire 2024-2025 | Dernière mise à jour : Janvier 2026
         </p>
     </footer>
 
+    <script>
+        let currentLevel = '';
 
-<script>
-let currentLevel = '';
+        function openLogin(event, level) {
+            event.preventDefault();
+            currentLevel = level;
 
-function openLogin(event, level) {
-  event.preventDefault();
-  currentLevel = level;
+            document.getElementById('login').style.display = 'flex';
 
-  document.getElementById('login').style.display = 'flex';
+            const titles = {
+                seconde:'🔐 Accès Seconde',
+                ciel1:'🔐 Accès 1CIEL1',
+                ciel2:'🔐 Accès 1CIEL2'
+            };
+            document.getElementById('login-title').textContent = titles[level];
+        }
 
-  const titles = {
-    seconde:'🔐 Accès Seconde',
-    ciel1:'🔐 Accès 1CIEL1',
-    ciel2:'🔐 Accès 1CIEL2'
-  };
-  document.getElementById('login-title').textContent = titles[level];
-}
+        async function check() {
+            const password = document.getElementById('pwd').value;
 
-async function check() {
-  const password = document.getElementById('pwd').value;
+            const res = await fetch(`/check-${currentLevel}`, {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ password })
+            });
 
-  const res = await fetch(`/check-${currentLevel}`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ password })
-  });
+            if (res.ok) {
+                localStorage.setItem(`access-${currentLevel}`,'ok');
 
-  if (res.ok) {
-    localStorage.setItem(`access-${currentLevel}`,'ok');
+                const routes = {
+                    seconde:'/seconde/',
+                    ciel1:'/1ciel1/',
+                    ciel2:'/1ciel2/'
+                };
+                window.location.href = routes[currentLevel];
+            } else {
+                alert('❌ Mot de passe incorrect');
+            }
+        }
 
-    const routes = {
-      seconde:'/seconde/',
-      ciel1:'/1ciel1/',
-      ciel2:'/1ciel2/'
-    };
-    window.location.href = routes[currentLevel];
-  } else {
-    alert('❌ Mot de passe incorrect');
-  }
-}
-</script>
+        // Fermer le popup en cliquant en dehors
+        document.getElementById('login').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
 
+        // Validation avec la touche Entrée
+        document.getElementById('pwd').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                check();
+            }
+        });
+    </script>
 </body>
 </html>
