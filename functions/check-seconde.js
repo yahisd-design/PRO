@@ -1,5 +1,4 @@
 
-}
 export async function onRequest({ request }) {
   const { password } = await request.json();
 
