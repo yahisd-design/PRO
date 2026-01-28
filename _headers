@@ -1,8 +1,8 @@
-/seconde/index.html
+/seconde/*
   Basic-Auth: admin:123
 
-/1ciel1/index.html
+/1ciel1/*
   Basic-Auth: admin:345
 
-/1ciel2/index.html
+/1ciel2/*
   Basic-Auth: admin:678
