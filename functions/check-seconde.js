@@ -1,15 +1,10 @@
-export async function handler(event) {
-  const data = JSON.parse(event.body || '{}');
 
-  if (data.password === 'seconde2025') {
-    return {
-      statusCode: 200,
-      body: 'ok'
-    };
+}
+export async function onRequest({ request }) {
+  const { password } = await request.json();
+
+  if (password === "seconde2025") {
+    return new Response("OK", { status: 200 });
   }
-
-  return {
-    statusCode: 401,
-    body: 'Unauthorized'
-  };
+  return new Response("Unauthorized", { status: 401 });
 }
