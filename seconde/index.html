@@ -7,16 +7,14 @@
   <title>Seconde - Cours CIEL</title>
   <link rel="stylesheet" href="../style.css">
 </head>
+  <script>
+if (!localStorage.getItem('access-seconde')) {
+  window.location.href = '/';
+}
+</script>
 <body>
 
-<!-- 🔐 FORMULAIRE MOT DE PASSE -->
-<div id="login">
-  <input type="password" id="pwd" placeholder="Mot de passe">
-  <button onclick="check()">Valider</button>
-</div>
 
-<!-- 🔒 CONTENU PROTÉGÉ -->
-<div id="content" style="display:none;">
 
 <header>
   <h1>⚡ Seconde - Électricité & Habilitation Électrique</h1>
@@ -191,26 +189,6 @@
    
 </div>
 
-<script>
-async function check() {
-  const password = document.getElementById('pwd').value;
-
-  const res = await fetch('/.netlify/functions/check-seconde', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ password })
-  });
-
-  if (res.ok) {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
-  } else {
-    alert('Mot de passe incorrect');
-  }
-}
-</script>
 
 </body>
 </html>
