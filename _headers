@@ -1,8 +1,2 @@
-/seconde/*
-  Basic-Auth: admin:123
-
-/1ciel1/*
-  Basic-Auth: admin:345
-
-/1ciel2/*
-  Basic-Auth: admin:678
+/*
+  X-Test: ok
