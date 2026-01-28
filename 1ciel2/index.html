@@ -7,15 +7,12 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
+<script>
+if (!localStorage.getItem('access-ciel2')) {
+  window.location.href = '/';
+}
+</script>
 
-<!-- 🔐 FORMULAIRE MOT DE PASSE -->
-<div id="login">
-  <input type="password" id="pwd" placeholder="Mot de passe">
-  <button onclick="check()">Valider</button>
-</div>
-
-<!-- 🔒 CONTENU PROTÉGÉ -->
-<div id="content" style="display:none;">
 
 <header>
     <h1>🤖 1CIEL2 - Électronique Appliquée & Systèmes Embarqués</h1>
@@ -240,26 +237,7 @@
 <footer>
     <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
 </footer>
-<script>
-async function check() {
-  const password = document.getElementById('pwd').value;
 
-  const res = await fetch('/.netlify/functions/check-ciel2', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ password })
-  });
-
-  if (res.ok) {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('content').style.display = 'block';
-  } else {
-    alert('Mot de passe incorrect');
-  }
-}
-</script>
 
 </body>
 </html>
