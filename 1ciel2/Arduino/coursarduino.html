@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Masterclass Arduino : Électronique, Signaux & Programmation</title>
+    <style>
+        :root {
+            --primary: #00878F; --secondary: #00979D; --accent: #E47128;
+            --dark: #1e1e1e; --light: #f4f4f9; --code-bg: #282a36;
+            --syntax-bg: #fff3cd; --exercise-bg: #d1ecf1;
+        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; background: var(--light); color: #333; }
+        
+        nav { width: 300px; background: var(--dark); color: white; height: 100vh; position: fixed; padding: 25px; overflow-y: auto; box-shadow: 4px 0 10px rgba(0,0,0,0.3); }
+        nav h2 { color: var(--primary); font-size: 1.2em; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        nav ul { list-style: none; padding: 0; }
+        nav li { margin: 15px 0; }
+        nav a { color: #cbd5e0; text-decoration: none; transition: 0.3s; font-size: 0.95em; display: block; }
+        nav a:hover { color: var(--primary); padding-left: 5px; }
+
+        main { margin-left: 350px; padding: 50px; max-width: 1100px; background: white; min-height: 100vh; }
+        header { border-bottom: 4px solid var(--primary); padding-bottom: 20px; margin-bottom: 40px; }
+        h1 { color: var(--primary); font-size: 2.8em; margin: 0; }
+        h2 { color: var(--secondary); border-left: 6px solid var(--primary); padding-left: 15px; margin-top: 50px; background: #f0f9fa; padding: 15px; }
+        h3 { color: var(--accent); margin-top: 30px; }
+        
+        .module { margin: 30px 0; line-height: 1.8; }
+        .theory-card { background: #fff9e6; border-left: 5px solid var(--accent); padding: 20px; border-radius: 4px; margin: 20px 0; }
+        .signal-analysis { background: #eef2ff; border: 1px solid #c3dafe; padding: 20px; border-radius: 8px; }
+        .syntax-box { background: var(--syntax-bg); border: 2px solid #ffc107; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .syntax-box h4 { margin-top: 0; color: #856404; }
+        .exercise-box { background: var(--exercise-bg); border: 2px solid #17a2b8; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .exercise-box h4 { margin-top: 0; color: #0c5460; }
+        
+        pre { background: var(--code-bg); color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 14px; position: relative; line-height: 1.6; }
+        .code-title { background: #44475a; color: white; padding: 8px 15px; font-size: 0.85em; border-radius: 4px 4px 0 0; display: inline-block; font-weight: bold; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; color: #c7254e; }
+        
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; box-shadow: 0 2px 15px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 15px; text-align: left; }
+        th { background: var(--primary); color: white; }
+        
+        .time-badge { background: var(--accent); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+        .important { background: #ffe5e5; border-left: 4px solid #dc3545; padding: 15px; margin: 15px 0; }
+        .tip { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 15px; margin: 15px 0; }
+        
+        ul.concept-list { background: #f8f9fa; padding: 20px; border-radius: 8px; }
+        ul.concept-list li { margin: 10px 0; padding-left: 10px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>PLAN DU COURS (2H30)</h2>
+    <ul>
+        <li><a href="#intro">00:00 - L'écosystème Arduino</a></li>
+        <li><a href="#syntax">00:15 - Syntaxe C++ de base</a></li>
+        <li><a href="#elec">00:35 - Physique & Composants</a></li>
+        <li><a href="#digital">01:00 - Signaux Carrés (Digital)</a></li>
+        <li><a href="#pwm">01:25 - Le Signal PWM</a></li>
+        <li><a href="#analog">01:45 - Sinus & Analogique</a></li>
+        <li><a href="#servo">02:00 - Projet : Servomoteur</a></li>
+        <li><a href="#debug">02:15 - Dépannage & Lexique</a></li>
+    </ul>
+</nav>
+
+<main>
+    <header id="intro">
+        <h1>Formation Arduino v6.0</h1>
+        <p><em>Guide pédagogique complet pour l'apprentissage du codage embarqué avec explications syntaxiques détaillées.</em></p>
+    </header>
+
+    <section class="module">
+        <h2>1. L'Écosystème Arduino <span class="time-badge">15 min</span></h2>
+        <p>L'Arduino n'est pas qu'une carte, c'est une <strong>interface entre le monde numérique et le monde physique</strong>. Basée sur le microcontrôleur ATmega328P, elle exécute du code en boucle à une vitesse de 16 millions d'instructions par seconde (16 MHz).</p>
+        
+        <div class="theory-card">
+            <strong>Architecture Harvard :</strong> Contrairement à votre ordinateur, l'Arduino sépare physiquement la mémoire du programme (Flash - 32 Ko) de la mémoire des données (SRAM - 2 Ko). Cela le rend extrêmement stable pour des tâches industrielles ou robotiques.
+        </div>
+
+        <h3>Les broches (pins) de l'Arduino</h3>
+        <table>
+            <tr><th>Type de broche</th><th>Numéros</th><th>Fonction</th></tr>
+            <tr><td>Digitales</td><td>0 à 13</td><td>Lecture/Écriture de signaux ON/OFF (0V ou 5V)</td></tr>
+            <tr><td>PWM</td><td>3, 5, 6, 9, 10, 11 (marquées ~)</td><td>Simulation de signaux analogiques</td></tr>
+            <tr><td>Analogiques</td><td>A0 à A5</td><td>Lecture de tensions variables (0 à 5V)</td></tr>
+            <tr><td>Alimentation</td><td>5V, 3.3V, GND</td><td>Distribution d'énergie</td></tr>
+        </table>
+    </section>
+
+    <section class="module" id="syntax">
+        <h2>2. Syntaxe C++ pour Arduino <span class="time-badge">20 min</span></h2>
+        
+        <h3>2.1 Structure d'un programme Arduino</h3>
+        <div class="syntax-box">
+            <h4>📘 Les deux fonctions obligatoires</h4>
+            <p>Tout programme Arduino (appelé "sketch") doit contenir ces deux fonctions :</p>
+            <ul>
+                <li><code>void setup()</code> : Exécutée UNE SEULE FOIS au démarrage</li>
+                <li><code>void loop()</code> : Exécutée EN BOUCLE infinie après setup()</li>
+            </ul>
+        </div>
+
+        <div class="code-title">Structure minimale d'un sketch</div>
+        <pre>
+void setup() {
+    <span style="color: #6272a4;">// Code de configuration (exécuté 1 fois)</span>
+    <span style="color: #6272a4;">// Exemple : définir les broches, initialiser la communication...</span>
+}
+
+void loop() {
+    <span style="color: #6272a4;">// Code principal (exécuté en boucle infinie)</span>
+    <span style="color: #6272a4;">// Exemple : lire des capteurs, allumer des LEDs...</span>
+}</pre>
+
+        <h3>2.2 Les variables : stocker des informations</h3>
+        <div class="syntax-box">
+            <h4>📘 Déclaration de variables</h4>
+            <p><strong>Syntaxe :</strong> <code>type nomVariable = valeur;</code></p>
+            
+            <table style="margin-top: 15px;">
+                <tr><th>Type</th><th>Description</th><th>Exemple</th><th>Plage</th></tr>
+                <tr><td><code>int</code></td><td>Nombre entier</td><td><code>int age = 15;</code></td><td>-32,768 à 32,767</td></tr>
+                <tr><td><code>float</code></td><td>Nombre décimal</td><td><code>float temp = 20.5;</code></td><td>Décimaux</td></tr>
+                <tr><td><code>bool</code></td><td>Vrai/Faux</td><td><code>bool isOn = true;</code></td><td>true ou false</td></tr>
+                <tr><td><code>char</code></td><td>Caractère</td><td><code>char lettre = 'A';</code></td><td>Un seul caractère</td></tr>
+                <tr><td><code>String</code></td><td>Texte</td><td><code>String nom = "Arduino";</code></td><td>Chaîne de texte</td></tr>
+            </table>
+        </div>
+
+        <div class="code-title">Exemples de variables</div>
+        <pre>
+<span style="color: #6272a4;">// Variables globales (accessibles partout)</span>
+int brocheLED = 13;           <span style="color: #6272a4;">// Numéro de la broche</span>
+bool etatLED = false;         <span style="color: #6272a4;">// État actuel de la LED</span>
+unsigned long intervalle = 1000; <span style="color: #6272a4;">// Délai en millisecondes (unsigned = toujours positif)</span>
+
+void setup() {
+    pinMode(brocheLED, OUTPUT); <span style="color: #6272a4;">// Utilisation de la variable</span>
+}
+
+void loop() {
+    <span style="color: #6272a4;">// Variables locales (uniquement dans loop)</span>
+    int valeurCapteur = analogRead(A0);
+    float tension = valeurCapteur * (5.0 / 1023.0); <span style="color: #6272a4;">// Conversion en Volts</span>
+}</pre>
+
+        <h3>2.3 Les opérateurs</h3>
+        <ul class="concept-list">
+            <li><strong>Arithmétiques :</strong> <code>+</code> (addition), <code>-</code> (soustraction), <code>*</code> (multiplication), <code>/</code> (division), <code>%</code> (reste/modulo)</li>
+            <li><strong>Comparaison :</strong> <code>==</code> (égal), <code>!=</code> (différent), <code>&lt;</code> (inférieur), <code>&gt;</code> (supérieur), <code>&lt;=</code>, <code>&gt;=</code></li>
+            <li><strong>Logiques :</strong> <code>&&</code> (ET), <code>||</code> (OU), <code>!</code> (NON)</li>
+            <li><strong>Affectation :</strong> <code>=</code> (assigner), <code>+=</code> (ajouter à), <code>-=</code> (soustraire à), <code>++</code> (incrémenter), <code>--</code> (décrémenter)</li>
+        </ul>
+
+        <div class="code-title">Exemples d'opérateurs</div>
+        <pre>
+int compteur = 0;
+
+compteur++;              <span style="color: #6272a4;">// compteur devient 1 (équivalent à compteur = compteur + 1)</span>
+compteur += 5;           <span style="color: #6272a4;">// compteur devient 6 (équivalent à compteur = compteur + 5)</span>
+
+if (compteur > 5) {      <span style="color: #6272a4;">// Si compteur est supérieur à 5</span>
+    <span style="color: #6272a4;">// Exécuter ce code</span>
+}
+
+bool condition = (compteur >= 5) && (compteur <= 10); <span style="color: #6272a4;">// ET logique</span></pre>
+
+        <h3>2.4 Les structures de contrôle</h3>
+        
+        <div class="syntax-box">
+            <h4>📘 Condition IF / ELSE</h4>
+            <p><strong>Syntaxe :</strong></p>
+            <pre style="background: white; color: #333; padding: 10px;">
+if (condition) {
+    // Code si condition vraie
+} else if (autreCondition) {
+    // Code si autre condition vraie
+} else {
+    // Code si toutes les conditions sont fausses
+}</pre>
+        </div>
+
+        <div class="code-title">Exemple : Allumer une LED selon la température</div>
+        <pre>
+int temperature = 25;
+
+if (temperature > 30) {
+    digitalWrite(13, HIGH);  <span style="color: #6272a4;">// Allumer LED (trop chaud)</span>
+} else if (temperature < 10) {
+    <span style="color: #6272a4;">// Faire clignoter (trop froid)</span>
+    digitalWrite(13, HIGH);
+    delay(100);
+    digitalWrite(13, LOW);
+    delay(100);
+} else {
+    digitalWrite(13, LOW);   <span style="color: #6272a4;">// Éteindre LED (température OK)</span>
+}</pre>
+
+        <div class="syntax-box">
+            <h4>📘 Boucle FOR</h4>
+            <p><strong>Syntaxe :</strong> <code>for (initialisation; condition; incrémentation) { }</code></p>
+            <p>Utilisée quand on connaît le nombre de répétitions.</p>
+        </div>
+
+        <div class="code-title">Exemple : Faire clignoter 5 fois</div>
+        <pre>
+for (int i = 0; i < 5; i++) {  <span style="color: #6272a4;">// i démarre à 0, continue tant que i<5, i augmente de 1</span>
+    digitalWrite(13, HIGH);
+    delay(200);
+    digitalWrite(13, LOW);
+    delay(200);
+}  <span style="color: #6272a4;">// Après 5 répétitions, le programme continue</span></pre>
+
+        <div class="syntax-box">
+            <h4>📘 Boucle WHILE</h4>
+            <p><strong>Syntaxe :</strong> <code>while (condition) { }</code></p>
+            <p>Répète tant que la condition est vraie.</p>
+        </div>
+
+        <div class="code-title">Exemple : Attendre qu'un bouton soit pressé</div>
+        <pre>
+while (digitalRead(2) == LOW) {  <span style="color: #6272a4;">// Tant que le bouton n'est pas pressé</span>
+    <span style="color: #6272a4;">// Attendre... (ne rien faire)</span>
+    delay(10);
+}
+<span style="color: #6272a4;">// Le programme continue quand le bouton est pressé</span></pre>
+
+        <h3>2.5 Les fonctions : réutiliser du code</h3>
+        <div class="syntax-box">
+            <h4>📘 Créer ses propres fonctions</h4>
+            <p><strong>Syntaxe :</strong> <code>typeRetour nomFonction(paramètres) { }</code></p>
+            <ul>
+                <li><code>void</code> : la fonction ne retourne rien</li>
+                <li>Autre type (<code>int</code>, <code>float</code>...) : la fonction retourne une valeur</li>
+            </ul>
+        </div>
+
+        <div class="code-title">Exemples de fonctions</div>
+        <pre>
+<span style="color: #6272a4;">// Fonction sans retour et sans paramètre</span>
+void clignoter() {
+    digitalWrite(13, HIGH);
+    delay(500);
+    digitalWrite(13, LOW);
+    delay(500);
+}
+
+<span style="color: #6272a4;">// Fonction sans retour avec paramètres</span>
+void clignoterNfois(int broche, int nombre, int duree) {
+    for (int i = 0; i < nombre; i++) {
+        digitalWrite(broche, HIGH);
+        delay(duree);
+        digitalWrite(broche, LOW);
+        delay(duree);
+    }
+}
+
+<span style="color: #6272a4;">// Fonction avec retour (calcul)</span>
+float convertirEnVolts(int valeur) {
+    return valeur * (5.0 / 1023.0);  <span style="color: #6272a4;">// Retourne le résultat</span>
+}
+
+void loop() {
+    clignoter();                    <span style="color: #6272a4;">// Appeler la fonction simple</span>
+    clignoterNfois(13, 3, 200);    <span style="color: #6272a4;">// 3 clignotements de 200ms sur broche 13</span>
+    
+    int lecture = analogRead(A0);
+    float tension = convertirEnVolts(lecture); <span style="color: #6272a4;">// Utiliser la valeur retournée</span>
+}</pre>
+
+        <div class="exercise-box">
+            <h4>✏️ Exercice pratique</h4>
+            <p>Créez une fonction <code>allumerSiSuperieur(int broche, int seuil)</code> qui :</p>
+            <ol>
+                <li>Lit la valeur du capteur sur A0</li>
+                <li>Allume la LED sur <code>broche</code> si la valeur dépasse <code>seuil</code></li>
+                <li>Éteint la LED sinon</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="module" id="elec">
+        <h2>3. Bases de l'Électronique <span class="time-badge">25 min</span></h2>
+        <p>Avant de coder, il faut comprendre le flux de l'énergie. Tout circuit repose sur trois piliers :</p>
+        <table>
+            <tr><th>Grandeur</th><th>Unité</th><th>Analogie hydraulique</th><th>Valeur Arduino</th></tr>
+            <tr><td>Tension (U)</td><td>Volt (V)</td><td>La pression de l'eau</td><td>5V (HIGH) ou 0V (LOW)</td></tr>
+            <tr><td>Intensité (I)</td><td>Ampère (A)</td><td>Le débit de l'eau</td><td>Max 40 mA par broche</td></tr>
+            <tr><td>Résistance (R)</td><td>Ohm (Ω)</td><td>Le diamètre du tuyau</td><td>220Ω typique pour LED</td></tr>
+        </table>
+        
+        <div class="important">
+            <strong>⚠️ Loi d'Ohm :</strong> <span style="font-family: serif; font-size: 1.3em;">U = R × I</span><br>
+            Si vous branchez une LED sans résistance, l'intensité devient trop élevée : le composant brûle !<br>
+            <strong>Calcul pratique :</strong> Pour une LED (2V) sur Arduino (5V) : R = (5-2) / 0.02 = 150Ω minimum → utilisez 220Ω
+        </div>
+
+        <h3>Câblage d'une LED</h3>
+        <div class="tip">
+            <strong>💡 Bon réflexe :</strong> Toujours identifier la patte longue de la LED (anode = +) et la patte courte (cathode = -).<br>
+            <strong>Branchement :</strong> Arduino → Résistance → Patte longue LED → Patte courte LED → GND
+        </div>
+    </section>
+
+    <section class="module" id="digital">
+        <h2>4. Programmation & Signaux Carrés <span class="time-badge">25 min</span></h2>
+        
+        <h3>4.1 Les fonctions de base pour signaux digitaux</h3>
+        <div class="syntax-box">
+            <h4>📘 Configuration des broches</h4>
+            <p><code>pinMode(broche, mode)</code></p>
+            <ul>
+                <li><strong>broche :</strong> numéro de la broche (0-13)</li>
+                <li><strong>mode :</strong> <code>OUTPUT</code> (sortie) ou <code>INPUT</code> (entrée) ou <code>INPUT_PULLUP</code> (entrée avec résistance interne)</li>
+            </ul>
+        </div>
+
+        <div class="syntax-box">
+            <h4>📘 Écriture digitale</h4>
+            <p><code>digitalWrite(broche, valeur)</code></p>
+            <ul>
+                <li><strong>valeur :</strong> <code>HIGH</code> (5V / ON) ou <code>LOW</code> (0V / OFF)</li>
+            </ul>
+        </div>
+
+        <div class="syntax-box">
+            <h4>📘 Lecture digitale</h4>
+            <p><code>int etat = digitalRead(broche)</code></p>
+            <ul>
+                <li>Retourne <code>HIGH</code> (1) ou <code>LOW</code> (0)</li>
+            </ul>
+        </div>
+
+        <div class="syntax-box">
+            <h4>📘 Attente / Pause</h4>
+            <p><code>delay(millisecondes)</code></p>
+            <ul>
+                <li>Met en pause le programme pendant X millisecondes</li>
+                <li>1000 ms = 1 seconde</li>
+            </ul>
+        </div>
+
+        <div class="code-title">Code 1 : Clignotement (Blink) avec explications</div>
+        <pre>
+<span style="color: #6272a4;">// Pas de variables globales nécessaires pour cet exemple simple</span>
+
+void setup() {
+    pinMode(13, OUTPUT);  <span style="color: #6272a4;">// Configure la broche 13 en SORTIE d'énergie</span>
+                          <span style="color: #6272a4;">// À partir de maintenant, on peut contrôler cette broche</span>
+}
+
+void loop() {
+    digitalWrite(13, HIGH);  <span style="color: #6272a4;">// Envoie 5V → LED allumée (Front montant du signal)</span>
+    delay(1000);             <span style="color: #6272a4;">// Pause de 1000 ms = 1 seconde</span>
+    
+    digitalWrite(13, LOW);   <span style="color: #6272a4;">// Envoie 0V → LED éteinte (Front descendant du signal)</span>
+    delay(1000);             <span style="color: #6272a4;">// Pause de 1 seconde</span>
+    
+    <span style="color: #6272a4;">// La fonction loop() recommence automatiquement → clignotement infini</span>
+}</pre>
+
+        <div class="signal-analysis">
+            <strong>📊 Analyse du Signal Carré :</strong> En mode Digital, il n'existe pas d'entre-deux. C'est 0 ou 1, comme un interrupteur. C'est idéal pour :
+            <ul>
+                <li>Allumer/éteindre des composants (LED, relais, moteurs)</li>
+                <li>Transmettre des données binaires</li>
+                <li>Détecter des événements (bouton pressé/relâché)</li>
+            </ul>
+        </div>
+
+        <div class="code-title">Code 2 : Lecture d'un bouton</div>
+        <pre>
+const int PIN_BOUTON = 2;  <span style="color: #6272a4;">// const = constante (valeur ne change jamais)</span>
+const int PIN_LED = 13;
+
+void setup() {
+    pinMode(PIN_BOUTON, INPUT_PULLUP); <span style="color: #6272a4;">// Entrée avec résistance interne activée</span>
+    pinMode(PIN_LED, OUTPUT);
+}
+
+void loop() {
+    int etatBouton = digitalRead(PIN_BOUTON); <span style="color: #6272a4;">// Lire l'état du bouton (HIGH ou LOW)</span>
+    
+    if (etatBouton == LOW) {  <span style="color: #6272a4;">// Avec INPUT_PULLUP, LOW = bouton pressé</span>
+        digitalWrite(PIN_LED, HIGH);  <span style="color: #6272a4;">// Allumer la LED</span>
+    } else {
+        digitalWrite(PIN_LED, LOW);   <span style="color: #6272a4;">// Éteindre la LED</span>
+    }
+}</pre>
+
+        <div class="exercise-box">
+            <h4>✏️ Exercice 1 : SOS en morse</h4>
+            <p>Créez un programme qui fait clignoter une LED selon le code SOS :</p>
+            <ul>
+                <li>S = 3 clignotements courts (200 ms)</li>
+                <li>O = 3 clignotements longs (600 ms)</li>
+                <li>S = 3 clignotements courts</li>
+            </ul>
+            <p><strong>Astuce :</strong> Utilisez une fonction personnalisée !</p>
+        </div>
+    </section>
+
+    <section class="module" id="pwm">
+        <h2>5. Le Mystère de la PWM <span class="time-badge">20 min</span></h2>
+        <p>Comment faire varier la luminosité d'une LED si l'Arduino ne peut envoyer que 0V ou 5V ?</p>
+        <p>On utilise la <strong>PWM (Pulse Width Modulation - Modulation de Largeur d'Impulsion)</strong>. On fait clignoter la LED tellement vite (environ 490 Hz = 490 fois par seconde) que l'œil ne voit que la moyenne lumineuse.</p>
+        
+        <div class="theory-card">
+            <strong>Rapport Cyclique (Duty Cycle) :</strong> Pourcentage de temps où le signal est à 5V sur une période.
+            <ul>
+                <li><strong>0%</strong> (valeur 0) = Toujours à 0V → LED éteinte</li>
+                <li><strong>25%</strong> (valeur 64) = 25% du temps à 5V → Luminosité faible</li>
+                <li><strong>50%</strong> (valeur 127) = Moitié du temps à 5V → Luminosité moyenne</li>
+                <li><strong>75%</strong> (valeur 191) = 75% du temps à 5V → Luminosité forte</li>
+                <li><strong>100%</strong> (valeur 255) = Toujours à 5V → LED maximale</li>
+            </ul>
+        </div>
+
+        <div class="syntax-box">
+            <h4>📘 Écriture analogique (PWM)</h4>
+            <p><code>analogWrite(broche, valeur)</code></p>
+            <ul>
+                <li><strong>broche :</strong> uniquement les broches PWM (3, 5, 6, 9, 10, 11 - marquées ~)</li>
+                <li><strong>valeur :</strong> de 0 (0% = éteint) à 255 (100% = maximum)</li>
+                <li><strong>Pas besoin de pinMode !</strong> analogWrite configure automatiquement en OUTPUT</li>
+            </ul>
+        </div>
+
+        <div class="code-title">Code 3 : Variation progressive de luminosité (Fade)</div>
+        <pre>
+const int PIN_LED = 11;  <span style="color: #6272a4;">// Broche PWM obligatoire</span>
+
+void setup() {
+    <span style="color: #6272a4;">// Pas de pinMode nécessaire avec analogWrite</span>
+}
+
+void loop() {
+    <span style="color: #6272a4;">// Augmenter progressivement</span>
+    for (int luminosite = 0; luminosite <= 255; luminosite++) {
+        analogWrite(PIN_LED, luminosite);  <span style="color: #6272a4;">// Envoyer la valeur PWM</span>
+        delay(10);  <span style="color: #6272a4;">// Pause pour voir la transition</span>
+    }
+    
+    <span style="color: #6272a4;">// Diminuer progressivement</span>
+    for (int luminosite = 255; luminosite >= 0; luminosite--) {
+        analogWrite(PIN_LED, luminosite);
+        delay(10);
+    }
+}</pre>
+
+        <div class="important">
+            <strong>⚠️ Attention :</strong> N'utilisez <code>analogWrite()</code> QUE sur les broches PWM (3, 5, 6, 9, 10, 11). Sur les autres broches, ça ne fonctionne pas !
+        </div>
+
+        <div class="exercise-box">
+            <h4>✏️ Exercice 2 : Lampe d'ambiance</h4>
+            <p>Créez un programme qui fait varier 3 LEDs (Rouge, Vert, Bleu) de manière aléatoire pour créer des couleurs changeantes.</p>
+            <p><strong>Astuce :</strong> Utilisez <code>random(0, 256)</code> pour générer des valeurs aléatoires entre 0 et 255.</p>
+        </div>
+    </section>
+
+    <section class="module" id="analog">
+        <h2>6. Signaux Analogiques & Lecture de Capteurs <span class="time-badge">15 min</span></h2>
+        
+        <h3>6.1 Lecture analogique</h3>
+        <div class="syntax-box">
+            <h4>📘 Lire une tension variable</h4>
+            <p><code>int valeur = analogRead(broche)</code></p>
+            <ul>
+                <li><strong>broche :</strong> A0 à A5 (broches analogiques)</li>
+                <li><strong>Retourne :</strong> une valeur de 0 à 1023</li>
+                <li><strong>Conversion :</strong> 0 = 0V, 1023 = 5V</li>
+                <li><strong>Résolution :</strong> 5V / 1024 = environ 0.0049V par unité</li>
+            </ul>
+        </div>
+
+        <div class="code-title">Code 4 : Lecture d'un potentiomètre</div>
+        <pre>
+const int PIN_POTENTIOMETRE = A0;
+const int PIN_LED = 9;
+
+void setup() {
+    Serial.begin(9600);  <span style="color: #6272a4;">// Initialiser la communication série à 9600 bauds</span>
+    <span style="color: #6272a4;">// Permet d'afficher des valeurs dans le Moniteur Série</span>
+}
+
+void loop() {
+    int valeur = analogRead(PIN_POTENTIOMETRE);  <span style="color: #6272a4;">// Lire (0-1023)</span>
+    
+    <span style="color: #6272a4;">// Conversion en tension réelle</span>
+    float tension = valeur * (5.0 / 1023.0);
+    
+    <span style="color: #6272a4;">// Conversion pour la LED (0-1023 vers 0-255)</span>
+    int luminosite = map(valeur, 0, 1023, 0, 255);
+    
+    analogWrite(PIN_LED, luminosite);  <span style="color: #6272a4;">// Appliquer à la LED</span>
+    
+    <span style="color: #6272a4;">// Afficher dans le Moniteur Série (Outils → Moniteur Série)</span>
+    Serial.print("Valeur brute: ");
+    Serial.print(valeur);
+    Serial.print(" | Tension: ");
+    Serial.print(tension);
+    Serial.println(" V");
+    
+    delay(100);  <span style="color: #6272a4;">// Rafraîchir toutes les 100ms</span>
+}</pre>
+
+        <div class="syntax-box">
+            <h4>📘 Fonction map() : conversion de plages</h4>
+            <p><code>int resultat = map(valeur, minEntree, maxEntree, minSortie, maxSortie)</code></p>
+            <p>Convertit proportionnellement une valeur d'une plage vers une autre.</p>
+            <p><strong>Exemple :</strong> <code>map(512, 0, 1023, 0, 255)</code> → retourne 127 (milieu des deux plages)</p>
+        </div>
+
+        <h3>6.2 Communication série</h3>
+        <div class="syntax-box">
+            <h4>📘 Moniteur Série : déboguer et afficher des valeurs</h4>
+            <ul>
+                <li><code>Serial.begin(vitesse)</code> : Initialiser (dans setup), vitesse typique = 9600</li>
+                <li><code>Serial.print(texte)</code> : Afficher sans retour à la ligne</li>
+                <li><code>Serial.println(texte)</code> : Afficher avec retour à la ligne</li>
+            </ul>
+            <p>Pour voir les messages : <strong>Outils → Moniteur Série</strong> dans l'IDE Arduino</p>
+        </div>
+
+        <h3>6.3 Génération d'onde sinusoïdale</h3>
+        <p>Pour simuler une onde naturelle comme un <strong>Sinus</strong>, nous utilisons les mathématiques pour modifier le rapport cyclique de la PWM en temps réel.</p>
+
+        <div class="code-title">Code 5 : Respiration LED (effet sinusoïdal)</div>
+        <pre>
+const int PIN_LED = 11;
+
+void setup() {
+    <span style="color: #6272a4;">// Rien à configurer</span>
+}
+
+void loop() {
+    <span style="color: #6272a4;">// millis() retourne le nombre de millisecondes depuis le démarrage</span>
+    float angle = millis() / 1000.0;  <span style="color: #6272a4;">// Convertir en secondes (float pour décimales)</span>
+    
+    <span style="color: #6272a4;">// sin() retourne une valeur entre -1 et +1</span>
+    <span style="color: #6272a4;">// On multiplie par 127 puis on ajoute 127 pour obtenir 0-254</span>
+    int luminosite = (sin(angle) * 127) + 127;
+    
+    analogWrite(PIN_LED, luminosite);
+    <span style="color: #6272a4;">// Pas de delay() ! Le temps est géré par millis()</span>
+}</pre>
+
+        <div class="tip">
+            <strong>💡 millis() vs delay() :</strong><br>
+            <code>delay()</code> bloque complètement le programme.<br>
+            <code>millis()</code> permet au programme de continuer à fonctionner tout en mesurant le temps écoulé.
+        </div>
+    </section>
+
+    <section class="module" id="servo">
+        <h2>7. Projet de Synthèse : Le Servomoteur <span class="time-badge">15 min</span></h2>
+        <p>Le servomoteur est l'exemple ultime : il utilise un signal carré très précis (PWM spécial) pour positionner un bras à un angle exact (0 à 180°).</p>
+        
+        <div class="theory-card">
+            <strong>Principe du servomoteur :</strong>
+            <ul>
+                <li>Impulsion de 1ms → angle 0°</li>
+                <li>Impulsion de 1.5ms → angle 90°</li>
+                <li>Impulsion de 2ms → angle 180°</li>
+            </ul>
+            La bibliothèque <code>Servo.h</code> gère automatiquement ces calculs complexes.
+        </div>
+
+        <div class="syntax-box">
+            <h4>📘 Utilisation de la bibliothèque Servo</h4>
+            <p><strong>1. Importer :</strong> <code>#include &lt;Servo.h&gt;</code> (tout en haut du code)</p>
+            <p><strong>2. Créer l'objet :</strong> <code>Servo monServo;</code></p>
+            <p><strong>3. Attacher à une broche :</strong> <code>monServo.attach(broche)</code></p>
+            <p><strong>4. Positionner :</strong> <code>monServo.write(angle)</code> où angle = 0 à 180</p>
+        </div>
+
+        <div class="code-title">Code 6 : Balayage automatique (Sweep)</div>
+        <pre>
+#include &lt;Servo.h&gt;  <span style="color: #6272a4;">// Importer la bibliothèque (à mettre TOUT EN HAUT)</span>
+
+Servo monServo;  <span style="color: #6272a4;">// Créer un objet de type Servo</span>
+
+void setup() {
+    monServo.attach(9);  <span style="color: #6272a4;">// Connecter le servomoteur à la broche 9</span>
+}
+
+void loop() {
+    <span style="color: #6272a4;">// Aller de 0° à 180°</span>
+    for (int angle = 0; angle <= 180; angle++) {
+        monServo.write(angle);  <span style="color: #6272a4;">// Positionner le servo</span>
+        delay(15);              <span style="color: #6272a4;">// Attendre que le servo atteigne la position</span>
+    }
+    
+    <span style="color: #6272a4;">// Revenir de 180° à 0°</span>
+    for (int angle = 180; angle >= 0; angle--) {
+        monServo.write(angle);
+        delay(15);
+    }
+}</pre>
+
+        <div class="code-title">Code 7 : Pilotage par potentiomètre</div>
+        <pre>
+#include &lt;Servo.h&gt;
+
+Servo monServo;
+const int PIN_POTENTIOMETRE = A0;
+
+void setup() {
+    monServo.attach(9);
+    Serial.begin(9600);
+}
+
+void loop() {
+    int valeur = analogRead(PIN_POTENTIOMETRE);  <span style="color: #6272a4;">// Lecture (0-1023)</span>
+    
+    <span style="color: #6272a4;">// map() convertit 0-1023 en 0-180 (degrés du servo)</span>
+    int angle = map(valeur, 0, 1023, 0, 180);
+    
+    monServo.write(angle);  <span style="color: #6272a4;">// Appliquer l'angle</span>
+    
+    <span style="color: #6272a4;">// Affichage pour déboguer</span>
+    Serial.print("Potentiomètre: ");
+    Serial.print(valeur);
+    Serial.print(" → Angle: ");
+    Serial.println(angle);
+    
+    delay(15);  <span style="color: #6272a4;">// Petit délai pour stabiliser</span>
+}</pre>
+
+        <div class="exercise-box">
+            <h4>✏️ Projet Final : Système d'alarme</h4>
+            <p>Créez un système qui :</p>
+            <ol>
+                <li>Lit un capteur de lumière (photorésistance sur A0)</li>
+                <li>Si la luminosité est trop faible → active une LED rouge + fait bouger le servo</li>
+                <li>Sinon → LED verte allumée + servo au repos</li>
+                <li>Affiche les valeurs dans le moniteur série</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="module" id="debug">
+        <h2>8. Dépannage & Lexique <span class="time-badge">15 min</span></h2>
+        
+        <h3>8.1 Erreurs courantes et solutions</h3>
+        <table>
+            <tr><th>Erreur</th><th>Cause</th><th>Solution</th></tr>
+            <tr>
+                <td>"expected ';' before..."</td>
+                <td>Point-virgule manquant</td>
+                <td>Ajouter <code>;</code> à la fin de la ligne précédente</td>
+            </tr>
+            <tr>
+                <td>"was not declared in this scope"</td>
+                <td>Variable non déclarée ou faute de frappe</td>
+                <td>Vérifier l'orthographe et déclarer la variable</td>
+            </tr>
+            <tr>
+                <td>"does not name a type"</td>
+                <td>Type inconnu ou bibliothèque manquante</td>
+                <td>Ajouter <code>#include</code> de la bibliothèque</td>
+            </tr>
+            <tr>
+                <td>LED ne s'allume pas</td>
+                <td>Câblage inversé ou broche incorrecte</td>
+                <td>Vérifier polarité LED et numéro de broche</td>
+            </tr>
+            <tr>
+                <td>Composant chauffe</td>
+                <td>Court-circuit ou résistance manquante</td>
+                <td>Débrancher immédiatement et vérifier le circuit</td>
+            </tr>
+        </table>
+
+        <h3>8.2 Lexique technique</h3>
+        <table>
+            <tr><th>Terme</th><th>Définition</th></tr>
+            <tr><td>Sketch</td><td>Programme Arduino (fichier .ino)</td></tr>
+            <tr><td>Pin / Broche</td><td>Connecteur sur l'Arduino pour brancher des composants</td></tr>
+            <tr><td>HIGH</td><td>Signal à 5V (ou 3.3V selon la carte) = état logique 1</td></tr>
+            <tr><td>LOW</td><td>Signal à 0V = état logique 0</td></tr>
+            <tr><td>PWM</td><td>Modulation de Largeur d'Impulsion - simule l'analogique en digital</td></tr>
+            <tr><td>Baud</td><td>Vitesse de communication série (bits par seconde)</td></tr>
+            <tr><td>Pull-up</td><td>Résistance interne qui maintient un signal à HIGH par défaut</td></tr>
+            <tr><td>Bibliothèque</td><td>Ensemble de fonctions précodées pour simplifier certaines tâches</td></tr>
+            <tr><td>Moniteur Série</td><td>Fenêtre de l'IDE pour afficher des messages de débogage</td></tr>
+        </table>
+
+        <h3>8.3 Astuces de débogage</h3>
+        <div class="tip">
+            <strong>💡 Méthode systématique :</strong>
+            <ol>
+                <li><strong>Utilisez Serial.println()</strong> pour afficher les valeurs des variables</li>
+                <li><strong>Testez une partie à la fois</strong> : commentez le code non testé avec <code>//</code></li>
+                <li><strong>Vérifiez le câblage</strong> avant de chercher une erreur de code</li>
+                <li><strong>Utilisez des LED</strong> pour visualiser l'état du programme (allumée = code exécuté)</li>
+                <li><strong>Consultez les exemples</strong> : Fichier → Exemples dans l'IDE Arduino</li>
+            </ol>
+        </div>
+
+        <div class="code-title">Exemple de débogage avec Serial</div>
+        <pre>
+void loop() {
+    int valeur = analogRead(A0);
+    
+    Serial.println("=== DEBUT BOUCLE ===");  <span style="color: #6272a4;">// Marquer le début</span>
+    Serial.print("Valeur lue: ");
+    Serial.println(valeur);
+    
+    if (valeur > 512) {
+        Serial.println("→ Condition vraie : LED allumée");
+        digitalWrite(13, HIGH);
+    } else {
+        Serial.println("→ Condition fausse : LED éteinte");
+        digitalWrite(13, LOW);
+    }
+    
+    delay(1000);
+}</pre>
+
+        <h3>8.4 Ressources supplémentaires</h3>
+        <ul class="concept-list">
+            <li><strong>Documentation officielle :</strong> arduino.cc/reference</li>
+            <li><strong>Forum Arduino :</strong> forum.arduino.cc</li>
+            <li><strong>Simulateur en ligne :</strong> tinkercad.com/circuits (pour tester sans matériel)</li>
+            <li><strong>Bibliothèques utiles :</strong> Outils → Gérer les bibliothèques dans l'IDE</li>
+        </ul>
+    </section>
+
+    <footer style="margin-top: 50px; border-top: 2px solid var(--primary); padding: 30px 20px; background: #f8f9fa;">
+        <h3 style="color: var(--primary); margin-top: 0;">Récapitulatif des concepts clés</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <h4>Syntaxe de base</h4>
+                <ul>
+                    <li>Variables : <code>int</code>, <code>float</code>, <code>bool</code></li>
+                    <li>Structures : <code>if/else</code>, <code>for</code>, <code>while</code></li>
+                    <li>Fonctions personnalisées</li>
+                </ul>
+            </div>
+            <div>
+                <h4>Fonctions Arduino</h4>
+                <ul>
+                    <li><code>pinMode()</code>, <code>digitalWrite()</code>, <code>digitalRead()</code></li>
+                    <li><code>analogWrite()</code>, <code>analogRead()</code></li>
+                    <li><code>Serial.print()</code>, <code>delay()</code>, <code>millis()</code></li>
+                </ul>
+            </div>
+        </div>
+        <p style="margin-top: 20px; color: #666; font-size: 0.9em;">Cours enrichi basé sur le manuel Edurobot.ch - Frédéric Genevey & Jean-Pierre Dulex. Version pédagogique avec explications syntaxiques complètes.</p>
+    </footer>
+</main>
+
+</body>
+</html>
