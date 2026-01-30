@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -28,13 +28,13 @@ if (!localStorage.getItem('access-ciel2')) {
         </p>
     </div>
 
-    <h3 class="period-title">📅 Septembre (3 semaines) : Composants de Base</h3>
+    <h3 class="period-title">📅 Septembre : Composants de Base</h3>
     <div class="courses-grid">
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Lois d'Ohm & Kirchhoff</h3>
+            <h3>Associations de Résistances</h3>
             <p class="duration">6 heures</p>
-            <p class="description">Lois fondamentales, calculs tension/courant/résistance, puissance électrique.</p>
+            <p class="description">Lois d'Ohm & Kirchhoff, montages série/parallèle, calculs tension/courant/résistance.</p>
             <span class="badge">Disponible</span>
         </a>
 
@@ -48,9 +48,17 @@ if (!localStorage.getItem('access-ciel2')) {
 
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Étude des Diodes et LED</h3>
-            <p class="duration">4 heures</p>
+            <h3>Étude des Diodes</h3>
+            <p class="duration">6 heures</p>
             <p class="description">Jonction PN, caractéristiques diode, LED et calcul résistance de limitation.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="#" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP - Diodes et Redressement</h3>
+            <p class="duration">4 heures</p>
+            <p class="description">Redressement simple/double alternance, observation oscilloscope.</p>
             <span class="badge">Disponible</span>
         </a>
     </div>
@@ -60,29 +68,29 @@ if (!localStorage.getItem('access-ciel2')) {
         <p>Découverte et application en milieu professionnel</p>
     </div>
 
-    <h3 class="period-title">📅 Novembre (2 semaines) : Transistors & Relais</h3>
+    <h3 class="period-title">📅 Novembre : Composants Passifs & Transistors</h3>
     <div class="courses-grid">
+        <a href="#" class="course-card">
+            <span class="course-type">Cours</span>
+            <h3>Self et Capacité</h3>
+            <p class="duration">6 heures</p>
+            <p class="description">Bobines d'inductance, condensateurs, comportement en courant continu/alternatif.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
         <a href="#" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Diode en Redressement</h3>
+            <h3>TP - Self et Capacité</h3>
             <p class="duration">4 heures</p>
-            <p class="description">Redressement simple/double alternance, observation oscilloscope.</p>
+            <p class="description">Mesures inductance/capacité, charge/décharge condensateur, circuits LC.</p>
             <span class="badge">Disponible</span>
         </a>
 
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Transistor en Commutation</h3>
+            <h3>Transistors et Relais</h3>
             <p class="duration">6 heures</p>
-            <p class="description">BJT NPN/PNP, transistor en commutation, pilotage de charges.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Relais Électromagnétiques</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Principe du relais, commande par transistor, protection diode de roue libre.</p>
+            <p class="description">BJT NPN/PNP, transistor en commutation, pilotage relais électromagnétiques.</p>
             <span class="badge">Disponible</span>
         </a>
 
@@ -90,21 +98,43 @@ if (!localStorage.getItem('access-ciel2')) {
             <span class="course-type">TP</span>
             <h3>TP - Transistor & Relais</h3>
             <p class="duration">4 heures</p>
-            <p class="description">Commande de relais, pilotage charge puissante.</p>
+            <p class="description">Commande de relais par transistor, pilotage charge puissante, protection diode de roue libre.</p>
             <span class="badge">Disponible</span>
         </a>
     </div>
 
-    <h3 class="period-title">📅 Novembre - Février : Signaux & Arduino</h3>
+    <h3 class="period-title">📅 Décembre : Transistors & Relais (Suite)</h3>
     <div class="courses-grid">
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Signaux Analogiques et Numériques</h3>
-            <p class="duration">8 heures</p>
-            <p class="description">Signaux analogiques, numériques, PWM, filtrage simple.</p>
+            <h3>Transistors et Relais (Suite)</h3>
+            <p class="duration">6 heures</p>
+            <p class="description">Approfondissement commutation, calculs dimensionnement, applications pratiques.</p>
             <span class="badge">Disponible</span>
         </a>
 
+        <a href="#" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP - Applications Transistors & Relais</h3>
+            <p class="duration">4 heures</p>
+            <p class="description">Montages complexes, commande multiple charges, automatismes simples.</p>
+            <span class="badge">Disponible</span>
+        </a>
+    </div>
+
+    <h3 class="period-title">📅 Janvier : Signaux Électriques</h3>
+    <div class="courses-grid">
+        <a href="#" class="course-card">
+            <span class="course-type">Cours</span>
+            <h3>Signaux Électriques</h3>
+            <p class="duration">8 heures</p>
+            <p class="description">Signaux analogiques, numériques, PWM, caractéristiques temporelles et fréquentielles.</p>
+            <span class="badge">Disponible</span>
+        </a>
+    </div>
+
+    <h3 class="period-title">📅 Janvier - Février : Arduino</h3>
+    <div class="courses-grid">
         <a href="./Arduino/coursarduino.html" class="course-card">
             <span class="course-type">Cours</span>
             <h3>Formation Arduino Complète</h3>
@@ -115,30 +145,30 @@ if (!localStorage.getItem('access-ciel2')) {
 
         <a href="#" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Acquisition de Signaux Arduino</h3>
-            <p class="duration">5 heures</p>
-            <p class="description">Lecture analogique ADC, traitement signal, affichage moniteur série.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Variation Intensité LED (PWM)</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Contrôle luminosité par PWM, fade effects.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card projet">
-            <span class="course-type">Mini-Projet</span>
-            <h3>LED Clignotante Programmable</h3>
-            <p class="duration">10 heures</p>
-            <p class="description">Programme allumage/clignotement LED avec fréquence variable.</p>
+            <h3>TP - Arduino : Bases & Applications</h3>
+            <p class="duration">12 heures</p>
+            <p class="description">Lecture analogique ADC, contrôle LED/moteurs PWM, capteurs, moniteur série.</p>
             <span class="badge">Disponible</span>
         </a>
     </div>
 
-    <h3 class="period-title">📅 Mars - Mai : Conception PCB avec KiCad</h3>
+    <h3 class="period-title">📅 Février - Mai : Projet Arduino Cybersécurité</h3>
+    <div class="courses-grid">
+        <a href="#" class="course-card projet">
+            <span class="course-type">Projet</span>
+            <h3>Projet Arduino Cybersécurité</h3>
+            <p class="duration">35 heures</p>
+            <p class="description">Projet complet intégrant Arduino et concepts de cybersécurité : analyse, conception, programmation, tests, documentation.</p>
+            <span class="badge">Disponible</span>
+        </a>
+    </div>
+
+    <div class="pfmp-banner">
+        <h3>🏢 PFMP 4 - Mars-Avril (4 semaines)</h3>
+        <p>Mise en œuvre des compétences en environnement professionnel</p>
+    </div>
+
+    <h3 class="period-title">📅 Mai - Juin : Conception PCB avec KiCad</h3>
     <div class="courses-grid">
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
@@ -151,83 +181,16 @@ if (!localStorage.getItem('access-ciel2')) {
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
             <h3>Routage de Carte PCB</h3>
-            <p class="duration">12 heures</p>
-            <p class="description">Empreintes, placement composants, routage pistes, plans de masse.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Recréation Carte Arduino Uno</h3>
-            <p class="duration">14 heures</p>
-            <p class="description">Schéma complet Arduino Uno sous KiCad, routage PCB, export Gerber.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Nomenclature & Export Gerber</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">BOM, export fichiers Gerber, préparation fabrication.</p>
-            <span class="badge">Disponible</span>
-        </a>
-    </div>
-
-    <div class="pfmp-banner">
-        <h3>🏢 PFMP 4 - Mars-Avril (4 semaines)</h3>
-        <p>Mise en œuvre des compétences en environnement professionnel</p>
-    </div>
-
-    <h3 class="period-title">📅 Mai : Finalisation PCB & Filtrage</h3>
-    <div class="courses-grid">
-        <a href="#" class="course-card projet">
-            <span class="course-type">Projet</span>
-            <h3>Projet Carte PCB Complète</h3>
             <p class="duration">10 heures</p>
-            <p class="description">Conception complète d'une carte selon cahier des charges.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Filtres Passifs RC/RL/RLC</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Filtres passe-bas, passe-haut, passe-bande, fréquence de coupure.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Filtres Actifs (AOP)</h3>
-            <p class="duration">5 heures</p>
-            <p class="description">Amplificateurs opérationnels, filtres actifs ordre 1 et 2.</p>
+            <p class="description">Empreintes, placement composants, routage pistes, plans de masse, export Gerber.</p>
             <span class="badge">Disponible</span>
         </a>
 
         <a href="#" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Simulation & Mesure Filtres</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Simulation Proteus, réalisation breadboard, mesures oscilloscope.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card projet">
-            <span class="course-type">Mini-Projet</span>
-            <h3>Conception Filtre sur Cahier des Charges</h3>
-            <p class="duration">8 heures</p>
-            <p class="description">Conception filtre selon spécifications, calculs, simulation, tests.</p>
-            <span class="badge">Disponible</span>
-        </a>
-    </div>
-
-    <h3 class="period-title">📅 Mai - Juin : Projet Professionnel Final</h3>
-    <div class="courses-grid">
-        <a href="#" class="course-card projet">
-            <span class="course-type">Projet</span>
-            <h3>Projet Professionnel de Fin d'Année</h3>
-            <p class="duration">25 heures</p>
-            <p class="description">Projet complet synthétisant toutes les compétences : analyse, conception, réalisation, tests, documentation, soutenance orale.</p>
+            <h3>TP - Conception Carte PCB</h3>
+            <p class="duration">15 heures</p>
+            <p class="description">Schéma complet sous KiCad, routage PCB, nomenclature, export fichiers de fabrication.</p>
             <span class="badge">Disponible</span>
         </a>
     </div>
@@ -236,7 +199,6 @@ if (!localStorage.getItem('access-ciel2')) {
 <footer>
     <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
 </footer>
-
 
 </body>
 </html>
