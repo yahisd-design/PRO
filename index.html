@@ -167,8 +167,9 @@
         }
 
         .level-card .icon {
-            font-size: 5.5em;
-            margin-bottom: 20px;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
             display: block;
             filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
         }
@@ -331,6 +332,7 @@
             .level-nav { padding: 30px 20px; }
             .container { margin: 30px auto; }
             .login-box { width: 90%; max-width: 350px; }
+            .level-card .icon { width: 100px; height: 100px; }
         }
 
         /* Animations subtiles */
@@ -346,6 +348,7 @@
         .level-card:nth-child(1) .icon { animation-delay: 0s; }
         .level-card:nth-child(2) .icon { animation-delay: 0.5s; }
         .level-card:nth-child(3) .icon { animation-delay: 1s; }
+        .level-card:nth-child(4) .icon { animation-delay: 1.5s; }
     </style>
 </head>
 <body>
@@ -359,35 +362,138 @@
         <div class="level-nav">
             <h2>Choisissez votre niveau</h2>
             <div class="level-buttons">
-                <a href="#" class="level-card seconde" onclick="openLogin(event,'seconde')">
-                    <span class="icon"> <img src="./seconde/images.jpg "  width="20px" height="15px" /></span>
+                <a href="#" class="level-card seconde" data-level="seconde">
+                    <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ampoule avec filament -->
+                        <defs>
+                            <linearGradient id="bulbGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FFE66D;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Base de l'ampoule -->
+                        <rect x="75" y="140" width="50" height="30" fill="#C0C0C0" stroke="#888" stroke-width="2"/>
+                        <rect x="70" y="170" width="60" height="15" rx="3" fill="#A0A0A0" stroke="#666" stroke-width="2"/>
+                        <!-- Corps de l'ampoule -->
+                        <ellipse cx="100" cy="100" rx="45" ry="60" fill="url(#bulbGrad)" opacity="0.9" stroke="#FFA500" stroke-width="3"/>
+                        <!-- Reflet -->
+                        <ellipse cx="85" cy="80" rx="15" ry="25" fill="#FFF" opacity="0.4"/>
+                        <!-- Filament -->
+                        <path d="M 90 100 Q 95 90, 100 100 T 110 100" fill="none" stroke="#FF6B00" stroke-width="3"/>
+                        <!-- Éclairs d'énergie -->
+                        <path d="M 120 70 L 110 85 L 120 85 L 110 100" fill="#FFE66D" stroke="#FFA500" stroke-width="2"/>
+                        <path d="M 80 70 L 90 85 L 80 85 L 90 100" fill="#FFE66D" stroke="#FFA500" stroke-width="2"/>
+                    </svg>
                     <h3>Seconde</h3>
                     <p>Électricité & Habilitation</p>
                     <div class="info">Électricité fondamentale + Habilitation B1V + NFC 15-100 + Bases électronique</div>
                 </a>
 
-                <a href="#" class="level-card ciel1" onclick="openLogin(event,'ciel1')">
-                    <span class="icon">🔌</span>
+                <a href="#" class="level-card ciel1" data-level="ciel1">
+                    <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Réseau et logique -->
+                        <defs>
+                            <linearGradient id="networkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0080FF;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Serveur central -->
+                        <rect x="75" y="60" width="50" height="60" rx="5" fill="url(#networkGrad)" stroke="#0066CC" stroke-width="3"/>
+                        <rect x="80" y="70" width="40" height="8" rx="2" fill="#004080" opacity="0.6"/>
+                        <rect x="80" y="85" width="40" height="8" rx="2" fill="#004080" opacity="0.6"/>
+                        <rect x="80" y="100" width="40" height="8" rx="2" fill="#004080" opacity="0.6"/>
+                        <!-- Nœuds du réseau -->
+                        <circle cx="40" cy="50" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
+                        <circle cx="160" cy="50" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
+                        <circle cx="40" cy="150" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
+                        <circle cx="160" cy="150" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
+                        <!-- Connexions réseau -->
+                        <line x1="55" y1="50" x2="75" y2="70" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
+                        <line x1="145" y1="50" x2="125" y2="70" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
+                        <line x1="55" y1="150" x2="75" y2="110" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
+                        <line x1="145" y1="150" x2="125" y2="110" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
+                        <!-- Signaux de données -->
+                        <circle cx="100" cy="40" r="5" fill="#FFE66D">
+                            <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
                     <h3>1CIEL1</h3>
                     <p>Logique & Réseaux</p>
                     <div class="info">Logique combinatoire + VLAN + Active Directory + Habilitation BR + Projet</div>
                 </a>
 
-                <a href="#" class="level-card ciel2" onclick="openLogin(event,'ciel2')">
-                    <span class="icon">🤖</span>
+                <a href="#" class="level-card ciel2" data-level="ciel2">
+                    <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Arduino et microcontrôleur -->
+                        <defs>
+                            <linearGradient id="arduinoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#43E97B;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#38F9D7;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Circuit board -->
+                        <rect x="40" y="60" width="120" height="90" rx="8" fill="url(#arduinoGrad)" stroke="#00A86B" stroke-width="3"/>
+                        <!-- Puce principale -->
+                        <rect x="70" y="85" width="60" height="40" rx="3" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
+                        <circle cx="85" cy="105" r="3" fill="#FFD700"/>
+                        <circle cx="115" cy="105" r="3" fill="#FFD700"/>
+                        <!-- Pins -->
+                        <rect x="35" y="75" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="85" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="95" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="105" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="115" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="125" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="75" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="85" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="95" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="105" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="115" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="125" width="8" height="4" fill="#FFD700"/>
+                        <!-- Composants -->
+                        <circle cx="55" cy="100" r="8" fill="#FF6B9D" stroke="#CC0066" stroke-width="2"/>
+                        <circle cx="145" cy="100" r="8" fill="#4FACFE" stroke="#0066CC" stroke-width="2"/>
+                        <!-- Pistes du circuit -->
+                        <line x1="50" y1="70" x2="150" y2="70" stroke="#00A86B" stroke-width="2" opacity="0.6"/>
+                        <line x1="50" y1="140" x2="150" y2="140" stroke="#00A86B" stroke-width="2" opacity="0.6"/>
+                        <!-- LED clignotante -->
+                        <circle cx="100" cy="45" r="6" fill="#FFE66D">
+                            <animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
                     <h3>1CIEL2</h3>
                     <p>Électronique Appliquée</p>
                     <div class="info">Composants + Arduino + KiCad + Filtrage + Projet professionnel</div>
                 </a>
                 
-                  <a href="16021-annexes-bac-pro-ciel230213.pdf" class="level-card ciel2" >
-                    <span class="icon">🤖</span>
-                    <h3>Réferentiel</h3>
+                <a href="16021-annexes-bac-pro-ciel230213.pdf" class="level-card ciel2">
+                    <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Document/Référentiel -->
+                        <defs>
+                            <linearGradient id="docGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Document -->
+                        <rect x="50" y="30" width="100" height="140" rx="5" fill="url(#docGrad)" stroke="#6D28D9" stroke-width="3"/>
+                        <!-- Coin plié -->
+                        <path d="M 150 30 L 150 50 L 130 50 Z" fill="#9333EA" stroke="#6D28D9" stroke-width="2"/>
+                        <!-- Lignes de texte -->
+                        <line x1="65" y1="60" x2="135" y2="60" stroke="#FFF" stroke-width="3" opacity="0.8"/>
+                        <line x1="65" y1="75" x2="125" y2="75" stroke="#FFF" stroke-width="3" opacity="0.8"/>
+                        <line x1="65" y1="90" x2="135" y2="90" stroke="#FFF" stroke-width="3" opacity="0.8"/>
+                        <line x1="65" y1="105" x2="115" y2="105" stroke="#FFF" stroke-width="3" opacity="0.8"/>
+                        <!-- Badge diplôme -->
+                        <circle cx="100" cy="135" r="20" fill="#FFD700" stroke="#FFA500" stroke-width="3"/>
+                        <path d="M 100 125 L 105 135 L 100 132 L 95 135 Z" fill="#FF6B00"/>
+                        <text x="100" y="142" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8B4513" text-anchor="middle">BAC</text>
+                    </svg>
+                    <h3>Référentiel</h3>
                     <p>bac-pro-ciel</p>
-                    <div class="info">bac CIEL professionnel</div>
+                    <div class="info">BAC CIEL professionnel</div>
                 </a>
-                
-                
             </div>
         </div>
     </div>
@@ -396,8 +502,8 @@
     <div id="login">
         <div class="login-box">
             <h2 id="login-title"></h2>
-            <input type="password" id="pwd" placeholder="Mot de passe">
-            <button onclick="check()">Valider</button>
+            <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="off">
+            <button id="validate-btn">Valider</button>
         </div>
     </div>
 
@@ -417,56 +523,112 @@
     </footer>
 
     <script>
-        let currentLevel = '';
+        // Configuration optimisée
+        const CONFIG = {
+            titles: {
+                seconde: '🔐 Accès Seconde',
+                ciel1: '🔐 Accès 1CIEL1',
+                ciel2: '🔐 Accès 1CIEL2'
+            },
+            routes: {
+                seconde: '/seconde/',
+                ciel1: '/1ciel1/',
+                ciel2: '/1ciel2/'
+            }
+        };
 
+        let currentLevel = '';
+        
+        // Cache des éléments DOM
+        const elements = {
+            login: document.getElementById('login'),
+            loginTitle: document.getElementById('login-title'),
+            pwd: document.getElementById('pwd'),
+            validateBtn: document.getElementById('validate-btn')
+        };
+
+        // Fonction d'ouverture du login optimisée
         function openLogin(event, level) {
             event.preventDefault();
             currentLevel = level;
-
-            document.getElementById('login').style.display = 'flex';
-
-            const titles = {
-                seconde:'🔐 Accès Seconde',
-                ciel1:'🔐 Accès 1CIEL1',
-                ciel2:'🔐 Accès 1CIEL2'
-            };
-            document.getElementById('login-title').textContent = titles[level];
+            elements.loginTitle.textContent = CONFIG.titles[level];
+            elements.login.style.display = 'flex';
+            elements.pwd.value = '';
+            elements.pwd.focus();
         }
 
+        // Fonction de vérification optimisée avec gestion d'erreur
         async function check() {
-            const password = document.getElementById('pwd').value;
+            const password = elements.pwd.value.trim();
+            
+            if (!password) {
+                alert('⚠️ Veuillez entrer un mot de passe');
+                return;
+            }
 
-            const res = await fetch(`/check-${currentLevel}`, {
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ password })
+            // Désactiver le bouton pendant la requête
+            elements.validateBtn.disabled = true;
+            elements.validateBtn.textContent = 'Vérification...';
+
+            try {
+                const res = await fetch(`/check-${currentLevel}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                if (res.ok) {
+                    localStorage.setItem(`access-${currentLevel}`, 'ok');
+                    window.location.href = CONFIG.routes[currentLevel];
+                } else {
+                    alert('❌ Mot de passe incorrect');
+                    elements.pwd.value = '';
+                    elements.pwd.focus();
+                }
+            } catch (error) {
+                alert('⚠️ Erreur de connexion. Veuillez réessayer.');
+                console.error('Erreur:', error);
+            } finally {
+                elements.validateBtn.disabled = false;
+                elements.validateBtn.textContent = 'Valider';
+            }
+        }
+
+        // Event listeners optimisés avec délégation d'événements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Délégation d'événements pour les cartes de niveau
+            document.querySelectorAll('.level-card[data-level]').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const level = e.currentTarget.dataset.level;
+                    if (level) openLogin(e, level);
+                });
             });
 
-            if (res.ok) {
-                localStorage.setItem(`access-${currentLevel}`,'ok');
+            // Fermer le popup en cliquant en dehors
+            elements.login.addEventListener('click', (e) => {
+                if (e.target === elements.login) {
+                    elements.login.style.display = 'none';
+                    elements.pwd.value = '';
+                }
+            });
 
-                const routes = {
-                    seconde:'/seconde/',
-                    ciel1:'/1ciel1/',
-                    ciel2:'/1ciel2/'
-                };
-                window.location.href = routes[currentLevel];
-            } else {
-                alert('❌ Mot de passe incorrect');
-            }
-        }
+            // Validation avec la touche Entrée
+            elements.pwd.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    check();
+                }
+            });
 
-        // Fermer le popup en cliquant en dehors
-        document.getElementById('login').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
+            // Bouton de validation
+            elements.validateBtn.addEventListener('click', check);
         });
 
-        // Validation avec la touche Entrée
-        document.getElementById('pwd').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                check();
+        // Échappement avec la touche ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && elements.login.style.display === 'flex') {
+                elements.login.style.display = 'none';
+                elements.pwd.value = '';
             }
         });
     </script>
