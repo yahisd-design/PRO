@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cybersécurité – BAC PRO CIEL</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:        #030c06;
+      --green:     #00ff41;
+      --cyan:      #00e5ff;
+      --orange:    #ff6b00;
+      --yellow:    #ffd600;
+      --card-bg:   rgba(0,255,65,0.04);
+      --card-border: rgba(0,255,65,0.18);
+      --font-mono: 'Share Tech Mono', monospace;
+      --font-hud:  'Orbitron', sans-serif;
+      --font-body: 'Rajdhani', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--green);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: crosshair;
+    }
+    #matrix {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; opacity: 0.18; pointer-events: none;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+      pointer-events: none; z-index: 1;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none; z-index: 1;
+    }
+    .wrapper {
+      position: relative; z-index: 2;
+      max-width: 1180px; margin: 0 auto; padding: 0 28px 80px;
+    }
+    /* HEADER */
+    header { text-align: center; padding: 52px 20px 38px; }
+    .boot-line {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: rgba(0,255,65,0.45); letter-spacing: 0.05em;
+      margin-bottom: 24px; overflow: hidden;
+      white-space: nowrap; border-right: 2px solid var(--green);
+      width: 0; display: inline-block;
+      animation: typing 2.4s steps(60) 0.3s forwards, blink 0.7s step-end infinite 2.7s;
+    }
+    @keyframes typing { to { width: 100%; } }
+    @keyframes blink  { 50% { border-color: transparent; } }
+    .header-shield {
+      font-size: 72px; display: block;
+      filter: drop-shadow(0 0 24px rgba(0,255,65,0.7)) drop-shadow(0 0 60px rgba(0,255,65,0.3));
+      animation: pulse-shield 3s ease-in-out infinite; margin-bottom: 16px;
+    }
+    @keyframes pulse-shield {
+      0%,100% { filter: drop-shadow(0 0 24px rgba(0,255,65,0.7)) drop-shadow(0 0 60px rgba(0,255,65,0.3)); }
+      50%      { filter: drop-shadow(0 0 40px rgba(0,255,65,1)) drop-shadow(0 0 90px rgba(0,255,65,0.5)); }
+    }
+    h1 {
+      font-family: var(--font-hud); font-size: clamp(1.8rem,5vw,3.2rem);
+      font-weight: 900; color: var(--green);
+      text-shadow: 0 0 18px rgba(0,255,65,0.55), 0 0 40px rgba(0,255,65,0.2);
+      letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.1;
+    }
+    .header-sub {
+      font-family: var(--font-mono); font-size: 0.9rem; color: var(--cyan);
+      margin-top: 10px; letter-spacing: 0.08em;
+      text-shadow: 0 0 18px rgba(0,229,255,0.6);
+    }
+    .access-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,255,65,0.08); border: 1px solid rgba(0,255,65,0.35);
+      border-radius: 4px; padding: 6px 18px; margin-top: 18px;
+      font-family: var(--font-mono); font-size: 0.75rem; color: var(--green);
+      letter-spacing: 0.12em; animation: flicker 4s linear infinite;
+    }
+    .access-badge .dot {
+      width: 8px; height: 8px; background: var(--green);
+      border-radius: 50%; box-shadow: 0 0 8px var(--green);
+      animation: blink-dot 1.1s step-end infinite;
+    }
+    @keyframes blink-dot { 50% { opacity: 0; } }
+    @keyframes flicker {
+      0%,96%,100% { opacity:1; } 97% { opacity:.4; } 98% { opacity:1; } 99% { opacity:.2; }
+    }
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      margin: 10px 0 32px; box-shadow: 0 0 8px rgba(0,255,65,0.4);
+    }
+    /* SECTION HEADER */
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      margin: 44px 0 20px; position: relative;
+    }
+    .section-header::before {
+      content: ''; position: absolute; left: -28px; top: 50%;
+      width: 4px; height: 70%; transform: translateY(-50%);
+    }
+    .s-cours::before { background: var(--cyan);   box-shadow: 0 0 10px var(--cyan); }
+    .s-exo::before   { background: var(--yellow);  box-shadow: 0 0 10px var(--yellow); }
+    .s-tp::before    { background: var(--orange);  box-shadow: 0 0 10px var(--orange); }
+    .s-icon {
+      width: 40px; height: 40px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.2rem; border: 1px solid;
+      border-radius: 6px; flex-shrink: 0;
+    }
+    .s-cours .s-icon { border-color: var(--cyan);   color: var(--cyan);   box-shadow: 0 0 12px rgba(0,229,255,0.3); }
+    .s-exo   .s-icon { border-color: var(--yellow);  color: var(--yellow);  box-shadow: 0 0 12px rgba(255,214,0,0.3); }
+    .s-tp    .s-icon { border-color: var(--orange);  color: var(--orange);  box-shadow: 0 0 12px rgba(255,107,0,0.3); }
+    .s-label {
+      font-family: var(--font-hud); font-size: 1.05rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .s-cours .s-label { color: var(--cyan);   text-shadow: 0 0 14px rgba(0,229,255,0.6); }
+    .s-exo   .s-label { color: var(--yellow);  text-shadow: 0 0 14px rgba(255,214,0,0.6); }
+    .s-tp    .s-label { color: var(--orange);  text-shadow: 0 0 14px rgba(255,107,0,0.6); }
+    .s-count {
+      margin-left: auto; font-family: var(--font-mono);
+      font-size: 0.72rem; color: rgba(0,255,65,0.45); letter-spacing: 0.08em;
+    }
+    /* GRID */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px,1fr)); gap: 20px; }
+    /* CARD */
+    .card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 8px; padding: 22px 20px 18px;
+      display: flex; flex-direction: column; gap: 10px;
+      cursor: pointer; text-decoration: none; color: inherit;
+      position: relative; overflow: hidden;
+      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), border-color 0.2s, box-shadow 0.2s;
+    }
+    .card::before, .card::after {
+      content: ''; position: absolute;
+      width: 16px; height: 16px;
+      transition: width 0.3s, height 0.3s;
+    }
+    .card::before { top:0; left:0; border-top:2px solid; border-left:2px solid; border-radius:8px 0 0 0; }
+    .card::after  { bottom:0; right:0; border-bottom:2px solid; border-right:2px solid; border-radius:0 0 8px 0; }
+    .card.c-cours:hover  { border-color: var(--cyan);   box-shadow: 0 0 24px rgba(0,229,255,0.25), inset 0 0 40px rgba(0,229,255,0.04); }
+    .card.c-cours::before,.card.c-cours::after { border-color: var(--cyan); }
+    .card.c-exo:hover    { border-color: var(--yellow);  box-shadow: 0 0 24px rgba(255,214,0,0.25),  inset 0 0 40px rgba(255,214,0,0.04); }
+    .card.c-exo::before,.card.c-exo::after     { border-color: var(--yellow); }
+    .card.c-tp:hover     { border-color: var(--orange);  box-shadow: 0 0 24px rgba(255,107,0,0.3),   inset 0 0 40px rgba(255,107,0,0.05); }
+    .card.c-tp::before,.card.c-tp::after       { border-color: var(--orange); }
+    .card.c-pptx:hover   { border-color: #5b9cff; box-shadow: 0 0 24px rgba(91,156,255,0.3); }
+    .card.c-pptx::before,.card.c-pptx::after   { border-color: #5b9cff; }
+    .card:hover { transform: translateY(-5px) scale(1.02); }
+    .card:hover::before,.card:hover::after { width: 28px; height: 28px; }
+    .card .scan {
+      position: absolute; left:0; top:-100%;
+      width:100%; height:2px;
+      background: linear-gradient(90deg, transparent, rgba(0,255,65,0.6), transparent);
+      transition: top 0.4s ease; pointer-events: none;
+    }
+    .card:hover .scan { top: 110%; }
+    /* BADGE */
+    .badge {
+      display: inline-flex; align-items: center; gap:5px;
+      padding: 3px 12px; border:1px solid; border-radius: 3px;
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.1em; font-weight: 700; width: fit-content;
+    }
+    .b-cours { color: var(--cyan);   border-color: var(--cyan);   background: rgba(0,229,255,0.07);  text-shadow: 0 0 8px var(--cyan); }
+    .b-exo   { color: var(--yellow);  border-color: var(--yellow);  background: rgba(255,214,0,0.07);  text-shadow: 0 0 8px var(--yellow); }
+    .b-tp    { color: var(--orange);  border-color: var(--orange);  background: rgba(255,107,0,0.08);  text-shadow: 0 0 8px var(--orange); }
+    .b-pptx  { color: #5b9cff; border-color: #5b9cff; background: rgba(91,156,255,0.07); text-shadow: 0 0 8px #5b9cff; }
+    .card-title {
+      font-family: var(--font-hud); font-size: 0.95rem; font-weight: 700;
+      color: #e0ffe8; line-height: 1.35; letter-spacing: 0.04em;
+    }
+    .card-meta {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      color: rgba(0,255,65,0.5); letter-spacing: 0.06em;
+    }
+    .card-desc {
+      font-size: 0.88rem; color: rgba(200,255,210,0.6);
+      line-height: 1.6; flex: 1; font-weight: 600;
+    }
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 4px; padding-top: 12px; border-top: 1px solid rgba(0,255,65,0.1);
+    }
+    .btn-open {
+      font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em;
+      padding: 7px 18px; border: 1px solid; border-radius: 4px;
+      cursor: pointer; background: transparent; text-transform: uppercase;
+      transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+    }
+    .c-cours .btn-open { color: var(--cyan);   border-color: var(--cyan); }
+    .c-cours .btn-open:hover { background: rgba(0,229,255,0.12); box-shadow: 0 0 14px rgba(0,229,255,0.4); }
+    .c-exo   .btn-open { color: var(--yellow);  border-color: var(--yellow); }
+    .c-exo   .btn-open:hover { background: rgba(255,214,0,0.1);  box-shadow: 0 0 14px rgba(255,214,0,0.4); }
+    .c-tp    .btn-open { color: var(--orange);  border-color: var(--orange); }
+    .c-tp    .btn-open:hover { background: rgba(255,107,0,0.1);  box-shadow: 0 0 14px rgba(255,107,0,0.4); }
+    .c-pptx  .btn-open { color: #5b9cff; border-color: #5b9cff; }
+    .c-pptx  .btn-open:hover { background: rgba(91,156,255,0.1); box-shadow: 0 0 14px rgba(91,156,255,0.4); }
+    .card-file-icon { font-size: 1.5rem; opacity: 0.6; }
+    footer {
+      text-align: center; padding: 32px 0 10px;
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: rgba(0,255,65,0.3); letter-spacing: 0.1em;
+    }
+    .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .fade-up.show { opacity: 1; transform: none; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,255,65,0.35); border-radius: 3px; }
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .wrapper { padding: 0 14px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="wrapper">
+
+  <header>
+    <div class="boot-line">> INITIALIZING CIEL_CYBER_SYSTEM... ACCESS GRANTED [LEVEL 5]</div>
+    <span class="header-shield">🛡️</span>
+    <h1>Cybersécurité</h1>
+    <div class="header-sub">BAC PRO CIEL – Ressources Pédagogiques</div>
+    <div class="access-badge"><span class="dot"></span> SYSTÈME EN LIGNE · TOUS FICHIERS DISPONIBLES</div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- COURS -->
+  <div class="section-header s-cours fade-up">
+    <div class="s-icon">📡</div>
+    <span class="s-label">Cours Théoriques</span>
+    <span class="s-count">[ 2 FICHIERS ]</span>
+  </div>
+  <div class="cards-grid">
+    <a class="card c-cours fade-up" href="cours/COURS_CIEL_COMPLET.pdf" target="_blank">
+      <div class="scan"></div>
+      <span class="badge b-cours">▶ COURS</span>
+      <div class="card-title">Cours CIEL Complet</div>
+      <div class="card-meta">> FORMAT: PDF · ACCÈS: LIBRE</div>
+      <div class="card-desc">Cours intégral de cybersécurité filière CIEL. Protocoles, sécurité réseau, notions fondamentales et architecture système.</div>
+      <div class="card-footer">
+        <button class="btn-open" onclick="event.preventDefault();window.open('cours/COURS_CIEL_COMPLET.pdf','_blank')">[ OUVRIR ]</button>
+        <span class="card-file-icon">📄</span>
+      </div>
+    </a>
+    <a class="card c-pptx fade-up" href="cours/COURS_CIEL_Presentation.pptx" target="_blank">
+      <div class="scan"></div>
+      <span class="badge b-pptx">▶ PRÉSENTATION</span>
+      <div class="card-title">Présentation CIEL</div>
+      <div class="card-meta">> FORMAT: PPTX · ACCÈS: LIBRE</div>
+      <div class="card-desc">Diaporama PowerPoint du cours CIEL. Slides synthétiques pour révisions, exposés et apprentissage visuel.</div>
+      <div class="card-footer">
+        <button class="btn-open" onclick="event.preventDefault();window.open('cours/COURS_CIEL_Presentation.pptx','_blank')">[ OUVRIR ]</button>
+        <span class="card-file-icon">📊</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- EXERCICES -->
+  <div class="section-header s-exo fade-up">
+    <div class="s-icon">⚡</div>
+    <span class="s-label">Exercices</span>
+    <span class="s-count">[ 2 FICHIERS ]</span>
+  </div>
+  <div class="cards-grid">
+    <a class="card c-exo fade-up" href="cours/Exercices_Cybersecurite_CIA.pdf" target="_blank">
+      <div class="scan"></div>
+      <span class="badge b-exo">▶ EXERCICE</span>
+      <div class="card-title">Exercices Cybersécurité – CIA</div>
+      <div class="card-meta">> FORMAT: PDF · MODULE: CIA TRIAD</div>
+      <div class="card-desc">Exercices pratiques sur la triade CIA : Confidentialité, Intégrité, Disponibilité. Mise en application des concepts de sécurité.</div>
+      <div class="card-footer">
+        <button class="btn-open" onclick="event.preventDefault();window.open('cours/Exercices_Cybersecurite_CIA.pdf','_blank')">[ OUVRIR ]</button>
+        <span class="card-file-icon">🔐</span>
+      </div>
+    </a>
+    <a class="card c-exo fade-up" href="cours/Exercices_Memoires_Arduino.pdf" target="_blank">
+      <div class="scan"></div>
+      <span class="badge b-exo">▶ EXERCICE</span>
+      <div class="card-title">Exercices Mémoires Arduino</div>
+      <div class="card-meta">> FORMAT: PDF · MODULE: ARDUINO</div>
+      <div class="card-desc">Exercices sur les mémoires embarquées Arduino : Flash, SRAM, EEPROM. Lecture, écriture et gestion des données.</div>
+      <div class="card-footer">
+        <button class="btn-open" onclick="event.preventDefault();window.open('cours/Exercices_Memoires_Arduino.pdf','_blank')">[ OUVRIR ]</button>
+        <span class="card-file-icon">🤖</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- TP -->
+  <div class="section-header s-tp fade-up">
+    <div class="s-icon">🔬</div>
+    <span class="s-label">Travaux Pratiques</span>
+    <span class="s-count">[ 2 FICHIERS ]</span>
+  </div>
+  <div class="cards-grid">
+    <a class="card c-tp fade-up" href="TP/TP_20h_BAC_PRO_CIEL_Final.pdf" target="_blank">
+      <div class="scan"></div>
+      <span class="badge b-tp">▶ TP</span>
+      <div class="card-title">TP 20h – BAC PRO CIEL Final</div>
+      <div class="card-meta">> FORMAT: PDF · DURÉE: 20H</div>
+      <div class="card-desc">Travaux pratiques de 20h pour la préparation au BAC PRO CIEL. Sujet final complet avec consignes et grille d'évaluation.</div>
+      <div class="card-footer">
+        <button class="btn-open" onclick="event.preventDefault();window.open('TP/TP_20h_BAC_PRO_CIEL_Final.pdf','_blank')">[ OUVRIR ]</button>
+        <span class="card-file-icon">🎓</span>
+      </div>
+    </a>
+    <a class="card c-tp fade-up" href="TP/TP_Code_XOR_Arduino_v3(1).pdf" target="_blank">
+      <div class="scan"></div>
+      <span class="badge b-tp">▶ TP</span>
+      <div class="card-title">TP Code XOR Arduino</div>
+      <div class="card-meta">> FORMAT: PDF · MODULE: CRYPTO XOR</div>
+      <div class="card-desc">TP chiffrement XOR avec Arduino. Implémentation d'un algorithme de cryptographie symétrique sur microcontrôleur.</div>
+      <div class="card-footer">
+        <button class="btn-open" onclick="event.preventDefault();window.open('TP/TP_Code_XOR_Arduino_v3(1).pdf','_blank')">[ OUVRIR ]</button>
+        <span class="card-file-icon">🔑</span>
+      </div>
+    </a>
+  </div>
+
+  <footer>> END OF FILE · SYSTÈME CIEL v2.0 · TOUS DROITS RÉSERVÉS</footer>
+</div>
+
+<script>
+/* MATRIX RAIN */
+(function(){
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let W, H, cols, drops;
+  const chars = '01アイウエオカキクケコサシスセソタチツテトABCDEF{}[]<>/\\|@#$%^&*';
+  function init() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cols = Math.floor(W / 18);
+    drops = Array.from({length: cols}, () => Math.random() * -50);
+  }
+  function draw() {
+    ctx.fillStyle = 'rgba(3,12,6,0.05)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.font = '14px Share Tech Mono';
+    drops.forEach((y, i) => {
+      const ch = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillStyle = Math.random() > 0.95 ? '#ffffff' : '#00ff41';
+      ctx.fillText(ch, i * 18, y * 18);
+      if (y * 18 > H && Math.random() > 0.975) drops[i] = 0;
+      drops[i] += 0.5;
+    });
+  }
+  init();
+  window.addEventListener('resize', init);
+  setInterval(draw, 50);
+})();
+
+/* FADE IN */
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, idx) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('show'), idx * 90);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+/* GLITCH TITLE */
+const title = document.querySelector('h1');
+const original = title.textContent;
+const glyphs = {'E':'3','A':'4','I':'1','O':'0','S':'5','T':'7','B':'8'};
+let glitching = false;
+title.addEventListener('mouseenter', () => {
+  if (glitching) return;
+  glitching = true;
+  let count = 0;
+  const iv = setInterval(() => {
+    title.textContent = original.split('').map(c => Math.random() > 0.65 ? (glyphs[c] || c) : c).join('');
+    if (++count > 8) { clearInterval(iv); title.textContent = original; glitching = false; }
+  }, 55);
+});
+</script>
+</body>
+</html>
