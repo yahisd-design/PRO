@@ -762,236 +762,171 @@ function saveAll(){
   setTimeout(()=>{ btn.classList.remove('save-flash'); btn.innerHTML='💾 Sauvegarder'; },1500);
 }
 
-// ── EXPORT WORD ───────────────────────────────────────────────────────────────
-async function exportWord(){
+// ── EXPORT WORD (HTML natif → .doc ouvert par Word) ───────────────────────────
+function exportWord(){
   const btn = document.getElementById('export-btn');
   btn.textContent = '⏳ Génération…'; btn.disabled = true;
 
-  // Load docx from CDN
-  if(!window.docx){
-    await new Promise((res,rej)=>{
-      const s=document.createElement('script');
-      s.src='https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js';
-      s.onload=res; s.onerror=rej; document.head.appendChild(s);
-    });
-  }
+  try {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
 
-  const {
-    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-    AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign,
-    PageOrientation, Header, Footer
-  } = window.docx;
+    // Couleurs & styles intégrés dans le HTML
+    const LEVEL_STYLE = {
+      I: 'background:#FFF2CC;color:#7F6000;font-weight:bold;',
+      A: 'background:#FCE4D6;color:#833C00;font-weight:bold;',
+      M: 'background:#E2EFDA;color:#375623;font-weight:bold;',
+      E: 'background:#EDE7F6;color:#4A148C;font-weight:bold;',
+    };
+    const LEVEL_LABEL = {I:'I – Initiation',A:'A – Approfond.',M:'M – Maîtrise',E:'E – Évaluation'};
+    const TYPE_LABEL = {cours:'📘 Cours',tp:'🔧 TP/TD',eval:'📝 Éval.',site:'🌐 Site',notice:'📄 Notice',projet:'🚀 Projet'};
+    const CLASS_NAMES = {mtne:'Seconde MTNE',ciel1:'1CIEL1',ciel2:'1CIEL2'};
+    const CLASS_COLORS = {mtne:'#ff7b54',ciel1:'#3fb950',ciel2:'#a371f7'};
 
-  // Couleurs
-  const COLORS = {
-    navy:"1B3A6B", blue:"2E5FA3", lightBlue:"D6E4F0",
-    orange:"E8610A", lightOrange:"FDE9D9",
-    green:"1E7145", lightGreen:"D9EFE3",
-    purple:"5C2D91", lightPurple:"EDE7F6",
-    gray:"555555", lightGray:"F5F5F5", white:"FFFFFF",
-    pfmp:"D35400", lightPfmp:"FAD7A0",
-    I_fill:"FFF2CC", A_fill:"FCE4D6", M_fill:"E2EFDA", E_fill:"EDE7F6",
-  };
+    let html = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+<meta charset='UTF-8'>
+<style>
+  body { font-family: Calibri, Arial, sans-serif; font-size: 10pt; }
+  h1 { font-size: 18pt; color: #1B3A6B; text-align: center; border-bottom: 2px solid #1B3A6B; padding-bottom: 6px; }
+  h2 { font-size: 14pt; color: #1B3A6B; margin-top: 24px; margin-bottom: 4px; border-bottom: 1px solid #2E5FA3; padding-bottom: 4px; }
+  .subtitle { text-align:center; color:#E8610A; font-size:11pt; margin-bottom:16px; }
+  .stats { font-size:9pt; color:#555; margin-bottom:8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 16px; }
+  th { background: #1B3A6B; color: white; padding: 6px 8px; text-align: center; font-size: 9pt; border: 1px solid #30363d; }
+  td { padding: 5px 8px; border: 1px solid #CCCCCC; vertical-align: top; }
+  .period-row td { background: #2E5FA3; color: white; font-weight: bold; font-size: 10pt; padding: 6px 10px; }
+  .pfmp-row td { background: #FAD7A0; color: #784212; font-weight: bold; font-size: 10pt; text-align: center; padding: 8px; }
+  .done-cell { background: #D9EFE3; }
+  .pending-cell { background: #FFFFFF; }
+  .comp-list { margin: 0; padding-left: 14px; }
+  .comp-list li { color: #2E5FA3; font-weight: bold; font-size: 9pt; }
+  .res-list { margin: 0; padding: 0; list-style: none; }
+  .res-list li { margin-bottom: 3px; font-size: 8.5pt; }
+  .res-type { font-weight: bold; }
+  .notes-cell { font-style: italic; color: #555; font-size: 8.5pt; }
+  .level-cell { text-align: center; font-size: 8.5pt; }
+</style>
+</head><body>
+<h1>PROGRESSION PÉDAGOGIQUE — CIEL</h1>
+<p class="subtitle">Yahia Isddiken &nbsp;|&nbsp; Année 2024-2025 &nbsp;|&nbsp; Exporté le ${dateStr}</p>
+`;
 
-  const brd = (c="AAAAAA",sz=4)=>({style:BorderStyle.SINGLE,size:sz,color:c});
-  const borders = {top:brd(),bottom:brd(),left:brd(),right:brd()};
-  const boldBrd = {top:brd(COLORS.navy,8),bottom:brd(COLORS.navy,8),left:brd(COLORS.navy,8),right:brd(COLORS.navy,8)};
+    for(const key of ['mtne','ciel1','ciel2']){
+      const prog = PROGRAMS[key];
+      const mods = getAllMods(key);
+      const total = mods.length;
+      const done  = mods.filter(m=>getMS(m.id).done).length;
+      const pct   = total ? Math.round(done/total*100) : 0;
 
-  // A4 paysage : contenu = 16838-1440 = 15398
-  const TW = 15398;
-  // Colonnes : Période/Module | Objectif | Compétences | Ressources | Évaluation | Niveaux CC
-  const COLS = [2600, 2800, 1400, 3800, 2000, 2798];
+      // CC best levels summary
+      const best = {};
+      for(const mod of mods){
+        const ms = getMS(mod.id);
+        const merged = Object.assign({},mod.cc,ms.cc||{});
+        for(const[k,v] of Object.entries(merged)){
+          if(!v) continue;
+          const o={'I':1,'A':2,'M':3,'E':4};
+          if(!best[k]||o[v]>o[best[k]]) best[k]=v;
+        }
+      }
+      const ccSummary = prog.ccList.map(cc=>`<b>${cc.code}</b>: ${best[cc.code]||'—'}`).join(' &nbsp;|&nbsp; ');
 
-  function mkCell(children, {fill=COLORS.white, w=COLS[0], colSpan, vAlign=VerticalAlign.CENTER, brs=borders}={}){
-    return new TableCell({
-      borders: brs, shading:{fill,type:ShadingType.CLEAR},
-      margins:{top:60,bottom:60,left:100,right:100},
-      verticalAlign:vAlign, columnSpan:colSpan,
-      width:{size:w,type:WidthType.DXA},
-      children: Array.isArray(children)?children:[children]
-    });
-  }
+      html += `
+<h2 style="color:${CLASS_COLORS[key]}">⚡ ${CLASS_NAMES[key]}</h2>
+<p class="stats">
+  Avancement : <b>${done}/${total}</b> modules terminés (<b>${pct}%</b>)
+  &nbsp;&nbsp;|&nbsp;&nbsp; ${ccSummary}
+</p>
+<table>
+  <tr>
+    <th style="width:18%">Module / Durée</th>
+    <th style="width:18%">Objectif Pédagogique</th>
+    <th style="width:8%">Compétences</th>
+    <th style="width:26%">Ressources & Fichiers</th>
+    <th style="width:14%">Évaluation</th>
+    <th style="width:8%">Niveaux CC</th>
+    <th style="width:8%">Notes</th>
+  </tr>`;
 
-  function p(texts, align=AlignmentType.LEFT, spacing={before:20,after:20}){
-    const runs = Array.isArray(texts)
-      ? texts.map(t=> new TextRun({text:String(t.text||t),font:"Calibri",size:t.size||18,bold:t.bold,color:t.color||"000000",italic:t.italic}))
-      : [new TextRun({text:String(texts),font:"Calibri",size:18})];
-    return new Paragraph({alignment:align,spacing,children:runs});
-  }
+      for(const period of prog.periods){
+        if(period.pfmp){
+          html += `<tr class="pfmp-row"><td colspan="7">🏢 ${period.pfmp}</td></tr>`;
+          continue;
+        }
+        html += `<tr class="period-row"><td colspan="7">📅 ${period.label}</td></tr>`;
+        for(const mod of period.modules){
+          const ms = getMS(mod.id);
+          const ccData = Object.assign({},mod.cc,ms.cc||{});
+          const isDone = ms.done;
+          const cellClass = isDone ? 'done-cell' : 'pending-cell';
+          const doneLabel = isDone ? '<span style="color:#375623;font-weight:bold">✓ Terminé</span>' : '<span style="color:#833C00">En cours…</span>';
 
-  function levelBadge(v){
-    const map={I:{f:COLORS.I_fill,c:"7F6000",l:"I – Initiation"},A:{f:COLORS.A_fill,c:"833C00",l:"A – Approfond."},M:{f:COLORS.M_fill,c:"375623",l:"M – Maîtrise"},E:{f:COLORS.E_fill,c:"4A148C",l:"E – Évaluation"}};
-    return map[v]||null;
-  }
+          // Compétences
+          const compHtml = `<ul class="comp-list">${mod.comp.map(c=>`<li>${c}</li>`).join('')}</ul>`;
 
-  function headerRow(labels, widths){
-    return new TableRow({tableHeader:true, children: labels.map((l,i)=>
-      mkCell(p([{text:l,bold:true,color:COLORS.white,size:19}],AlignmentType.CENTER),
-        {fill:COLORS.navy,w:widths[i],brs:boldBrd})
-    )});
-  }
+          // Ressources
+          const resHtml = `<ul class="res-list">${mod.ressources.map(r=>`
+            <li><span class="res-type">${TYPE_LABEL[r.type]||r.type} :</span> ${r.name}${r.file&&r.file!='(à ajouter)'?`<br><small style="color:#888">${r.file}</small>`:''}</li>`).join('')}</ul>`;
 
-  function periodRow(label, fill=COLORS.navy){
-    return new TableRow({children:[
-      mkCell(p([{text:"  📅  "+label,bold:true,color:COLORS.white,size:21}],AlignmentType.LEFT),
-        {fill,w:TW,colSpan:6,brs:boldBrd})
-    ]});
-  }
+          // Niveaux CC
+          const levelsHtml = prog.ccList.map(cc=>{
+            const v = ccData[cc.code];
+            if(!v) return `<div style="font-size:8pt;color:#888">${cc.code}: —</div>`;
+            return `<div class="level-cell" style="${LEVEL_STYLE[v]||''}padding:2px 4px;border-radius:3px;margin:1px 0;font-size:8pt">${cc.code}: ${LEVEL_LABEL[v]||v}</div>`;
+          }).join('');
 
-  function pfmpRow(label){
-    return new TableRow({children:[
-      mkCell(p([{text:"  🏢  "+label,bold:true,color:COLORS.pfmp,size:21}],AlignmentType.CENTER),
-        {fill:COLORS.lightPfmp,w:TW,colSpan:6,brs:boldBrd})
-    ]});
-  }
+          // Notes
+          const notesHtml = ms.notes ? `<span class="notes-cell">${ms.notes}</span>` : '<span style="color:#ccc;font-size:8pt">—</span>';
 
-  function modRow(mod, ccList){
-    const ms = getMS(mod.id);
-    const ccData = Object.assign({},mod.cc,ms.cc||{});
-    const doneLabel = ms.done ? "✓ Terminé" : "En cours";
-    const doneFill  = ms.done ? COLORS.lightGreen : COLORS.white;
-
-    // Col 1 : période + titre + durée
-    const col1 = mkCell([
-      p([{text: mod.title, bold:true, color:COLORS.navy, size:19}], AlignmentType.LEFT, {before:20,after:4}),
-      p([{text: mod.duree, italic:true, color:COLORS.gray, size:15}], AlignmentType.LEFT, {before:0,after:8}),
-      p([{text: doneLabel, bold:true, color: ms.done?"375623":"833C00", size:15}], AlignmentType.LEFT, {before:0,after:20}),
-    ], {fill:doneFill, w:COLS[0], vAlign:VerticalAlign.TOP});
-
-    // Col 2 : objectif
-    const col2 = mkCell([
-      p([{text:"Objectif :",bold:true,color:COLORS.navy,size:16}],AlignmentType.LEFT,{before:10,after:4}),
-      p([{text:mod.objectif,size:16}],AlignmentType.LEFT,{before:0,after:10}),
-    ], {fill:COLORS.white, w:COLS[1], vAlign:VerticalAlign.TOP});
-
-    // Col 3 : compétences visées
-    const compParas = mod.comp.map(c=> p([{text:"• "+c,bold:true,color:COLORS.blue,size:16}],AlignmentType.LEFT,{before:4,after:4}));
-    const col3 = mkCell(compParas, {fill:COLORS.lightBlue, w:COLS[2], vAlign:VerticalAlign.TOP});
-
-    // Col 4 : ressources (nom + fichier)
-    const resParas = mod.ressources.map(r=>{
-      const typeLabels={cours:"📘 Cours",tp:"🔧 TP/TD",eval:"📝 Éval.",site:"🌐 Site",notice:"📄 Notice",projet:"🚀 Projet"};
-      return p([
-        {text:(typeLabels[r.type]||r.type)+" : ",bold:true,color:COLORS.orange,size:15},
-        {text:r.name+(r.file&&r.file!="(à ajouter)"?" ["+r.file+"]":""),size:15},
-      ],AlignmentType.LEFT,{before:3,after:3});
-    });
-    const col4 = mkCell(resParas, {fill:COLORS.white, w:COLS[3], vAlign:VerticalAlign.TOP});
-
-    // Col 5 : évaluation
-    const col5 = mkCell([
-      p([{text:"Évaluation :",bold:true,color:COLORS.navy,size:16}],AlignmentType.LEFT,{before:10,after:4}),
-      p([{text:mod.eval,size:15}],AlignmentType.LEFT,{before:0,after:10}),
-      ms.notes ? p([{text:"📝 "+ms.notes,italic:true,color:COLORS.gray,size:14}],AlignmentType.LEFT,{before:4,after:4}) : null,
-    ].filter(Boolean), {fill:COLORS.lightGray, w:COLS[4], vAlign:VerticalAlign.TOP});
-
-    // Col 6 : niveaux CC
-    const ccParas = ccList.map(cc=>{
-      const v = ccData[cc.code];
-      const badge = v ? levelBadge(v) : null;
-      return p([
-        {text:cc.code+" : ",bold:true,color:COLORS.navy,size:15},
-        badge
-          ? {text:badge.l,bold:true,color:badge.c,size:15}
-          : {text:"—",italic:true,color:COLORS.gray,size:15},
-      ],AlignmentType.LEFT,{before:3,after:3});
-    });
-    const ccFill = Object.values(ccData).includes("M") ? COLORS.lightGreen
-                 : Object.values(ccData).includes("A") ? COLORS.lightOrange
-                 : COLORS.white;
-    const col6 = mkCell(ccParas, {fill:ccFill, w:COLS[5], vAlign:VerticalAlign.TOP});
-
-    return new TableRow({children:[col1,col2,col3,col4,col5,col6]});
-  }
-
-  // ── BUILD ONE TABLE PER CLASS ──────────────────────────────────────────────
-  function buildClassTable(key){
-    const prog = PROGRAMS[key];
-    const rows = [
-      headerRow(["Module / Durée","Objectif Pédagogique","Compétences","Ressources & Fichiers","Évaluation","Niveaux CC"],COLS)
-    ];
-    for(const period of prog.periods){
-      if(period.pfmp){ rows.push(pfmpRow(period.pfmp)); continue; }
-      rows.push(periodRow(period.label));
-      for(const mod of period.modules) rows.push(modRow(mod, prog.ccList));
+          html += `
+  <tr>
+    <td class="${cellClass}">
+      <b style="color:#1B3A6B">${mod.title}</b><br>
+      <span style="color:#888;font-size:8.5pt">${mod.duree}</span><br>
+      ${doneLabel}
+    </td>
+    <td>${mod.objectif}</td>
+    <td>${compHtml}</td>
+    <td>${resHtml}</td>
+    <td><b style="color:#1B3A6B;font-size:8.5pt">Évaluation :</b><br>${mod.eval}</td>
+    <td>${levelsHtml}</td>
+    <td class="notes-cell">${notesHtml}</td>
+  </tr>`;
+        }
+      }
+      html += `</table>`;
     }
-    return new Table({width:{size:TW,type:WidthType.DXA},columnWidths:COLS,rows});
+
+    html += `</body></html>`;
+
+    // Téléchargement
+    const blob = new Blob(['\ufeff'+html], {
+      type: 'application/msword'
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Progression_Pedagogique_CIEL_${now.toISOString().slice(0,10)}.doc`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✅ Téléchargé !';
+    setTimeout(()=>{ btn.innerHTML='📄 Exporter Word'; btn.disabled=false; }, 2000);
+
+  } catch(err) {
+    console.error(err);
+    btn.textContent = '❌ Erreur !';
+    btn.disabled = false;
+    setTimeout(()=>{ btn.innerHTML='📄 Exporter Word'; }, 2000);
   }
-
-  // ── STATS SECTION ──────────────────────────────────────────────────────────
-  function statsParas(key){
-    const prog=PROGRAMS[key], mods=getAllMods(key), total=mods.length;
-    const done=mods.filter(m=>getMS(m.id).done).length;
-    const pct=total?Math.round(done/total*100):0;
-    const best={};
-    for(const mod of mods){ const ms=getMS(mod.id); const merged=Object.assign({},mod.cc,ms.cc||{});
-      for(const[k,v] of Object.entries(merged)){ if(!v) continue; const o={'I':1,'A':2,'M':3,'E':4};
-        if(!best[k]||o[v]>o[best[k]]) best[k]=v; } }
-    const ccSummary = prog.ccList.map(cc=>`${cc.code}: ${best[cc.code]||'—'}`).join(' | ');
-    return [
-      new Paragraph({spacing:{before:0,after:60},children:[
-        new TextRun({text:`Avancement : ${done}/${total} modules terminés (${pct}%)`,font:"Calibri",size:20,bold:true,color:COLORS.navy}),
-      ]}),
-      new Paragraph({spacing:{before:0,after:120},children:[
-        new TextRun({text:`Niveaux CC : ${ccSummary}`,font:"Calibri",size:17,color:COLORS.gray,italic:true}),
-      ]}),
-    ];
-  }
-
-  // ── ASSEMBLE DOCUMENT ──────────────────────────────────────────────────────
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
-
-  const children = [
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:80},
-      children:[new TextRun({text:"PROGRESSION PÉDAGOGIQUE — CIEL",font:"Calibri",size:40,bold:true,color:COLORS.navy,allCaps:true})]}),
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},
-      children:[new TextRun({text:"Yahia Isddiken  |  Année 2024-2025  |  Exporté le "+dateStr,font:"Calibri",size:20,color:COLORS.orange})]}),
-    new Paragraph({spacing:{before:0,after:20},
-      border:{bottom:{style:BorderStyle.SINGLE,size:6,color:COLORS.navy,space:1}},children:[]}),
-  ];
-
-  for(const [key,label] of [["mtne","Seconde MTNE"],["ciel1","1CIEL1"],["ciel2","1CIEL2"]]){
-    children.push(
-      new Paragraph({spacing:{before:280,after:80},
-        border:{bottom:{style:BorderStyle.SINGLE,size:4,color:COLORS.blue,space:1}},
-        children:[new TextRun({text:"⚡  "+label,font:"Calibri",size:28,bold:true,color:COLORS.navy})]}),
-      ...statsParas(key),
-      buildClassTable(key),
-      new Paragraph({spacing:{before:40,after:40},children:[]}),
-    );
-  }
-
-  const doc = new Document({
-    sections:[{
-      properties:{page:{
-        size:{width:11906,height:16838,orientation:PageOrientation.LANDSCAPE},
-        margin:{top:720,right:720,bottom:720,left:720}
-      }},
-      headers:{default:new Header({children:[
-        new Paragraph({alignment:AlignmentType.RIGHT,
-          border:{bottom:{style:BorderStyle.SINGLE,size:4,color:COLORS.navy,space:1}},
-          children:[new TextRun({text:"Progression Pédagogique CIEL — Yahia Isddiken — 2024-2025",font:"Calibri",size:16,color:COLORS.gray,italic:true})]})
-      ]})},
-      footers:{default:new Footer({children:[
-        new Paragraph({alignment:AlignmentType.CENTER,
-          border:{top:{style:BorderStyle.SINGLE,size:4,color:COLORS.navy,space:1}},
-          children:[new TextRun({text:"Document généré automatiquement — "+dateStr,font:"Calibri",size:16,color:COLORS.gray,italic:true})]})
-      ]})},
-      children
-    }]
-  });
-
-  const buffer = await Packer.toBuffer(doc);
-  const blob = new Blob([buffer],{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url;
-  a.download = `Progression_Pedagogique_CIEL_${now.toISOString().slice(0,10)}.docx`;
-  a.click(); URL.revokeObjectURL(url);
-
-  btn.textContent='✅ Téléchargé !'; btn.disabled=false;
-  setTimeout(()=>{ btn.innerHTML='📄 Exporter Word'; },2000);
 }
+
 
 loadState();
 buildTimeline('mtne');
