@@ -5,22 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> CIEL  Cybersécurité, Informatique et Réseaux, Électronique  </title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #00d4ff;
-            --secondary: #00f2fe;
-            --accent: #ff6b9d;
+            --primary: #00d4ff; --secondary: #00f2fe; --accent: #ff6b9d;
             --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
         }
-
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #4cd1ca 50%, #fba693 100%);
@@ -30,331 +22,145 @@
             position: relative;
             overflow-x: hidden;
         }
-
         body::before {
             content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 1;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none; z-index: 1;
         }
-
         header {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255,255,255,0.15);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            padding: 50px 50px;
-            text-align: center;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 10;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 50px; text-align: center;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            position: relative; z-index: 10;
         }
-
-        header h1 {
-            color: #ffffff;
-            font-size: 3.5em;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
-
-        header .subtitle {
-            color: #ffd700;
-            font-size: 1.6em;
-            font-weight: 600;
-            margin-bottom: 12px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        header p {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 1.2em;
-            font-weight: 300;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 0 30px;
-            position: relative;
-            z-index: 10;
-        }
-
+        header h1 { color:#fff; font-size:3.5em; margin-bottom:15px; text-shadow:0 2px 20px rgba(0,0,0,0.2); font-weight:700; letter-spacing:-1px; }
+        header .subtitle { color:#ffd700; font-size:1.6em; font-weight:600; margin-bottom:12px; text-shadow:0 2px 10px rgba(0,0,0,0.2); }
+        header p { color:rgba(255,255,255,0.95); font-size:1.2em; font-weight:300; }
+        .container { max-width:1200px; margin:60px auto; padding:0 30px; position:relative; z-index:10; }
         .level-nav {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255,255,255,0.12);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 50px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius:25px; padding:50px 40px;
+            box-shadow:0 8px 32px rgba(0,0,0,0.15);
+            border:1px solid rgba(255,255,255,0.2);
         }
-
-        .level-nav h2 {
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 50px;
-            font-size: 2.5em;
-            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-        }
-
-        .level-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 35px;
-        }
-
+        .level-nav h2 { color:#fff; text-align:center; margin-bottom:50px; font-size:2.5em; text-shadow:0 2px 15px rgba(0,0,0,0.2); font-weight:600; }
+        .level-buttons { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:35px; }
         .level-card {
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255,255,255,0.18);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            color: white;
-            padding: 45px 35px;
-            border-radius: 20px;
-            text-align: center;
-            cursor: pointer;
+            color: white; padding: 45px 35px; border-radius: 20px;
+            text-align: center; cursor: pointer;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            text-decoration: none;
-            display: block;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border: 2px solid rgba(255,255,255,0.25);
+            text-decoration: none; display: block;
+            position: relative; overflow: hidden;
         }
-
         .level-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+            background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 100%);
+            opacity:0; transition:opacity 0.4s ease;
         }
-
-        .level-card:hover::before {
-            opacity: 1;
-        }
-
-        .level-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-            border-color: rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .level-card.seconde { 
-            border-left: 5px solid #f5576c;
-        }
-        
-        .level-card.ciel1 { 
-            border-left: 5px solid #00f2fe;
-        }
-        
-        .level-card.ciel2 { 
-            border-left: 5px solid #38f9d7;
-        }
-
-        .level-card .icon {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            display: block;
-            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
-        }
-
-        .level-card h3 {
-            font-size: 2.4em;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            font-weight: 700;
-        }
-
-        .level-card p {
-            font-size: 1.3em;
-            opacity: 0.95;
-            margin-bottom: 20px;
-            font-weight: 400;
-        }
-
+        .level-card:hover::before { opacity:1; }
+        .level-card:hover { transform:translateY(-15px) scale(1.02); box-shadow:0 20px 50px rgba(0,0,0,0.25); border-color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.25); }
+        .level-card.seconde  { border-left:5px solid #f5576c; }
+        .level-card.ciel1    { border-left:5px solid #00f2fe; }
+        .level-card.ciel2    { border-left:5px solid #38f9d7; }
+        .level-card.progression { border-left:5px solid #ffd700; }
+        .level-card .icon { width:120px; height:120px; margin:0 auto 20px; display:block; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.2)); }
+        .level-card h3 { font-size:2.4em; margin-bottom:15px; text-shadow:0 2px 10px rgba(0,0,0,0.2); font-weight:700; }
+        .level-card p { font-size:1.3em; opacity:0.95; margin-bottom:20px; font-weight:400; }
         .level-card .info {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 1.05em;
-            margin-top: 25px;
-            line-height: 1.6;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-weight: 300;
+            background:rgba(255,255,255,0.15); backdrop-filter:blur(10px);
+            padding:18px; border-radius:12px; font-size:1.05em; margin-top:25px;
+            line-height:1.6; border:1px solid rgba(255,255,255,0.2); font-weight:300;
         }
-
+        /* Badge "Accès protégé" sur la carte progression */
+        .lock-badge {
+            position:absolute; top:0; right:0;
+            background:rgba(255,215,0,0.9); color:#7a4e00;
+            font-size:0.72rem; font-weight:800;
+            padding:5px 14px; border-radius:0 18px 0 12px;
+            letter-spacing:0.04em; z-index:2;
+            box-shadow:0 2px 8px rgba(0,0,0,0.15);
+        }
         footer {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: white;
-            text-align: center;
-            padding: 50px 30px;
-            margin-top: 80px;
-            border-top: 2px solid rgba(255, 255, 255, 0.15);
-            position: relative;
-            z-index: 10;
+            background:rgba(255,255,255,0.08); backdrop-filter:blur(20px);
+            -webkit-backdrop-filter:blur(20px); color:white;
+            text-align:center; padding:50px 30px; margin-top:80px;
+            border-top:2px solid rgba(255,255,255,0.15); position:relative; z-index:10;
         }
+        footer h3 { color:#ffd700; margin-bottom:20px; font-size:1.8em; text-shadow:0 2px 10px rgba(0,0,0,0.2); }
+        footer p  { margin:10px 0; line-height:1.8; color:rgba(255,255,255,0.95); }
+        footer a  { color:#ffd700; text-decoration:none; transition:color 0.3s ease; }
+        footer a:hover { color:#ffed4e; text-decoration:underline; }
 
-        footer h3 { 
-            color: #ffd700; 
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        footer p { 
-            margin: 10px 0; 
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.95);
-        }
-
-        footer a {
-            color: #ffd700;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover {
-            color: #ffed4e;
-            text-decoration: underline;
-        }
-
+        /* POPUP LOGIN */
         #login {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            animation: fadeIn 0.3s ease;
+            position:fixed; inset:0;
+            background:rgba(0,0,0,0.5); backdrop-filter:blur(10px);
+            -webkit-backdrop-filter:blur(10px);
+            display:none; align-items:center; justify-content:center;
+            z-index:9999; animation:fadeIn 0.3s ease;
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
+        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
         .login-box {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 40px;
-            width: 350px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background:rgba(255,255,255,0.95); backdrop-filter:blur(20px);
+            padding:40px; width:350px; border-radius:20px; text-align:center;
+            box-shadow:0 10px 50px rgba(0,0,0,0.3);
+            border:2px solid rgba(255,255,255,0.3);
+            animation:slideUp 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
         }
-
-        @keyframes slideUp {
-            from { 
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to { 
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .login-box h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-
+        @keyframes slideUp { from{transform:translateY(50px);opacity:0} to{transform:translateY(0);opacity:1} }
+        .login-box h2 { color:#667eea; margin-bottom:25px; font-size:1.8em; }
         .login-box input {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 12px;
-            font-size: 1.1em;
-            background: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
+            width:100%; padding:15px; margin-bottom:20px;
+            border:2px solid rgba(102,126,234,0.3); border-radius:12px;
+            font-size:1.1em; background:rgba(255,255,255,0.9); transition:all 0.3s ease;
         }
-
-        .login-box input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
+        .login-box input:focus { outline:none; border-color:#667eea; box-shadow:0 0 0 3px rgba(102,126,234,0.1); }
         .login-box button {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            width:100%; padding:15px;
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+            color:white; border:none; cursor:pointer; border-radius:12px;
+            font-size:1.1em; font-weight:600; transition:all 0.3s ease;
+            box-shadow:0 4px 15px rgba(102,126,234,0.3);
+        }
+        .login-box button:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(102,126,234,0.4); }
+        .login-box button:active { transform:translateY(0); }
+
+        @media(max-width:768px){
+            header h1 { font-size:2.2em; }
+            header .subtitle { font-size:1.3em; }
+            .level-buttons { grid-template-columns:1fr; }
+            .level-nav { padding:30px 20px; }
+            .container { margin:30px auto; }
+            .login-box { width:90%; max-width:350px; }
+            .level-card .icon { width:100px; height:100px; }
         }
 
-        .login-box button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .login-box button:active {
-            transform: translateY(0);
-        }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 2.2em; }
-            header .subtitle { font-size: 1.3em; }
-            .level-buttons { grid-template-columns: 1fr; }
-            .level-nav { padding: 30px 20px; }
-            .container { margin: 30px auto; }
-            .login-box { width: 90%; max-width: 350px; }
-            .level-card .icon { width: 100px; height: 100px; }
-        }
-
-        /* Animations subtiles */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .level-card .icon {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .level-card:nth-child(1) .icon { animation-delay: 0s; }
-        .level-card:nth-child(2) .icon { animation-delay: 0.5s; }
-        .level-card:nth-child(3) .icon { animation-delay: 1s; }
-        .level-card:nth-child(4) .icon { animation-delay: 1.5s; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        .level-card .icon { animation:float 3s ease-in-out infinite; }
+        .level-card:nth-child(1) .icon { animation-delay:0s; }
+        .level-card:nth-child(2) .icon { animation-delay:0.5s; }
+        .level-card:nth-child(3) .icon { animation-delay:1s; }
+        .level-card:nth-child(4) .icon { animation-delay:1.5s; }
+        .level-card:nth-child(5) .icon { animation-delay:2s; }
+        .level-card:nth-child(6) .icon { animation-delay:2.5s; }
     </style>
 </head>
 <body>
     <header>
-        <h1> Cybersécurité, Informatique et Réseaux, Électronique </h1>
-        <p class="subtitle">Électronique & Systèmes Embarqués</p>
+        <h1>Cybersécurité, Informatique et Réseaux, Électronique</h1>
+        <p class="subtitle">Électronique &amp; Systèmes Embarqués</p>
         <p>Ressources pédagogiques pour les classes de Seconde et 1ère CIEL</p>
     </header>
 
@@ -362,201 +168,158 @@
         <div class="level-nav">
             <h2>Choisissez votre niveau</h2>
             <div class="level-buttons">
+
+                <!-- SECONDE -->
                 <a href="#" class="level-card seconde" data-level="seconde">
                     <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Ampoule avec filament -->
-                        <defs>
-                            <linearGradient id="bulbGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#FFE66D;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Base de l'ampoule -->
+                        <defs><linearGradient id="bulbGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#FFE66D"/><stop offset="100%" style="stop-color:#FFA500"/></linearGradient></defs>
                         <rect x="75" y="140" width="50" height="30" fill="#C0C0C0" stroke="#888" stroke-width="2"/>
                         <rect x="70" y="170" width="60" height="15" rx="3" fill="#A0A0A0" stroke="#666" stroke-width="2"/>
-                        <!-- Corps de l'ampoule -->
                         <ellipse cx="100" cy="100" rx="45" ry="60" fill="url(#bulbGrad)" opacity="0.9" stroke="#FFA500" stroke-width="3"/>
-                        <!-- Reflet -->
                         <ellipse cx="85" cy="80" rx="15" ry="25" fill="#FFF" opacity="0.4"/>
-                        <!-- Filament -->
                         <path d="M 90 100 Q 95 90, 100 100 T 110 100" fill="none" stroke="#FF6B00" stroke-width="3"/>
-                        <!-- Éclairs d'énergie -->
                         <path d="M 120 70 L 110 85 L 120 85 L 110 100" fill="#FFE66D" stroke="#FFA500" stroke-width="2"/>
                         <path d="M 80 70 L 90 85 L 80 85 L 90 100" fill="#FFE66D" stroke="#FFA500" stroke-width="2"/>
                     </svg>
                     <h3>Seconde</h3>
-                    <p>Électricité & Habilitation</p>
+                    <p>Électricité &amp; Habilitation</p>
                     <div class="info">Électricité fondamentale + Habilitation B1V + NFC 15-100 + Bases électronique</div>
                 </a>
 
+                <!-- 1CIEL1 -->
                 <a href="#" class="level-card ciel1" data-level="ciel1">
                     <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Réseau et logique -->
-                        <defs>
-                            <linearGradient id="networkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#0080FF;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Serveur central -->
+                        <defs><linearGradient id="networkGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00D4FF"/><stop offset="100%" style="stop-color:#0080FF"/></linearGradient></defs>
                         <rect x="75" y="60" width="50" height="60" rx="5" fill="url(#networkGrad)" stroke="#0066CC" stroke-width="3"/>
                         <rect x="80" y="70" width="40" height="8" rx="2" fill="#004080" opacity="0.6"/>
                         <rect x="80" y="85" width="40" height="8" rx="2" fill="#004080" opacity="0.6"/>
                         <rect x="80" y="100" width="40" height="8" rx="2" fill="#004080" opacity="0.6"/>
-                        <!-- Nœuds du réseau -->
                         <circle cx="40" cy="50" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
                         <circle cx="160" cy="50" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
                         <circle cx="40" cy="150" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
                         <circle cx="160" cy="150" r="15" fill="#00F2FE" stroke="#0080FF" stroke-width="2"/>
-                        <!-- Connexions réseau -->
                         <line x1="55" y1="50" x2="75" y2="70" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
                         <line x1="145" y1="50" x2="125" y2="70" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
                         <line x1="55" y1="150" x2="75" y2="110" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
                         <line x1="145" y1="150" x2="125" y2="110" stroke="#00D4FF" stroke-width="3" opacity="0.7"/>
-                        <!-- Signaux de données -->
-                        <circle cx="100" cy="40" r="5" fill="#FFE66D">
-                            <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/>
-                        </circle>
+                        <circle cx="100" cy="40" r="5" fill="#FFE66D"><animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite"/></circle>
                     </svg>
                     <h3>1CIEL1</h3>
-                    <p>Logique & Réseaux</p>
+                    <p>Logique &amp; Réseaux</p>
                     <div class="info">Logique combinatoire + VLAN + Active Directory + Habilitation BR + Projet</div>
                 </a>
 
+                <!-- 1CIEL2 -->
                 <a href="#" class="level-card ciel2" data-level="ciel2">
                     <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Arduino et microcontrôleur -->
-                        <defs>
-                            <linearGradient id="arduinoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#43E97B;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#38F9D7;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Circuit board -->
+                        <defs><linearGradient id="arduinoGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#43E97B"/><stop offset="100%" style="stop-color:#38F9D7"/></linearGradient></defs>
                         <rect x="40" y="60" width="120" height="90" rx="8" fill="url(#arduinoGrad)" stroke="#00A86B" stroke-width="3"/>
-                        <!-- Puce principale -->
                         <rect x="70" y="85" width="60" height="40" rx="3" fill="#1a1a1a" stroke="#333" stroke-width="2"/>
                         <circle cx="85" cy="105" r="3" fill="#FFD700"/>
                         <circle cx="115" cy="105" r="3" fill="#FFD700"/>
-                        <!-- Pins -->
-                        <rect x="35" y="75" width="8" height="4" fill="#FFD700"/>
-                        <rect x="35" y="85" width="8" height="4" fill="#FFD700"/>
-                        <rect x="35" y="95" width="8" height="4" fill="#FFD700"/>
-                        <rect x="35" y="105" width="8" height="4" fill="#FFD700"/>
-                        <rect x="35" y="115" width="8" height="4" fill="#FFD700"/>
-                        <rect x="35" y="125" width="8" height="4" fill="#FFD700"/>
-                        <rect x="157" y="75" width="8" height="4" fill="#FFD700"/>
-                        <rect x="157" y="85" width="8" height="4" fill="#FFD700"/>
-                        <rect x="157" y="95" width="8" height="4" fill="#FFD700"/>
-                        <rect x="157" y="105" width="8" height="4" fill="#FFD700"/>
-                        <rect x="157" y="115" width="8" height="4" fill="#FFD700"/>
-                        <rect x="157" y="125" width="8" height="4" fill="#FFD700"/>
-                        <!-- Composants -->
+                        <rect x="35" y="75" width="8" height="4" fill="#FFD700"/><rect x="35" y="85" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="95" width="8" height="4" fill="#FFD700"/><rect x="35" y="105" width="8" height="4" fill="#FFD700"/>
+                        <rect x="35" y="115" width="8" height="4" fill="#FFD700"/><rect x="35" y="125" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="75" width="8" height="4" fill="#FFD700"/><rect x="157" y="85" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="95" width="8" height="4" fill="#FFD700"/><rect x="157" y="105" width="8" height="4" fill="#FFD700"/>
+                        <rect x="157" y="115" width="8" height="4" fill="#FFD700"/><rect x="157" y="125" width="8" height="4" fill="#FFD700"/>
                         <circle cx="55" cy="100" r="8" fill="#FF6B9D" stroke="#CC0066" stroke-width="2"/>
                         <circle cx="145" cy="100" r="8" fill="#4FACFE" stroke="#0066CC" stroke-width="2"/>
-                        <!-- Pistes du circuit -->
                         <line x1="50" y1="70" x2="150" y2="70" stroke="#00A86B" stroke-width="2" opacity="0.6"/>
                         <line x1="50" y1="140" x2="150" y2="140" stroke="#00A86B" stroke-width="2" opacity="0.6"/>
-                        <!-- LED clignotante -->
-                        <circle cx="100" cy="45" r="6" fill="#FFE66D">
-                            <animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/>
-                        </circle>
+                        <circle cx="100" cy="45" r="6" fill="#FFE66D"><animate attributeName="opacity" values="1;0.2;1" dur="1s" repeatCount="indefinite"/></circle>
                     </svg>
                     <h3>1CIEL2</h3>
                     <p>Électronique Appliquée</p>
                     <div class="info">Composants + Arduino + KiCad + Filtrage + Projet professionnel</div>
                 </a>
 
-
-               
-                
-                <a href="16021-annexes-bac-pro-ciel230213.pdf" class="level-card ciel2">
+                <!-- RÉFÉRENTIEL BAC CIEL -->
+                <a href="16021-annexes-bac-pro-ciel230213.pdf" class="level-card ciel2" target="_blank">
                     <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Document/Référentiel -->
-                        <defs>
-                            <linearGradient id="docGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Document -->
-                        <rect x="50" y="30" width="100" height="140" rx="5" fill="url(#docGrad)" stroke="#6D28D9" stroke-width="3"/>
-                        <!-- Coin plié -->
+                        <defs><linearGradient id="docGrad1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#A78BFA"/><stop offset="100%" style="stop-color:#7C3AED"/></linearGradient></defs>
+                        <rect x="50" y="30" width="100" height="140" rx="5" fill="url(#docGrad1)" stroke="#6D28D9" stroke-width="3"/>
                         <path d="M 150 30 L 150 50 L 130 50 Z" fill="#9333EA" stroke="#6D28D9" stroke-width="2"/>
-                        <!-- Lignes de texte -->
                         <line x1="65" y1="60" x2="135" y2="60" stroke="#FFF" stroke-width="3" opacity="0.8"/>
                         <line x1="65" y1="75" x2="125" y2="75" stroke="#FFF" stroke-width="3" opacity="0.8"/>
                         <line x1="65" y1="90" x2="135" y2="90" stroke="#FFF" stroke-width="3" opacity="0.8"/>
                         <line x1="65" y1="105" x2="115" y2="105" stroke="#FFF" stroke-width="3" opacity="0.8"/>
-                        <!-- Badge diplôme -->
                         <circle cx="100" cy="135" r="20" fill="#FFD700" stroke="#FFA500" stroke-width="3"/>
-                        <path d="M 100 125 L 105 135 L 100 132 L 95 135 Z" fill="#FF6B00"/>
-                        <text x="100" y="142" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8B4513" text-anchor="middle">BAC</text>
+                        <text x="100" y="142" font-family="Arial" font-size="16" font-weight="bold" fill="#8B4513" text-anchor="middle">BAC</text>
                     </svg>
                     <h3>Référentiel</h3>
                     <p>bac-pro-ciel</p>
                     <div class="info">BAC CIEL professionnel</div>
                 </a>
-                  <a href=" Vademecum_seconde_famille-metiers2.pdf" class="level-card ciel2">
+
+                <!-- RÉFÉRENTIEL MTNE -->
+                <a href="Vademecum_seconde_famille-metiers2.pdf" class="level-card ciel2" target="_blank">
                     <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Document/Référentiel -->
-                        <defs>
-                            <linearGradient id="docGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Document -->
-                        <rect x="50" y="30" width="100" height="140" rx="5" fill="url(#docGrad)" stroke="#6D28D9" stroke-width="3"/>
-                        <!-- Coin plié -->
+                        <defs><linearGradient id="docGrad2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#A78BFA"/><stop offset="100%" style="stop-color:#7C3AED"/></linearGradient></defs>
+                        <rect x="50" y="30" width="100" height="140" rx="5" fill="url(#docGrad2)" stroke="#6D28D9" stroke-width="3"/>
                         <path d="M 150 30 L 150 50 L 130 50 Z" fill="#9333EA" stroke="#6D28D9" stroke-width="2"/>
-                        <!-- Lignes de texte -->
                         <line x1="65" y1="60" x2="135" y2="60" stroke="#FFF" stroke-width="3" opacity="0.8"/>
                         <line x1="65" y1="75" x2="125" y2="75" stroke="#FFF" stroke-width="3" opacity="0.8"/>
                         <line x1="65" y1="90" x2="135" y2="90" stroke="#FFF" stroke-width="3" opacity="0.8"/>
                         <line x1="65" y1="105" x2="115" y2="105" stroke="#FFF" stroke-width="3" opacity="0.8"/>
-                        <!-- Badge diplôme -->
                         <circle cx="100" cy="135" r="20" fill="#FFD700" stroke="#FFA500" stroke-width="3"/>
-                        <path d="M 100 125 L 105 135 L 100 132 L 95 135 Z" fill="#FF6B00"/>
-                        <text x="100" y="142" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8B4513" text-anchor="middle">MTNE</text>
+                        <text x="100" y="142" font-family="Arial" font-size="14" font-weight="bold" fill="#8B4513" text-anchor="middle">MTNE</text>
                     </svg>
                     <h3>Référentiel</h3>
                     <p>MTNE</p>
                     <div class="info">Seconde MTNE</div>
                 </a>
-  
 
-    <a href="./progression/progression.html" target="_blank" rel="noopener noreferrer" class="course-card" style="
-        border: 2px solid #e74c3c;
-        background: linear-gradient(135deg, rgb(60 120 255 / 67%), #00ffc2f5);
-        position: relative;
-        overflow: hidden;
-    ">
-      <span style="
-          position: absolute;
-          top: 0; right: 0;
-          background: #e74c3c;
-          color: white;
-          font-size: 0.68rem;
-          font-weight: bold;
-          padding: 4px 12px;
-          border-radius: 0 0 0 10px;
-          letter-spacing: 0.03em;
-      ">🔒 ACCÈS PROTÉGÉ</span>
-      <span class="course-type" style="background: #e74c3c;"> </span>
-      <h3>📂 Espace  Progression — Yahia ISDDIKEN</h3>
-      <p class="duration"> Ma Progression </p>
-      <p class="description">
-        Ma Progression
-      </p>
-      <span class="badge" style="background: #e74c3c; color: white;">🔐 Accéder à l'espace</span>
-    </a>
-         
+                <!-- ══ CARTE PROGRESSION ══ -->
+                <a href="./Progression/progression.html" target="_blank" rel="noopener noreferrer" class="level-card progression">
+                    <span class="lock-badge">🔐 ACCÈS PROTÉGÉ</span>
+                    <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="progGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1"/>
+                                <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1"/>
+                            </linearGradient>
+                        </defs>
+                        <!-- Tableau de bord fond -->
+                        <rect x="28" y="42" width="144" height="108" rx="12" fill="url(#progGrad)" stroke="#CC7700" stroke-width="3"/>
+                        <!-- Barre 1 — MTNE -->
+                        <text x="36" y="72" font-family="Arial" font-size="9" fill="#fff" font-weight="bold">MTNE</text>
+                        <rect x="36" y="76" width="110" height="10" rx="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="36" y="76" width="82" height="10" rx="5" fill="#fff" opacity="0.92"/>
+                        <text x="154" y="85" font-family="Arial" font-size="9" fill="#fff" font-weight="bold" text-anchor="end">75%</text>
+                        <!-- Barre 2 — 1CIEL1 -->
+                        <text x="36" y="103" font-family="Arial" font-size="9" fill="#fff" font-weight="bold">1CIEL1</text>
+                        <rect x="36" y="107" width="110" height="10" rx="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="36" y="107" width="55" height="10" rx="5" fill="#fff" opacity="0.92"/>
+                        <text x="154" y="116" font-family="Arial" font-size="9" fill="#fff" font-weight="bold" text-anchor="end">50%</text>
+                        <!-- Barre 3 — 1CIEL2 -->
+                        <text x="36" y="134" font-family="Arial" font-size="9" fill="#fff" font-weight="bold">1CIEL2</text>
+                        <rect x="36" y="138" width="110" height="10" rx="5" fill="rgba(0,0,0,0.2)"/>
+                        <rect x="36" y="138" width="95" height="10" rx="5" fill="#fff" opacity="0.92"/>
+                        <text x="154" y="147" font-family="Arial" font-size="9" fill="#fff" font-weight="bold" text-anchor="end">86%</text>
+                        <!-- Cadenas -->
+                        <rect x="84" y="158" width="32" height="26" rx="6" fill="#fff" opacity="0.92" stroke="#CC7700" stroke-width="2"/>
+                        <path d="M89 158 Q100 146 111 158" fill="none" stroke="#FF8C00" stroke-width="5"/>
+                        <circle cx="100" cy="169" r="5" fill="#FF8C00"/>
+                        <rect x="97.5" y="169" width="5" height="7" rx="2" fill="#FF8C00"/>
+                        <!-- Étoile animée -->
+                        <circle cx="100" cy="24" r="7" fill="#FFD700">
+                            <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
+                        </circle>
+                    </svg>
+                    <h3>Progression</h3>
+                    <p>Espace Pédagogique</p>
+                    <div class="info">
+                        Suivi annuel · Seconde MTNE · 1CIEL1 · 1CIEL2<br>
+                        Compétences CC · Ressources · Export Word
+                    </div>
+                </a>
+
             </div>
         </div>
     </div>
 
-    <!-- POPUP -->
+    <!-- POPUP LOGIN classes -->
     <div id="login">
         <div class="login-box">
             <h2 id="login-title"></h2>
@@ -567,45 +330,30 @@
 
     <footer>
         <h3>🎓 Plateforme Pédagogique CIEL</h3>
-        <p><strong>Cours d'Électronique & Systèmes Embarqués</strong></p>
+        <p><strong>Cours d'Électronique &amp; Systèmes Embarqués</strong></p>
         <p>Ressources pour Seconde, 1CIEL1 et 1CIEL2</p>
-        <p style="margin-top: 20px;">
-            Cours élaborés par <strong>Yahia Isddiken</strong><br>
-        </p>
-        <p style="margin-top: 20px; font-size: 0.9em;">
+        <p style="margin-top:20px;">Cours élaborés par <strong>Yahia Isddiken</strong></p>
+        <p style="margin-top:20px;font-size:0.9em;">
             📧 Contact : <a href="mailto:Yahia.Isddiken@ac-montpellier.fr">Yahia.Isddiken@ac-montpellier.fr</a>
         </p>
-        <p style="margin-top: 10px; font-size: 0.85em; opacity: 0.8;">
+        <p style="margin-top:10px;font-size:0.85em;opacity:0.8;">
             Année scolaire 2025-2026 | Dernière mise à jour : Janvier 2026
         </p>
     </footer>
 
     <script>
-        // Configuration optimisée
         const CONFIG = {
-            titles: {
-                seconde: '🔐 Accès Seconde',
-                ciel1: '🔐 Accès 1CIEL1',
-                ciel2: '🔐 Accès 1CIEL2'
-            },
-            routes: {
-                seconde: '/seconde/',
-                ciel1: '/1ciel1/',
-                ciel2: '/1ciel2/'
-            }
+            titles:  { seconde:'🔐 Accès Seconde', ciel1:'🔐 Accès 1CIEL1', ciel2:'🔐 Accès 1CIEL2' },
+            routes:  { seconde:'/seconde/', ciel1:'/1ciel1/', ciel2:'/1ciel2/' }
         };
-
         let currentLevel = '';
-        
-        // Cache des éléments DOM
         const elements = {
-            login: document.getElementById('login'),
-            loginTitle: document.getElementById('login-title'),
-            pwd: document.getElementById('pwd'),
+            login:       document.getElementById('login'),
+            loginTitle:  document.getElementById('login-title'),
+            pwd:         document.getElementById('pwd'),
             validateBtn: document.getElementById('validate-btn')
         };
 
-        // Fonction d'ouverture du login optimisée
         function openLogin(event, level) {
             event.preventDefault();
             currentLevel = level;
@@ -615,26 +363,17 @@
             elements.pwd.focus();
         }
 
-        // Fonction de vérification optimisée avec gestion d'erreur
         async function check() {
             const password = elements.pwd.value.trim();
-            
-            if (!password) {
-                alert('⚠️ Veuillez entrer un mot de passe');
-                return;
-            }
-
-            // Désactiver le bouton pendant la requête
+            if (!password) { alert('⚠️ Veuillez entrer un mot de passe'); return; }
             elements.validateBtn.disabled = true;
             elements.validateBtn.textContent = 'Vérification...';
-
             try {
                 const res = await fetch(`/check-${currentLevel}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ password })
                 });
-
                 if (res.ok) {
                     localStorage.setItem(`access-${currentLevel}`, 'ok');
                     window.location.href = CONFIG.routes[currentLevel];
@@ -645,48 +384,29 @@
                 }
             } catch (error) {
                 alert('⚠️ Erreur de connexion. Veuillez réessayer.');
-                console.error('Erreur:', error);
             } finally {
                 elements.validateBtn.disabled = false;
                 elements.validateBtn.textContent = 'Valider';
             }
         }
 
-        // Event listeners optimisés avec délégation d'événements
         document.addEventListener('DOMContentLoaded', () => {
-            // Délégation d'événements pour les cartes de niveau
             document.querySelectorAll('.level-card[data-level]').forEach(card => {
                 card.addEventListener('click', (e) => {
                     const level = e.currentTarget.dataset.level;
                     if (level) openLogin(e, level);
                 });
             });
-
-            // Fermer le popup en cliquant en dehors
             elements.login.addEventListener('click', (e) => {
-                if (e.target === elements.login) {
-                    elements.login.style.display = 'none';
-                    elements.pwd.value = '';
-                }
+                if (e.target === elements.login) { elements.login.style.display = 'none'; elements.pwd.value = ''; }
             });
-
-            // Validation avec la touche Entrée
-            elements.pwd.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    check();
-                }
-            });
-
-            // Bouton de validation
+            elements.pwd.addEventListener('keypress', (e) => { if (e.key==='Enter') { e.preventDefault(); check(); } });
             elements.validateBtn.addEventListener('click', check);
         });
 
-        // Échappement avec la touche ESC
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && elements.login.style.display === 'flex') {
-                elements.login.style.display = 'none';
-                elements.pwd.value = '';
+            if (e.key==='Escape' && elements.login.style.display==='flex') {
+                elements.login.style.display = 'none'; elements.pwd.value = '';
             }
         });
     </script>
