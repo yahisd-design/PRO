@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progression Pédagogique — CIEL</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;
+  --mtne-h:#ff7b54;--mtne:rgba(255,123,84,.13);--mtne-bd:rgba(255,123,84,.4);
+  --c1h:#3fb950;  --c1:rgba(63,185,80,.13);    --c1-bd:rgba(63,185,80,.4);
+  --c2h:#a371f7;  --c2:rgba(163,113,247,.13);  --c2-bd:rgba(163,113,247,.4);
+  --I:#ffd60a;--I-bg:rgba(255,214,10,.12);
+  --A:#ff9f43;--A-bg:rgba(255,159,67,.12);
+  --M:#0be881;--M-bg:rgba(11,232,129,.12);
+  --E:#a371f7;--E-bg:rgba(163,113,247,.12);
+  --cours-c:#58a6ff;--cours-bg:rgba(88,166,255,.08);
+  --tp-c:#ff9f43;  --tp-bg:rgba(255,159,67,.08);
+  --eval-c:#a371f7;--eval-bg:rgba(163,113,247,.08);
+  --site-c:#0be881;--site-bg:rgba(11,232,129,.08);
+  --notice-c:#ffd60a;--notice-bg:rgba(255,214,10,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;opacity:.25;pointer-events:none;z-index:0}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.9);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--border);
+  padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:9px;
+  background:linear-gradient(135deg,#ff7b54,#a371f7);
+  display:grid;place-items:center;font-size:17px;font-weight:700;color:#fff;flex-shrink:0}
+.header-title{font-size:15px;font-weight:600}
+.header-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.class-tabs{display:flex;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:4px}
+.tab-btn{padding:6px 16px;border-radius:6px;border:none;cursor:pointer;
+  font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;
+  background:transparent;color:var(--muted);transition:all .2s}
+.tab-btn.active-mtne{background:var(--mtne);color:var(--mtne-h)}
+.tab-btn.active-ciel1{background:var(--c1);color:var(--c1h)}
+.tab-btn.active-ciel2{background:var(--c2);color:var(--c2h)}
+.tab-btn:hover:not([class*="active"]){background:var(--surface);color:var(--text)}
+
+/* ── MAIN ── */
+main{position:relative;z-index:1;padding:28px;max-width:1400px;margin:0 auto}
+.class-view{display:none;animation:fadeIn .3s ease}
+.class-view.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.class-hero{border-radius:14px;border:1px solid;padding:24px 28px;margin-bottom:24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.mtne .class-hero{background:var(--mtne);border-color:var(--mtne-bd)}
+.ciel1 .class-hero{background:var(--c1);border-color:var(--c1-bd)}
+.ciel2 .class-hero{background:var(--c2);border-color:var(--c2-bd)}
+.hero-title{font-size:24px;font-weight:700}
+.mtne .hero-title{color:var(--mtne-h)} .ciel1 .hero-title{color:var(--c1h)} .ciel2 .hero-title{color:var(--c2h)}
+.hero-meta{font-size:12px;color:var(--muted);margin-top:3px}
+.hero-stats{display:flex;gap:16px;flex-wrap:wrap}
+.stat-chip{background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:8px;padding:7px 14px;text-align:center}
+.stat-chip .val{font-size:20px;font-weight:700;font-family:'DM Mono',monospace}
+.stat-chip .lbl{font-size:10px;color:var(--muted)}
+.mtne .stat-chip .val{color:var(--mtne-h)} .ciel1 .stat-chip .val{color:var(--c1h)} .ciel2 .stat-chip .val{color:var(--c2h)}
+
+/* ── GLOBAL BAR ── */
+.global-bar-wrap{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:18px 22px;margin-bottom:24px}
+.bar-label{font-size:11px;color:var(--muted);margin-bottom:7px;display:flex;justify-content:space-between}
+.bar-track{height:7px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;border-radius:99px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.mtne .bar-fill{background:linear-gradient(90deg,var(--mtne-h),#ffb347)}
+.ciel1 .bar-fill{background:linear-gradient(90deg,var(--c1h),#00d2ff)}
+.ciel2 .bar-fill{background:linear-gradient(90deg,var(--c2h),#f368e0)}
+.cc-bar{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.cc-chip{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  padding:2px 9px;border-radius:99px;border:1px solid;cursor:default}
+.cc-I{background:var(--I-bg);color:var(--I);border-color:rgba(255,214,10,.3)}
+.cc-A{background:var(--A-bg);color:var(--A);border-color:rgba(255,159,67,.3)}
+.cc-M{background:var(--M-bg);color:var(--M);border-color:rgba(11,232,129,.3)}
+.cc-nd{background:rgba(139,148,158,.07);color:var(--muted);border-color:var(--border)}
+
+/* ── TIMELINE ── */
+.timeline{display:flex;flex-direction:column;gap:14px}
+.period-header{display:flex;align-items:center;gap:10px;padding:9px 18px;
+  border-radius:9px;font-size:13px;font-weight:600;border:1px solid}
+.mtne .period-header{background:rgba(255,123,84,.07);border-color:var(--mtne-bd);color:var(--mtne-h)}
+.ciel1 .period-header{background:rgba(63,185,80,.07);border-color:var(--c1-bd);color:var(--c1h)}
+.ciel2 .period-header{background:rgba(163,113,247,.07);border-color:var(--c2-bd);color:var(--c2h)}
+.pfmp-banner{background:rgba(255,159,67,.08);border:1px dashed rgba(255,159,67,.45);
+  border-radius:9px;padding:11px 18px;font-size:13px;font-weight:600;color:#ff9f43;text-align:center}
+
+/* ── MODULE CARD ── */
+.module-card{background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.module-card:hover{border-color:rgba(88,166,255,.35);box-shadow:0 0 0 3px rgba(88,166,255,.05)}
+.module-card.done{opacity:.6}
+.module-card.done .module-title{text-decoration:line-through;color:var(--muted)}
+
+.module-header{display:grid;grid-template-columns:1fr auto;align-items:center;
+  gap:10px;padding:14px 18px;cursor:pointer;user-select:none}
+.module-title{font-size:14px;font-weight:600}
+.module-meta{font-size:11px;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace}
+.module-right{display:flex;align-items:center;gap:8px}
+.ring-wrap{position:relative;width:38px;height:38px}
+.ring svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--surface2);stroke-width:4}
+.ring-fg{fill:none;stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1)}
+.mtne .ring-fg{stroke:var(--mtne-h)} .ciel1 .ring-fg{stroke:var(--c1h)} .ciel2 .ring-fg{stroke:var(--c2h)}
+.ring-pct{position:absolute;font-size:8px;font-weight:700;font-family:'DM Mono',monospace;
+  top:50%;left:50%;transform:translate(-50%,-50%)}
+.chevron{font-size:11px;color:var(--muted);transition:transform .2s}
+.module-card.open .chevron{transform:rotate(180deg)}
+
+/* ── MODULE BODY ── */
+.module-body{display:none;padding:0 18px 18px}
+.module-card.open .module-body{display:block}
+
+/* TABS inside card */
+.body-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:14px}
+.body-tab{padding:7px 16px;font-size:12px;font-weight:600;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Space Grotesk',sans-serif}
+.body-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.body-panel{display:none} .body-panel.active{display:block}
+
+/* ── RESSOURCES ── */
+.resources-list{display:flex;flex-direction:column;gap:6px}
+.res-item{display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:8px;border:1px solid;text-decoration:none;transition:all .2s}
+.res-item:hover{filter:brightness(1.1);transform:translateX(2px)}
+.res-item.cours{background:var(--cours-bg);border-color:rgba(88,166,255,.25);color:var(--cours-c)}
+.res-item.tp{background:var(--tp-bg);border-color:rgba(255,159,67,.25);color:var(--tp-c)}
+.res-item.eval{background:var(--eval-bg);border-color:rgba(163,113,247,.25);color:var(--eval-c)}
+.res-item.site{background:var(--site-bg);border-color:rgba(11,232,129,.25);color:var(--site-c)}
+.res-item.notice{background:var(--notice-bg);border-color:rgba(255,214,10,.25);color:var(--notice-c)}
+.res-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:99px;
+  text-transform:uppercase;letter-spacing:.05em;flex-shrink:0;border:1px solid currentColor}
+.res-name{font-size:12px;font-weight:500;flex:1}
+.res-file{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;flex-shrink:0}
+.res-arrow{font-size:11px;opacity:.5}
+
+/* ── CC GRID ── */
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.cc-item{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 10px}
+.cc-code{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:4px}
+.cc-name{font-size:11px;font-weight:500;color:var(--text);margin-bottom:7px}
+.level-select{width:100%;padding:4px 7px;border-radius:5px;background:var(--surface);
+  border:1px solid var(--border);color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:11px;cursor:pointer;outline:none;transition:border-color .2s}
+.level-select:focus{border-color:var(--accent)}
+.level-select option{background:var(--surface2)}
+
+/* ── NOTES ── */
+.notes-zone label{font-size:11px;color:var(--muted);display:block;margin-bottom:5px}
+.notes-input{width:100%;padding:8px 11px;border-radius:7px;background:var(--surface2);
+  border:1px solid var(--border);color:var(--text);font-family:'Space Grotesk',sans-serif;
+  font-size:12px;resize:vertical;min-height:56px;outline:none;transition:border-color .2s}
+.notes-input:focus{border-color:var(--accent)}
+.notes-input::placeholder{color:var(--muted)}
+
+/* ── DONE TOGGLE ── */
+.done-toggle{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--border);font-size:12px;cursor:pointer}
+.toggle-sw{width:34px;height:19px;border-radius:99px;background:var(--surface2);
+  border:1px solid var(--border);position:relative;flex-shrink:0;transition:background .2s}
+.toggle-sw::after{content:'';position:absolute;width:13px;height:13px;border-radius:50%;
+  background:var(--muted);top:2px;left:2px;transition:transform .2s,background .2s}
+.done-toggle.checked .toggle-sw{background:rgba(11,232,129,.18);border-color:var(--M)}
+.done-toggle.checked .toggle-sw::after{transform:translateX(15px);background:var(--M)}
+.done-toggle.checked span{color:var(--M)}
+
+/* ── LEGEND ── */
+.legend{position:fixed;bottom:22px;right:22px;z-index:200;
+  background:var(--surface);border:1px solid var(--border);border-radius:11px;
+  padding:12px 14px;font-size:10px;display:flex;flex-direction:column;gap:5px;
+  box-shadow:0 8px 30px rgba(0,0,0,.45)}
+.legend-title{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.legend-item{display:flex;align-items:center;gap:7px}
+.legend-dot{width:7px;height:7px;border-radius:50%}
+
+/* ── SAVE BTN ── */
+.save-btn{position:fixed;bottom:22px;left:22px;z-index:200;
+  background:var(--accent);color:#0d1117;border:none;border-radius:9px;
+  padding:9px 18px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;
+  cursor:pointer;display:flex;align-items:center;gap:7px;
+  box-shadow:0 4px 18px rgba(88,166,255,.28);transition:transform .15s,box-shadow .15s}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(88,166,255,.38)}
+.save-flash{animation:flash .4s ease}
+@keyframes flash{0%,100%{background:var(--accent)}50%{background:#0be881}}
+
+@media(max-width:680px){
+  main{padding:14px} header{padding:10px 14px;flex-wrap:wrap}
+  .class-tabs{order:3;width:100%;justify-content:center}
+  .cc-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="logo">⚡</div>
+    <div>
+      <div class="header-title">Progression Pédagogique</div>
+      <div class="header-sub">CIEL — Yahia Isddiken — 2024-2025</div>
+    </div>
+  </div>
+  <div class="class-tabs">
+    <button class="tab-btn active-mtne" onclick="switchClass('mtne')">Seconde MTNE</button>
+    <button class="tab-btn" onclick="switchClass('ciel1')">1CIEL1</button>
+    <button class="tab-btn" onclick="switchClass('ciel2')">1CIEL2</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ══ SECONDE MTNE ══ -->
+<div id="view-mtne" class="class-view mtne active">
+  <div class="class-hero">
+    <div>
+      <div class="hero-title">Seconde MTNE</div>
+      <div class="hero-meta">Métiers du Numérique et de l'Énergie · Électricité & Habilitation B1V · 2024-2025</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-chip"><div class="val" id="mtne-done">0</div><div class="lbl">modules terminés</div></div>
+      <div class="stat-chip"><div class="val" id="mtne-total">0</div><div class="lbl">total</div></div>
+      <div class="stat-chip"><div class="val" id="mtne-pct">0%</div><div class="lbl">avancement</div></div>
+    </div>
+  </div>
+  <div class="global-bar-wrap">
+    <div class="bar-label"><span>Progression globale</span><span id="mtne-bar-lbl">0%</span></div>
+    <div class="bar-track"><div class="bar-fill" id="mtne-bar" style="width:0%"></div></div>
+    <div class="cc-bar" id="mtne-cc-bar"></div>
+  </div>
+  <div class="timeline" id="timeline-mtne"></div>
+</div>
+
+<!-- ══ 1CIEL1 ══ -->
+<div id="view-ciel1" class="class-view ciel1">
+  <div class="class-hero">
+    <div>
+      <div class="hero-title">1CIEL1</div>
+      <div class="hero-meta">Première CIEL — Groupe 1 · 2024-2025</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-chip"><div class="val" id="ciel1-done">0</div><div class="lbl">modules terminés</div></div>
+      <div class="stat-chip"><div class="val" id="ciel1-total">0</div><div class="lbl">total</div></div>
+      <div class="stat-chip"><div class="val" id="ciel1-pct">0%</div><div class="lbl">avancement</div></div>
+    </div>
+  </div>
+  <div class="global-bar-wrap">
+    <div class="bar-label"><span>Progression globale</span><span id="ciel1-bar-lbl">0%</span></div>
+    <div class="bar-track"><div class="bar-fill" id="ciel1-bar" style="width:0%"></div></div>
+    <div class="cc-bar" id="ciel1-cc-bar"></div>
+  </div>
+  <div class="timeline" id="timeline-ciel1"></div>
+</div>
+
+<!-- ══ 1CIEL2 ══ -->
+<div id="view-ciel2" class="class-view ciel2">
+  <div class="class-hero">
+    <div>
+      <div class="hero-title">1CIEL2</div>
+      <div class="hero-meta">Première CIEL — Groupe 2 · 2024-2025</div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-chip"><div class="val" id="ciel2-done">0</div><div class="lbl">modules terminés</div></div>
+      <div class="stat-chip"><div class="val" id="ciel2-total">0</div><div class="lbl">total</div></div>
+      <div class="stat-chip"><div class="val" id="ciel2-pct">0%</div><div class="lbl">avancement</div></div>
+    </div>
+  </div>
+  <div class="global-bar-wrap">
+    <div class="bar-label"><span>Progression globale</span><span id="ciel2-bar-lbl">0%</span></div>
+    <div class="bar-track"><div class="bar-fill" id="ciel2-bar" style="width:0%"></div></div>
+    <div class="cc-bar" id="ciel2-cc-bar"></div>
+  </div>
+  <div class="timeline" id="timeline-ciel2"></div>
+</div>
+
+</main>
+
+<div class="legend">
+  <div class="legend-title">Niveaux</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--I)"></div> I – Initiation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--A)"></div> A – Approfond.</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--M)"></div> M – Maîtrise</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--E)"></div> E – Évaluation</div>
+  <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border)">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--cours-c)"></div> Cours</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--tp-c)"></div> TP / TD</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--eval-c)"></div> Évaluation</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--site-c)"></div> Site web</div>
+  </div>
+</div>
+
+<button class="save-btn" onclick="saveAll()">💾 Sauvegarder</button>
+
+<script>
+// ── COMPÉTENCES ────────────────────────────────────────────────────────────────
+const CC_LIST = [
+  {code:"CC1",name:"S'informer"},{code:"CC2",name:"Organiser"},
+  {code:"CC3",name:"Analyser"},{code:"CC4",name:"Réaliser"},
+  {code:"CC5",name:"Ops. préalables"},{code:"CC6",name:"Mettre en service"},
+  {code:"CC7",name:"Maintenance"},{code:"CC8",name:"Renseigner docs"},
+  {code:"CC9",name:"Communiquer"},
+];
+
+// ── RESSOURCES : type = cours | tp | eval | site | notice ───────────────────
+// href = chemin relatif depuis ce fichier vers le fichier du site
+const PROGRAMS = {
+
+  mtne: { periods: [
+
+    { label:"📅 Septembre – Octobre : Cours Théoriques", modules:[
+      { id:"mtne-cours-th", title:"📚 Cours Théoriques — Fondamentaux", duree:"4h",
+        cc:{CC1:"I",CC3:"I"},
+        ressources:[
+          {type:"cours", name:"Dossier Électricité – Notions Élémentaires", file:"notions_electricite_COURSmtne.pdf", href:"./cours/notions_electricite_COURSmtne.pdf"},
+          {type:"cours", name:"Installation Électrique", file:"installationelectriqueelevev2.pdf", href:"./cours/installationelectriqueelevev2.pdf"},
+          {type:"cours", name:"Symboles Normalisés", file:"ilide.info-symboles-normalises.pdf", href:"./cours/ilide.info-symboles-normalises-pr_fdb16eb391d72c74adc1e827b2682fc9.pdf"},
+          {type:"cours", name:"Grandeurs et Unités", file:"01C - grandeurs et unites.odt", href:"./cours/01C - grandeurs et unites.odt"},
+          {type:"cours", name:"Schémas & Normes des Installations Électriques", file:"cours2_SCHEMAS...pdf", href:"./cours/cours2_SCHÉMAS ET NORMES DES INSTALLATIONS ÉLECTRIQUES_2MTNE.pdf"},
+        ]
+      },
+    ]},
+
+    { label:"📅 Septembre : TPs – Prérequis & Grandeurs / Unités", modules:[
+      { id:"mtne-prerequis", title:"🧰 Outillage & Prérequis Câblage", duree:"4h",
+        cc:{CC1:"I",CC2:"I",CC6:"I"},
+        ressources:[
+          {type:"tp", name:"TP – Caisse à Outils de l'Électricien", file:"01caisseAoutils.docx", href:"./TP/01caisseAoutils.docx"},
+          {type:"tp", name:"TP 1 – Prérequis Câblage", file:"001TPCABLAGE-prerequis.docx", href:"./TP/001TPCABLAGE-prerequis.docx"},
+        ]
+      },
+      { id:"mtne-grandeurs", title:"⚡ Grandeurs & Unités Électriques", duree:"8h",
+        cc:{CC1:"I",CC3:"I",CC6:"I"},
+        ressources:[
+          {type:"tp", name:"Grandeurs et Unités", file:"01-01grandeursetunites.odt", href:"./TP/01-01grandeursetunites.odt"},
+          {type:"tp", name:"EXO 1 – Unités Électriques", file:"01-02EXOunites.odt", href:"./TP/01-02EXOunites.odt"},
+          {type:"tp", name:"EXO 2 – Unités & Grandeurs", file:"01-03EXO2unitesgrandeur.odt", href:"./TP/01-03EXO2unitesgrandeur.odt"},
+          {type:"tp", name:"EXP 3 – Unités & Grandeurs", file:"01-04EXP3unites_grandeur.odt", href:"./TP/01-04EXP3unites_grandeur.odt"},
+        ]
+      },
+      { id:"mtne-codecouleur", title:"📋 Caractéristiques Techniques & Code Couleur", duree:"4h",
+        cc:{CC1:"A",CC3:"I",CC6:"I"},
+        ressources:[
+          {type:"tp", name:"Caractéristiques Techniques", file:"02-01Caractéristiques techniques.docx", href:"./TP/02-01Caractéristiques techniques.docx"},
+          {type:"tp", name:"Code des Couleurs – Résistances", file:"02-01resistancecodedescouleurs.docx", href:"./TP/02-01resistancecodedescouleurs.docx"},
+        ]
+      },
+    ]},
+
+    { label:"📅 Octobre – Novembre : TPs – Pince Ampèremétrique & Mesures", modules:[
+      { id:"mtne-pince", title:"🔌 Pince Ampèremétrique & Mesures", duree:"6h",
+        cc:{CC1:"A",CC3:"A",CC6:"A"},
+        ressources:[
+          {type:"notice", name:"Notice – Pince Ampèremétrique", file:"02-02noticepinceamperemetrique.pdf", href:"./TP/02-02noticepinceamperemetrique.pdf"},
+          {type:"tp", name:"TP – Étude Pince Ampèremétrique", file:"02-03EtudepinceampèremEtRiqueeleve.docx", href:"./TP/02-03EtudepinceampèremEtRiqueeleve.docx"},
+          {type:"tp", name:"TP – Utilisation Pince Ampèremétrique", file:"02-04UtilisationpinceampEremEtriqueeleve.docx", href:"./TP/02-04UtilisationpinceampEremEtriqueeleve.docx"},
+        ]
+      },
+    ]},
+
+    { label:"📅 Novembre : TPs – Éléments & Installation Électrique", modules:[
+      { id:"mtne-install", title:"🏠 Éléments & Installation Électrique", duree:"9h30",
+        cc:{CC1:"A",CC2:"A",CC3:"A",CC4:"I",CC9:"I"},
+        ressources:[
+          {type:"tp", name:"TP – Les Différents Éléments en Électricité", file:"02LesdifferentselementsenelectriciteEeleve.docx", href:"./TP/02LesdifferentselementsenelectriciteEeleve.docx"},
+          {type:"tp", name:"TP – Installation Électrique", file:"03installationelectriqueeleve.docx", href:"./TP/03installationelectriqueeleve.docx"},
+          {type:"tp", name:"TP – Cahier des Charges", file:"04Cahierdeschargeseleve.docx", href:"./TP/04Cahierdeschargeseleve.docx"},
+          {type:"tp", name:"TP – Montage Électrique sur Maquette", file:"010TPmontageelectriquemaquette.doc", href:"./TP/010TPmontageelectriquemaquette.doc"},
+        ]
+      },
+    ]},
+
+    { label:"📅 Novembre – Décembre : TPs – Prises Électriques", modules:[
+      { id:"mtne-prises", title:"🔌 Prises Électriques (simple, commandée, 2P+T)", duree:"9h",
+        cc:{CC2:"A",CC3:"A",CC4:"A",CC5:"I",CC6:"A",CC8:"I"},
+        ressources:[
+          {type:"tp", name:"TP 2 – Câblage Prise Électrique", file:"004TP2-CablagePrise.docx", href:"./TP/004TP2-CablagePrise.docx"},
+          {type:"tp", name:"TP bis – Montage Prise Électrique", file:"05bisTPmontagepriseelectrique.docx", href:"./TP/05bisTPmontagepriseelectrique.docx"},
+          {type:"tp", name:"TP – La Prise Électrique", file:"05lapriseelectriqueeleve.docx", href:"./TP/05lapriseelectriqueeleve.docx"},
+          {type:"tp", name:"TP – La Prise Commandée", file:"06laprisecommandeeeleve.docx", href:"./TP/06laprisecommandeeeleve.docx"},
+        ]
+      },
+    ]},
+
+    { label:"📅 Novembre – Janvier : TPs – Circuits d'Allumage & Va-et-Vient", modules:[
+      { id:"mtne-allumage", title:"💡 Simple Allumage, Double Allumage & Va-et-Vient", duree:"15h",
+        cc:{CC1:"A",CC2:"A",CC3:"A",CC4:"A",CC5:"A",CC6:"A",CC8:"A"},
+        ressources:[
+          {type:"tp", name:"TP 3 – Câblage Simple Allumage", file:"007TP03-CablageSimpleAllumage.docx", href:"./TP/007TP03-CablageSimpleAllumage.docx"},
+          {type:"tp", name:"TP – Le Simple Allumage", file:"07lesimpleallumageeeleve.docx", href:"./TP/07lesimpleallumageeeleve.docx"},
+          {type:"tp", name:"TP – Le Double Allumage", file:"08ledoubleallumageeleve.docx", href:"./TP/08ledoubleallumageeleve.docx"},
+          {type:"tp", name:"TP 4 – Câblage Va-et-Vient", file:"009TP4-Cablagevasetvient.docx", href:"./TP/009TP4-Cablagevasetvient.docx"},
+          {type:"tp", name:"TP – Le Va-et-Vient", file:"09levaetvienteleve.docx", href:"./TP/09levaetvienteleve.docx"},
+        ]
+      },
+    ]},
+
+    { label:"📅 Janvier – Mars : Devoirs, Évaluations & Habilitation B1V", modules:[
+      { id:"mtne-devoirs", title:"📝 Synthèse Lumière & Devoirs", duree:"5h",
+        cc:{CC1:"A",CC3:"A",CC8:"A"},
+        ressources:[
+          {type:"tp",   name:"TP – Synthèse Lumière",            file:"012synthèselumiereeleve.docx", href:"./TP/012synthèselumiereeleve.docx"},
+          {type:"eval", name:"Devoir – Interrupteurs N°1",        file:"013devoirinterrupteurseleve.docx", href:"./TP/013devoirinterrupteurseleve.docx"},
+          {type:"eval", name:"Devoir – Interrupteurs N°2",        file:"014devoirinterrupteurseleveN2.docx", href:"./TP/014devoirinterrupteurseleveN2.docx"},
+          {type:"eval", name:"Devoir – Installation Électrique",  file:"015devoirinstalLelec.docx", href:"./TP/015devoirinstalLelec.docx"},
+          {type:"eval", name:"Préparation TP – 26 Mars",          file:"TP_Preparation_26mars.docx", href:"./TP/TP_Preparation_26mars.docx"},
+        ]
+      },
+      { id:"mtne-habilitb1v", title:"⚡ Habilitation Électrique B1V", duree:"14h",
+        cc:{CC1:"M",CC2:"M",CC3:"A",CC4:"A",CC6:"M",CC9:"A"},
+        ressources:[
+          {type:"site",   name:"🌐 Plateforme ePrévention (site principal)",       file:"eprevention.fr/login", href:"https://eprevention.fr/login"},
+          {type:"cours",  name:"Formation Habilitation Électrique",                  file:"902habilitationelectriqueinternet.pdf", href:"./TP/902habilitationelectriqueinternet.pdf"},
+          {type:"tp",     name:"TP – Questions Habilitation Électrique",             file:"901habilitationquestionELEV.docx", href:"./TP/901habilitationquestionELEV.docx"},
+          {type:"tp",     name:"TP – Faire une Consignation",                        file:"903faireuneconsignation.docx", href:"./TP/903faireuneconsignation.docx"},
+          {type:"eval",   name:"Évaluation B1V – Chapitres 1 & 2",                  file:"900EVALUATION-B1V-ch1&2.rtf", href:"./TP/900EVALUATION-B1V-ch1%262.rtf"},
+          {type:"eval",   name:"Évaluation Habilitation B1V – N°1",                 file:"902EVALUATION01B1V.doc", href:"./TP/902EVALUATION01B1V.doc"},
+        ]
+      },
+    ]},
+
+    { pfmp:"🏢 PFMP 1 – Stage en entreprise – Février (2-3 semaines)" },
+
+    { label:"📅 Mars – Avril : Norme NFC 15-100 & Validation B1V", modules:[
+      { id:"mtne-nfc", title:"🏗️ NFC 15-100, Consignation & Évaluation B1V Finale", duree:"14h",
+        cc:{CC1:"M",CC2:"M",CC3:"M",CC4:"M",CC5:"M",CC6:"M",CC8:"A",CC9:"A"},
+        ressources:[
+          {type:"site",  name:"🌐 Plateforme ePrévention (site principal)",  file:"eprevention.fr/login", href:"https://eprevention.fr/login"},
+          {type:"tp",    name:"TP – Faire une Consignation",                  file:"903faireuneconsignation.docx", href:"./TP/903faireuneconsignation.docx"},
+          {type:"tp",    name:"TP – Installation Conforme NFC 15-100",        file:"(à venir)", href:"#"},
+          {type:"eval",  name:"QUIZ B1V Finale – Théorique",                  file:"902EVALUATION01B1V.doc", href:"./TP/902EVALUATION01B1V.doc"},
+          {type:"eval",  name:"Évaluation Pratique B1V Finale",               file:"902EVALUATION01B1V.doc", href:"./TP/902EVALUATION01B1V.doc"},
+        ]
+      },
+    ]},
+
+    { pfmp:"🏢 PFMP 2 – Stage en entreprise – Mai (2-3 semaines)" },
+
+    { label:"📅 Mai – Juin : Électronique (ELN)", modules:[
+      { id:"mtne-eln", title:"🔬 Électronique – Lois, Signaux & Logique Binaire", duree:"12h",
+        cc:{CC1:"A",CC3:"M",CC5:"A",CC6:"A",CC8:"A"},
+        ressources:[
+          {type:"cours", name:"Cours de Base en Électronique", file:"01coursBaseEnElnMTNEeleve.docx", href:"./ELN/01coursBaseEnElnMTNEeleve.docx"},
+          {type:"tp",    name:"TP – La Loi des Nœuds", file:"01-laloidesnoeuds.docx", href:"./ELN/01-laloidesnoeuds.docx"},
+          {type:"tp",    name:"TP – La Tension : Généralités", file:"02-latensiongénéralités.docx", href:"./ELN/02-latensiongénéralités.docx"},
+          {type:"tp",    name:"TP – La Tension : Les Lois", file:"02-tensionleslois.docx", href:"./ELN/02-tensionleslois.docx"},
+          {type:"tp",    name:"TP – Puissance & Énergie", file:"03-puissanceeténergie2.docx", href:"./ELN/03-puissanceeténergie2.docx"},
+          {type:"tp",    name:"TD – Le Signal Sinusoïdal", file:"04-TDlesignalsinusoidal.docx", href:"./ELN/04-TDlesignalsinusoidal.docx"},
+          {type:"tp",    name:"TD – Signal Sinusoïdal (Suite)", file:"04-TDlesignalsinusoidalsuite.docx", href:"./ELN/04-TDlesignalsinusoidalsuite.docx"},
+          {type:"cours", name:"Logique & Numération Binaire", file:"05-Logiqueetbinaireeleves.pdf", href:"./ELN/05-Logiqueetbinaireeleves.pdf"},
+        ]
+      },
+    ]},
+  ]},
+
+  // ── 1CIEL1 ────────────────────────────────────────────────────────────────
+  ciel1: { periods: [
+    { label:"📅 Septembre – Octobre : Remise à Niveau & Électricité", modules:[
+      { id:"c1-remise", title:"⚡ Remise à Niveau Électricité / Électronique", duree:"6h",
+        cc:{CC1:"I",CC3:"I",CC6:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Remise à niveau électricité (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Mesures et appareils de mesure (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c1-schema", title:"📐 Lecture & Production de Schémas Électriques", duree:"8h",
+        cc:{CC1:"A",CC3:"A",CC8:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Schémas développés & architecturaux (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Lecture et tracé de schémas (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Octobre – Novembre : Systèmes Programmables", modules:[
+      { id:"c1-arduino1", title:"🤖 Arduino Niveau 1 – Initiation", duree:"8h",
+        cc:{CC4:"I",CC8:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Arduino initiation (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Premiers programmes Arduino (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c1-capteurs", title:"🔌 Capteurs & Actionneurs", duree:"8h",
+        cc:{CC3:"A",CC4:"A",CC5:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Capteurs analogiques / numériques (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Interface capteurs Arduino (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Novembre – Décembre : Réseaux Informatiques", modules:[
+      { id:"c1-reseau1", title:"🌐 Fondamentaux Réseaux (câblage, IP, LAN)", duree:"8h",
+        cc:{CC1:"A",CC3:"A",CC6:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Architecture réseau local (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Confection câbles RJ45 & configuration IP (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c1-cyber1", title:"🔒 Cybersécurité & Modèle OSI", duree:"4h",
+        cc:{CC1:"A",CC7:"I",CC9:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Modèle OSI & cybersécurité (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"Atelier – Bonnes pratiques sécurité (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Janvier – Février : Installations Électriques", modules:[
+      { id:"c1-install1", title:"🏠 Installation Électrique Domestique (NFC 15-100)", duree:"10h",
+        cc:{CC2:"A",CC3:"A",CC4:"A",CC5:"A",CC6:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Norme NFC 15-100 (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Installation conforme NFC 15-100 (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c1-diagno", title:"🔧 Diagnostic & Dépannage Électrique", duree:"6h",
+        cc:{CC3:"A",CC5:"A",CC6:"A",CC7:"A"},
+        ressources:[
+          {type:"tp", name:"TP – Diagnostic de panne électrique (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { pfmp:"🏢 PFMP – Stage en entreprise – Février / Mars" },
+    { label:"📅 Mars – Avril : Automatismes & Supervision", modules:[
+      { id:"c1-auto", title:"⚙️ Introduction aux Automatismes", duree:"10h",
+        cc:{CC1:"A",CC3:"A",CC4:"A",CC8:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Automatismes industriels (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Programmation automate (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c1-superv", title:"📊 Supervision & Interface Homme-Machine", duree:"6h",
+        cc:{CC3:"A",CC6:"A",CC8:"A",CC9:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Supervision & IHM (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Création interface superviseur (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Mai – Juin : Projet Intégrateur", modules:[
+      { id:"c1-projet", title:"🚀 Projet Intégrateur CIEL", duree:"16h",
+        cc:{CC1:"M",CC2:"M",CC3:"M",CC4:"M",CC5:"M",CC6:"M",CC8:"M",CC9:"M"},
+        ressources:[
+          {type:"eval", name:"Cahier des charges projet (à renseigner)", file:"", href:"#"},
+          {type:"eval", name:"Soutenance projet intégrateur (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+  ]},
+
+  // ── 1CIEL2 ────────────────────────────────────────────────────────────────
+  ciel2: { periods: [
+    { label:"📅 Septembre – Octobre : Remise à Niveau & Électricité", modules:[
+      { id:"c2-remise", title:"⚡ Remise à Niveau Électricité / Électronique", duree:"6h",
+        cc:{CC1:"I",CC3:"I",CC6:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Remise à niveau électricité (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Mesures et appareils de mesure (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c2-schema", title:"📐 Lecture & Production de Schémas Électriques", duree:"8h",
+        cc:{CC1:"A",CC3:"A",CC8:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Schémas développés & architecturaux (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Lecture et tracé de schémas (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Octobre – Novembre : Systèmes Programmables", modules:[
+      { id:"c2-arduino1", title:"🤖 Arduino Niveau 1 – Initiation", duree:"8h",
+        cc:{CC4:"I",CC8:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Arduino initiation (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Premiers programmes Arduino (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c2-capteurs", title:"🔌 Capteurs & Actionneurs", duree:"8h",
+        cc:{CC3:"A",CC4:"A",CC5:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Capteurs analogiques / numériques (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Interface capteurs Arduino (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Novembre – Décembre : Réseaux Informatiques", modules:[
+      { id:"c2-reseau1", title:"🌐 Fondamentaux Réseaux (câblage, IP, LAN)", duree:"8h",
+        cc:{CC1:"A",CC3:"A",CC6:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Architecture réseau local (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Confection câbles RJ45 & configuration IP (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c2-cyber1", title:"🔒 Cybersécurité & Modèle OSI", duree:"4h",
+        cc:{CC1:"A",CC7:"I",CC9:"I"},
+        ressources:[
+          {type:"cours", name:"Cours – Modèle OSI & cybersécurité (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"Atelier – Bonnes pratiques sécurité (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Janvier – Février : Installations Électriques", modules:[
+      { id:"c2-install1", title:"🏠 Installation Électrique Domestique (NFC 15-100)", duree:"10h",
+        cc:{CC2:"A",CC3:"A",CC4:"A",CC5:"A",CC6:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Norme NFC 15-100 (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Installation conforme NFC 15-100 (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c2-diagno", title:"🔧 Diagnostic & Dépannage Électrique", duree:"6h",
+        cc:{CC3:"A",CC5:"A",CC6:"A",CC7:"A"},
+        ressources:[
+          {type:"tp", name:"TP – Diagnostic de panne électrique (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { pfmp:"🏢 PFMP – Stage en entreprise – Février / Mars" },
+    { label:"📅 Mars – Avril : Automatismes & Supervision", modules:[
+      { id:"c2-auto", title:"⚙️ Introduction aux Automatismes", duree:"10h",
+        cc:{CC1:"A",CC3:"A",CC4:"A",CC8:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Automatismes industriels (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Programmation automate (à renseigner)", file:"", href:"#"},
+        ]
+      },
+      { id:"c2-superv", title:"📊 Supervision & Interface Homme-Machine", duree:"6h",
+        cc:{CC3:"A",CC6:"A",CC8:"A",CC9:"A"},
+        ressources:[
+          {type:"cours", name:"Cours – Supervision & IHM (à renseigner)", file:"", href:"#"},
+          {type:"tp",    name:"TP – Création interface superviseur (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+    { label:"📅 Mai – Juin : Projet Intégrateur", modules:[
+      { id:"c2-projet", title:"🚀 Projet Intégrateur CIEL", duree:"16h",
+        cc:{CC1:"M",CC2:"M",CC3:"M",CC4:"M",CC5:"M",CC6:"M",CC8:"M",CC9:"M"},
+        ressources:[
+          {type:"eval", name:"Cahier des charges projet (à renseigner)", file:"", href:"#"},
+          {type:"eval", name:"Soutenance projet intégrateur (à renseigner)", file:"", href:"#"},
+        ]
+      },
+    ]},
+  ]},
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let state = {};
+function loadState(){ try{ state=JSON.parse(localStorage.getItem('prog_v2')||'{}'); }catch(e){ state={}; } }
+function saveState(){ localStorage.setItem('prog_v2', JSON.stringify(state)); }
+function getMS(id){ if(!state[id]) state[id]={done:false,notes:'',cc:{}}; return state[id]; }
+
+// ── ICONS ──────────────────────────────────────────────────────────────────────
+const ICONS = { cours:'📘', tp:'🔧', eval:'📝', site:'🌐', notice:'📄' };
+const LABELS = { cours:'Cours', tp:'TP / TD', eval:'Évaluation', site:'Site', notice:'Notice' };
+
+// ── BUILD TIMELINE ─────────────────────────────────────────────────────────────
+function buildTimeline(key) {
+  const prog = PROGRAMS[key];
+  const cont = document.getElementById('timeline-'+key);
+  cont.innerHTML = '';
+  for(const period of prog.periods){
+    if(period.pfmp){ const d=document.createElement('div'); d.className='pfmp-banner'; d.textContent=period.pfmp; cont.appendChild(d); continue; }
+    const ph=document.createElement('div'); ph.className='period-header';
+    ph.innerHTML=`<span style="font-size:15px">⬡</span> ${period.label}`;
+    cont.appendChild(ph);
+    for(const mod of period.modules) cont.appendChild(buildCard(key, mod));
+  }
+  updateStats(key);
+}
+
+function buildCard(key, mod){
+  const ms = getMS(mod.id);
+  const ccData = Object.assign({}, mod.cc, ms.cc||{});
+  const coveredCC = Object.keys(ccData).length;
+  const pct = Math.round(coveredCC/CC_LIST.length*100);
+  const circumference = 2*Math.PI*16;
+
+  const card = document.createElement('div');
+  card.className = 'module-card'+(ms.done?' done':'');
+  card.id = 'card-'+mod.id;
+
+  // Build resources HTML
+  const resHTML = mod.ressources.map(r=>`
+    <a class="res-item ${r.type}" href="${r.href}" target="_blank" rel="noopener noreferrer">
+      <span class="res-badge">${ICONS[r.type]} ${LABELS[r.type]}</span>
+      <span class="res-name">${r.name}</span>
+      ${r.file ? `<span class="res-file">${r.file}</span>` : ''}
+      <span class="res-arrow">↗</span>
+    </a>
+  `).join('');
+
+  // Build CC selects HTML
+  const ccHTML = CC_LIST.map(cc=>{
+    const v = ccData[cc.code]||'';
+    return `<div class="cc-item">
+      <div class="cc-code">${cc.code}</div>
+      <div class="cc-name">${cc.name}</div>
+      <select class="level-select" onchange="updateCC('${mod.id}','${cc.code}',this.value,'${key}')">
+        <option value="">— non traité</option>
+        <option value="I"${v==='I'?' selected':''}>I – Initiation</option>
+        <option value="A"${v==='A'?' selected':''}>A – Approfond.</option>
+        <option value="M"${v==='M'?' selected':''}>M – Maîtrise</option>
+        <option value="E"${v==='E'?' selected':''}>E – Évaluation certif.</option>
+      </select>
+    </div>`;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="module-header" onclick="toggleCard('${mod.id}')">
+      <div>
+        <div class="module-title">${mod.title}</div>
+        <div class="module-meta">${mod.duree} · ${coveredCC} compétence(s) visée(s) · ${mod.ressources.length} ressource(s)</div>
+      </div>
+      <div class="module-right">
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 40 40" width="38" height="38">
+            <circle class="ring-bg" cx="20" cy="20" r="16"/>
+            <circle class="ring-fg" cx="20" cy="20" r="16"
+              stroke-dasharray="${circumference}"
+              stroke-dashoffset="${circumference*(1-pct/100)}"/>
+          </svg>
+          <span class="ring-pct">${pct}%</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="module-body">
+      <div class="body-tabs">
+        <button class="body-tab active" onclick="showTab('${mod.id}','res',this)">📂 Ressources (${mod.ressources.length})</button>
+        <button class="body-tab" onclick="showTab('${mod.id}','cc',this)">🎯 Compétences CC</button>
+        <button class="body-tab" onclick="showTab('${mod.id}','notes',this)">📝 Notes</button>
+      </div>
+      <div class="body-panel active" id="panel-${mod.id}-res">
+        <div class="resources-list">${resHTML}</div>
+      </div>
+      <div class="body-panel" id="panel-${mod.id}-cc">
+        <div class="cc-grid">${ccHTML}</div>
+      </div>
+      <div class="body-panel" id="panel-${mod.id}-notes">
+        <div class="notes-zone">
+          <label>Observations / Remarques pédagogiques</label>
+          <textarea class="notes-input" id="notes-${mod.id}" placeholder="Ajouter des notes sur ce module…">${ms.notes||''}</textarea>
+        </div>
+      </div>
+      <div class="done-toggle${ms.done?' checked':''}" id="toggle-${mod.id}" onclick="toggleDone('${mod.id}','${key}')">
+        <div class="toggle-sw"></div>
+        <span>${ms.done?'Module terminé ✓':'Marquer comme terminé'}</span>
+      </div>
+    </div>`;
+
+  card.querySelector('#notes-'+mod.id).addEventListener('input',e=>{ getMS(mod.id).notes=e.target.value; saveState(); });
+  return card;
+}
+
+function showTab(modId, tab, btn){
+  ['res','cc','notes'].forEach(t=>{
+    const p=document.getElementById('panel-'+modId+'-'+t);
+    if(p) p.classList.toggle('active', t===tab);
+  });
+  const card = document.getElementById('card-'+modId);
+  if(card) card.querySelectorAll('.body-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+function toggleCard(id){
+  const c=document.getElementById('card-'+id);
+  if(c) c.classList.toggle('open');
+}
+
+function toggleDone(id,key){
+  const ms=getMS(id); ms.done=!ms.done; saveState();
+  const c=document.getElementById('card-'+id);
+  if(c){ c.classList.toggle('done',ms.done);
+    const tog=c.querySelector('#toggle-'+id);
+    if(tog){ tog.classList.toggle('checked',ms.done); tog.querySelector('span').textContent=ms.done?'Module terminé ✓':'Marquer comme terminé'; } }
+  updateStats(key);
+}
+
+function updateCC(modId,ccCode,value,key){
+  const ms=getMS(modId); if(!ms.cc) ms.cc={}; ms.cc[ccCode]=value; saveState(); updateStats(key);
+}
+
+function getAllMods(key){ const r=[]; for(const p of PROGRAMS[key].periods) if(p.modules) r.push(...p.modules); return r; }
+
+function updateStats(key){
+  const mods=getAllMods(key), total=mods.length;
+  const done=mods.filter(m=>getMS(m.id).done).length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById(key+'-done').textContent=done;
+  document.getElementById(key+'-total').textContent=total;
+  document.getElementById(key+'-pct').textContent=pct+'%';
+  document.getElementById(key+'-bar').style.width=pct+'%';
+  document.getElementById(key+'-bar-lbl').textContent=pct+'%';
+  const ccBar=document.getElementById(key+'-cc-bar'); ccBar.innerHTML='';
+  const best={};
+  for(const mod of mods){ const ms=getMS(mod.id); const merged=Object.assign({},mod.cc,ms.cc||{});
+    for(const[k,v] of Object.entries(merged)){ if(!v) continue; const o={'I':1,'A':2,'M':3,'E':4};
+      if(!best[k]||o[v]>o[best[k]]) best[k]=v; } }
+  for(const cc of CC_LIST){
+    const v=best[cc.code]; const chip=document.createElement('span');
+    chip.className='cc-chip '+(v?'cc-'+v:'cc-nd');
+    chip.textContent=cc.code+(v?' · '+v:''); chip.title=cc.name+(v?' — '+v:' — non traité');
+    ccBar.appendChild(chip);
+  }
+}
+
+function switchClass(key){
+  document.querySelectorAll('.class-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+key).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active-mtne','active-ciel1','active-ciel2'));
+  document.querySelector(`.tab-btn[onclick="switchClass('${key}')"]`).classList.add('active-'+key);
+}
+
+function saveAll(){
+  saveState();
+  const btn=document.querySelector('.save-btn');
+  btn.classList.add('save-flash'); btn.textContent='✅ Sauvegardé !';
+  setTimeout(()=>{ btn.classList.remove('save-flash'); btn.innerHTML='💾 Sauvegarder'; },1500);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+loadState();
+buildTimeline('mtne');
+buildTimeline('ciel1');
+buildTimeline('ciel2');
+</script>
+</body>
+</html>
