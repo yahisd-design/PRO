@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corrections - Seconde CIEL</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    /* ===== OVERLAY MOT DE PASSE ===== */
+    #password-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 20, 0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(6px);
+    }
+
+    #password-box {
+      background: #1a1a2e;
+      border: 2px solid #e74c3c;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      max-width: 380px;
+      width: 90%;
+      box-shadow: 0 0 40px rgba(231, 76, 60, 0.3);
+    }
+
+    #password-box .lock-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    #password-box h2 {
+      color: #e74c3c;
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    #password-box p {
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    #password-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid #333;
+      border-radius: 8px;
+      background: #111;
+      color: #fff;
+      font-size: 1.1rem;
+      letter-spacing: 0.2em;
+      text-align: center;
+      margin-bottom: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    #password-input:focus {
+      border-color: #e74c3c;
+    }
+
+    #password-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    #password-btn:hover {
+      background: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    #error-msg {
+      color: #e74c3c;
+      font-size: 0.88rem;
+      margin-top: 0.75rem;
+      min-height: 1.2em;
+    }
+
+    /* ===== CONTENU MASQUÉ PAR DÉFAUT ===== */
+    #page-content {
+      display: none;
+    }
+
+    /* ===== BADGE CORRECTION ===== */
+    .course-card.correction {
+      border-left: 4px solid #e74c3c;
+    }
+
+    .course-card.correction .course-type {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .course-card.correction .badge {
+      background: #c0392b;
+      color: white;
+    }
+
+    /* ===== BADGE PPTX ===== */
+    .badge-pptx {
+      display: inline-block;
+      background: #d35400;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .badge-docx {
+      display: inline-block;
+      background: #2980b9;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ===== BANDEAU ACCÈS PROF ===== */
+    .prof-banner {
+      background: linear-gradient(135deg, #7b0000, #c0392b);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: white;
+    }
+
+    .prof-banner .lock-badge {
+      font-size: 2rem;
+    }
+
+    .prof-banner h3 {
+      margin: 0 0 0.2rem 0;
+      font-size: 1.1rem;
+    }
+
+    .prof-banner p {
+      margin: 0;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    /* ===== BOUTON DÉCONNEXION ===== */
+    .logout-btn {
+      display: inline-block;
+      margin-left: 1rem;
+      padding: 0.4rem 1rem;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== OVERLAY MOT DE PASSE ===== -->
+<div id="password-overlay">
+  <div id="password-box">
+    <div class="lock-icon">🔒</div>
+    <h2>Accès Professeur</h2>
+    <p>Cette page contient les corrections des TPs.<br>Veuillez saisir le mot de passe.</p>
+    <input type="password" id="password-input" placeholder="Mot de passe" autocomplete="off" />
+    <button id="password-btn" onclick="checkPassword()">Accéder</button>
+    <div id="error-msg"></div>
+  </div>
+</div>
+
+<!-- ===== CONTENU PRINCIPAL ===== -->
+<div id="page-content">
+
+<header>
+  <h1>🔴 Corrections - Seconde CIEL</h1>
+  <p class="subtitle">Espace Professeur — Année 2024-2025</p>
+  <a href="../index.html" class="back-button">← Retour à l'accueil</a>
+</header>
+
+<div class="container">
+
+    <div class="prof-banner">
+      <span class="lock-badge">🔐</span>
+      <div>
+        <h3>Espace réservé aux professeurs</h3>
+        <p>Corrections officielles des TPs et évaluations — Ne pas diffuser aux élèves.</p>
+      </div>
+      <button class="logout-btn" onclick="logout()">🔒 Verrouiller</button>
+    </div>
+
+    <div class="intro">
+        <p class="level-description">
+            <strong>Contenu :</strong> Retrouvez ici toutes les corrections des travaux pratiques, fiches professeur et corrigés des évaluations de la classe Seconde CIEL.
+        </p>
+    </div>
+
+    <!-- ===== SECTION : OUTILLAGE & ÉLÉMENTS ===== -->
+    <h3 class="period-title">🛠️ Outillage & Éléments d'Installation</h3>
+    <div class="courses-grid">
+
+        <a href="./TP/corr/040 La caisse à outils correction v2023.pptx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>La Caisse à Outils <span class="badge-pptx">PPTX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction complète du TP caisse à outils de l'électricien. Identification et usage de chaque outil.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/060 Les différents éléments d'une installation électrique.pptx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Éléments d'une Installation Électrique <span class="badge-pptx">PPTX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Présentation correction des différents éléments composant une installation électrique complète.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/060 Les différents éléments en électricité prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Les Éléments en Électricité — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Fiche professeur complète sur les différents éléments en électricité avec réponses.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/070 installation electrique prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Installation Électrique — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction professeur du TP installation électrique : schémas et réponses attendues.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/080 Cahier des charges eleve v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Cahier des Charges <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction du cahier des charges élève : critères attendus et analyse des réponses.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+    </div>
+
+    <!-- ===== SECTION : PRISES ÉLECTRIQUES ===== -->
+    <h3 class="period-title">🔌 Prises Électriques</h3>
+    <div class="courses-grid">
+
+        <a href="./TP/corr/080 la prise commandée prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>La Prise Commandée — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction professeur du TP prise commandée : schéma câblage et vérifications.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/090 la prise electrique prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>La Prise Électrique — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction professeur du TP prise électrique 2P+T : raccordements et code couleur.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/160 la prise commandée prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>La Prise Commandée (avancé) — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction avancée du TP prise commandée — version complète avec analyse de circuits.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+    </div>
+
+    <!-- ===== SECTION : ALLUMAGE & VA-ET-VIENT ===== -->
+    <h3 class="period-title">💡 Allumage & Va-et-Vient</h3>
+    <div class="courses-grid">
+
+        <a href="./TP/corr/100 le simple allumage prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Simple Allumage — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction professeur du TP simple allumage : schéma développé, architectural et câblage.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/110 le double allumage prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Double Allumage — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction professeur du TP double allumage : schémas et analyse des circuits.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./TP/corr/120 le va et vient prof v2023.docx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Va-et-Vient — Prof <span class="badge-docx">DOCX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Correction professeur du TP va-et-vient : schéma développé, câblage et tests de fonctionnement.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+    </div>
+
+    <!-- ===== SECTION : HABILITATION ===== -->
+    <h3 class="period-title">⚡ Habilitation Électrique</h3>
+    <div class="courses-grid">
+
+        <a href="./TP/corr/91 habilitation electrique correction.pptx" class="course-card correction">
+            <span class="course-type">Correction</span>
+            <h3>Habilitation Électrique — Correction <span class="badge-pptx">PPTX</span></h3>
+            <p class="duration">—</p>
+            <p class="description">Présentation correction complète de la formation habilitation électrique B1V : réponses aux questions théoriques.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
+</footer>
+
+</div><!-- fin #page-content -->
+
+<script>
+  // ===== MOT DE PASSE =====
+  // Changez ce mot de passe ici :
+  const MOT_DE_PASSE = "seconde";
+
+  const SESSION_KEY = "access-corrections-prof";
+
+  // Vérifier si déjà connecté (session en cours)
+  if (sessionStorage.getItem(SESSION_KEY) === "true") {
+    unlockPage();
+  }
+
+  function checkPassword() {
+    const input = document.getElementById("password-input").value;
+    const errorMsg = document.getElementById("error-msg");
+
+    if (input === MOT_DE_PASSE) {
+      sessionStorage.setItem(SESSION_KEY, "true");
+      unlockPage();
+    } else {
+      errorMsg.textContent = "❌ Mot de passe incorrect. Réessayez.";
+      document.getElementById("password-input").value = "";
+      document.getElementById("password-input").focus();
+      // Shake animation
+      const box = document.getElementById("password-box");
+      box.style.animation = "none";
+      setTimeout(() => { box.style.animation = "shake 0.4s ease"; }, 10);
+    }
+  }
+
+  function unlockPage() {
+    document.getElementById("password-overlay").style.display = "none";
+    document.getElementById("page-content").style.display = "block";
+  }
+
+  function logout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    document.getElementById("password-overlay").style.display = "flex";
+    document.getElementById("page-content").style.display = "none";
+    document.getElementById("password-input").value = "";
+    document.getElementById("error-msg").textContent = "";
+  }
+
+  // Entrée clavier
+  document.getElementById("password-input").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+</script>
+
+<style>
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%       { transform: translateX(-10px); }
+    40%       { transform: translateX(10px); }
+    60%       { transform: translateX(-8px); }
+    80%       { transform: translateX(8px); }
+  }
+</style>
+
+</body>
+</html>
