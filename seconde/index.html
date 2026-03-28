@@ -6,7 +6,7 @@
   <title>Seconde - Cours CIEL</title>
   <link rel="stylesheet" href="../style.css">
 </head>
-  <script>
+<script>
 if (!localStorage.getItem('access-seconde')) {
   window.location.href = '/';
 }
@@ -20,218 +20,371 @@ if (!localStorage.getItem('access-seconde')) {
 </header>
 
 <div class="container">
-    <div class="intro">
-        <p class="level-description">
-            <strong>Objectif :</strong> Maîtriser les fondamentaux de l'électricité, les schémas électriques, les installations domestiques et obtenir l'habilitation électrique B1V.
-        </p>
-    </div>
+  <div class="intro">
+    <p class="level-description">
+      <strong>Objectif :</strong> Maîtriser les fondamentaux de l'électricité, les schémas électriques, les installations domestiques et obtenir l'habilitation électrique B1V.
+    </p>
+  </div>
 
-    <!-- ===== COURS FONDAMENTAUX ===== -->
-    <h3 class="period-title">📅 Septembre - Janvier : Électricité Fondamentale &amp; Schémas</h3>
-    <div class="courses-grid">
+  <!-- ══════════════════════════════════════
+       COURS THÉORIQUES
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">📚 Cours Théoriques</h3>
+  <div class="courses-grid">
 
-        <a href="./cours/notions_electricite_COURSmtne.pdf" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>DOSSIER ELECTRICITE <br> NOTIONS ELEMENTAIRES</h3>
-            <p class="duration">15 heures</p>
-            <p class="description">Tension, intensité, loi d'Ohm, puissance électrique.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <a href="./cours/notions_electricite_COURSmtne.pdf" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Dossier Électricité – Notions Élémentaires</h3>
+      <p class="duration">15 heures</p>
+      <p class="description">Tension, intensité, loi d'Ohm, puissance électrique.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./cours/installationelectriqueelevev2.pdf" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Installation Électrique</h3>
-            <p class="duration">15 heures</p>
-            <p class="description">Tableau électrique. Circuits privé et public.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <a href="./cours/installationelectriqueelevev2.pdf" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Installation Électrique</h3>
+      <p class="duration">15 heures</p>
+      <p class="description">Tableau électrique. Circuits privé et public.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./cours/ilide.info-symboles-normalises-pr_fdb16eb391d72c74adc1e827b2682fc9.pdf" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Symboles Normalisés</h3>
-            <p class="duration">1h</p>
-            <p class="description">Les symboles normalisés en électricité.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <a href="./cours/ilide.info-symboles-normalises-pr_fdb16eb391d72c74adc1e827b2682fc9.pdf" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Symboles Normalisés</h3>
+      <p class="duration">1h</p>
+      <p class="description">Les symboles normalisés en électricité.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./cours/01C - grandeurs et unites.odt" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Grandeurs et Unités</h3>
-            <p class="duration">15 heures</p>
-            <p class="description">Grandeurs et unités en électricité.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <a href="./cours/01C%20-%20grandeurs%20et%20unites.odt" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Grandeurs et Unités</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Grandeurs et unités fondamentales en électricité.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./cours/cours2_SCHÉMAS ET NORMES DES INSTALLATIONS ÉLECTRIQUES_2MTNE.pdf" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Lecture de Schémas Développé &amp; Architectural</h3>
-            <p class="duration">8 heures</p>
-            <p class="description">Symboles normalisés, lecture et interprétation de schémas développés et architecturaux. Plans d'installation.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <a href="./cours/cours2_SCH%C3%89MAS%20ET%20NORMES%20DES%20INSTALLATIONS%20%C3%89LECTRIQUES_2MTNE.pdf" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Schémas &amp; Normes des Installations Électriques</h3>
+      <p class="duration">8 heures</p>
+      <p class="description">Symboles normalisés, lecture de schémas développés et architecturaux.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+  </div>
 
-    <!-- ===== TPs : OUTILLAGE & DÉCOUVERTE ===== -->
-    <h3 class="period-title">🔧 TPs - Outillage &amp; Découverte</h3>
-    <div class="courses-grid">
-      
-        <a href="./TP/01%20caisse%20%C3%A0%20outils%20v2025.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Outillage Électricien</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Découverte et utilisation des outils : tournevis, pince à dénuder, testeur, multimètre, scie cloche.</p>
-            <span class="badge">Disponible</span>
-        </a>
+  <!-- ══════════════════════════════════════
+       SECTION 1 – PRÉREQUIS & GRANDEURS
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">🔧 TPs – Prérequis &amp; Grandeurs / Unités</h3>
+  <div class="courses-grid">
 
-        <a href="./TP/060%20Les%20diff%C3%A9rents%20%C3%A9l%C3%A9ments%20en%20%C3%A9lectricit%C3%A9%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Les Différents Éléments en Électricité</h3>
-            <p class="duration">2 heures</p>
-            <p class="description">Identification et découverte des différents éléments rencontrés en électricité.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 01caisseAoutils.docx -->
+    <a href="./TP/01caisseAoutils.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Caisse à Outils de l'Électricien</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Découverte et utilisation des outils : tournevis, pince à dénuder, testeur, multimètre, scie cloche.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/080%20Cahier%20des%20charges%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Cahier des Charges</h3>
-            <p class="duration">2 heures</p>
-            <p class="description">Rédaction et analyse d'un cahier des charges pour une installation électrique.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 001TPCABLAGE-prerequis.docx -->
+    <a href="./TP/001TPCABLAGE-prerequis.docx" class="course-card tp">
+      <span class="course-type">TP 1</span>
+      <h3>TP – Prérequis Câblage</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Vérification des prérequis avant câblage : notions de base, sécurité, matériel nécessaire.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+    <!-- 01-01grandeursetunites.odt -->
+    <a href="./TP/01-01grandeursetunites.odt" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>Grandeurs et Unités</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Introduction aux grandeurs et unités électriques (volt, ampère, ohm, watt).</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    <!-- ===== TPs : PINCE AMPÈREMÉTRIQUE ===== -->
-    <h3 class="period-title">🔧 TPs - Pince Ampèremétrique &amp; Mesures</h3>
-    <div class="courses-grid">
+    <!-- 01-02EXOunites.odt -->
+    <a href="./TP/01-02EXOunites.odt" class="course-card tp">
+      <span class="course-type">Exercice</span>
+      <h3>EXO – Unités Électriques</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Exercices d'application sur les unités électriques et leurs conversions.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/070%20Etude%20pince%20amp%C3%A8rem%C3%A9trique%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Étude Pince Ampèremétrique</h3>
-            <p class="duration">2 heures</p>
-            <p class="description">Étude et présentation de la pince ampèremétrique, principe de fonctionnement, caractéristiques.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 01-03EXO2unitesgrandeur.odt -->
+    <a href="./TP/01-03EXO2unitesgrandeur.odt" class="course-card tp">
+      <span class="course-type">Exercice</span>
+      <h3>EXO 2 – Unités &amp; Grandeurs</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Deuxième série d'exercices sur les grandeurs et unités électriques.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/080%20Utilisation%20pince%20amp%C3%A8rem%C3%A9trique%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Utilisation Pince Ampèremétrique</h3>
-            <p class="duration">2 heures</p>
-            <p class="description">Mise en pratique : mesures de courant sans coupure, applications réelles sur installation.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 01-04EXP3unites_grandeur.odt -->
+    <a href="./TP/01-04EXP3unites_grandeur.odt" class="course-card tp">
+      <span class="course-type">Exercice</span>
+      <h3>EXP 3 – Unités &amp; Grandeurs</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Troisième série d'exercices et expériences sur les grandeurs électriques.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/070%20installation%20electrique%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Installation Électrique</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Travaux pratiques sur installation électrique : câblage, raccordements et tests.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 02-01Caractéristiques techniques.docx -->
+    <a href="./TP/02-01Caract%C3%A9ristiques%20techniques.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>Caractéristiques Techniques</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Lecture et interprétation des caractéristiques techniques des composants électriques.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+    <!-- 02-01resistancecodedescouleurs.docx -->
+    <a href="./TP/02-01resistancecodedescouleurs.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>Code des Couleurs – Résistances</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Lecture du code couleur des résistances, calcul des valeurs et tolérances.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    <!-- ===== TPs : PRISES ÉLECTRIQUES ===== -->
-    <h3 class="period-title">🔧 TPs - Prises Électriques</h3>
-    <div class="courses-grid">
+  </div>
 
-        <a href="./TP/080%20la%20prise%20command%C3%A9e%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - La Prise Commandée</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Câblage et mise en œuvre d'une prise commandée par un interrupteur.</p>
-            <span class="badge">Disponible</span>
-        </a>
+  <!-- ══════════════════════════════════════
+       SECTION 2 – PINCE AMPÈREMÉTRIQUE
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">🔧 TPs – Pince Ampèremétrique &amp; Mesures</h3>
+  <div class="courses-grid">
 
-        <a href="./TP/090%20la%20prise%20electrique%20%C3%A9l%C3%A8ve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Installation Prise Électrique</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Câblage de prises électriques 2P+T, respect des couleurs de fils, tests de continuité.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 02-02noticepinceamperemetrique.pdf -->
+    <a href="./TP/02-02noticepinceamperemetrique.pdf" class="course-card tp">
+      <span class="course-type">Notice</span>
+      <h3>Notice – Pince Ampèremétrique</h3>
+      <p class="duration">—</p>
+      <p class="description">Notice d'utilisation officielle de la pince ampèremétrique : fonctions, précautions et entretien.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/96%20TP3%20montage%20prise%20electrique.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP3 - Montage Prise Électrique</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Montage complet d'une prise électrique : préparation des fils, connexion, encastrement et test.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 02-03EtudepinceampèremEtRiqueeleve.docx -->
+    <a href="./TP/02-03Etudepinceamp%C3%A8remEtRiqueeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Étude Pince Ampèremétrique</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Étude de la pince ampèremétrique : principe de fonctionnement, caractéristiques techniques.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+    <!-- 02-04UtilisationpinceampEremEtriqueeleve.docx -->
+    <a href="./TP/02-04UtilisationpinceampEremEtriqueeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Utilisation Pince Ampèremétrique</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Mise en pratique : mesures de courant sans coupure, applications sur installation réelle.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    <!-- ===== TPs : CIRCUITS D'ALLUMAGE ===== -->
-    <h3 class="period-title">🔧 TPs - Circuits d'Allumage &amp; Schémas</h3>
-    <div class="courses-grid">
+  </div>
 
-        <a href="./TP/100%20le%20simple%20allumage%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Simple Allumage</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Câblage d'un circuit simple allumage sur platine. Schéma développé et raccordements.</p>
-            <span class="badge">Disponible</span>
-        </a>
+  <!-- ══════════════════════════════════════
+       SECTION 3 – ÉLÉMENTS & INSTALLATION
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">🔧 TPs – Éléments &amp; Installation Électrique</h3>
+  <div class="courses-grid">
 
-        <a href="./TP/110%20le%20double%20allumage%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Double Allumage</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Montage d'un circuit double allumage. Analyse du schéma et réalisation sur platine.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 02LesdifferentselementsenelectriciteEeleve.docx -->
+    <a href="./TP/02LesdifferentselementsenelectriciteEeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Les Différents Éléments en Électricité</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Identification et découverte des différents éléments rencontrés dans une installation électrique.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/33Clevasetvient.odt" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Va-et-Vient</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">Montage va-et-vient, télérupteur, minuterie. Tests et dépannage de circuits.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 03installationelectriqueeleve.docx -->
+    <a href="./TP/03installationelectriqueeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Installation Électrique</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Travaux pratiques sur installation électrique domestique : câblage, raccordements et tests.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/130%20synth%C3%A8se%20lumiere%20eleve%20v2023.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Synthèse Lumière</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">Synthèse sur les circuits d'éclairage : simple allumage, double allumage, va-et-vient réunis.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 04Cahierdeschargeseleve.docx -->
+    <a href="./TP/04Cahierdeschargeseleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Cahier des Charges</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Rédaction et analyse d'un cahier des charges pour une installation électrique.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Tableau Électrique</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Câblage complet tableau : disjoncteur de branchement, différentiel 30mA, divisionnaires, peigne de raccordement.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 010TPmontageelectriquemaquette.docx -->
+    <a href="./TP/010TPmontageelectriquemaquette.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Montage Électrique sur Maquette</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Réalisation d'un montage électrique complet sur maquette pédagogique.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+  </div>
 
-    <!-- ===== ÉVALUATIONS ===== -->
-    <h3 class="period-title">📝 Évaluations &amp; Devoirs</h3>
-    <div class="courses-grid">
+  <!-- ══════════════════════════════════════
+       SECTION 4 – PRISES ÉLECTRIQUES
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">🔧 TPs – Prises Électriques</h3>
+  <div class="courses-grid">
 
-        <a href="./TP/146%20devoir%20interrupteurs%20eleve%20n2%20v2023.docx" class="course-card projet">
-            <span class="course-type">Évaluation</span>
-            <h3>Devoir - Interrupteurs N°2</h3>
-            <p class="duration">1 heure</p>
-            <p class="description">Devoir écrit sur les interrupteurs, circuits d'allumage et schémas électriques.</p>
-            <span class="badge">Important</span>
-        </a>
+    <!-- 004TP2-CablagePrise.docx -->
+    <a href="./TP/004TP2-CablagePrise.docx" class="course-card tp">
+      <span class="course-type">TP 2</span>
+      <h3>TP – Câblage Prise Électrique</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Câblage d'une prise électrique sur platine : préparation des fils, connexion et test.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="./TP/TP_Preparation_26mars.pdf" class="course-card projet">
-            <span class="course-type">Préparation</span>
-            <h3>Préparation TP - 26 Mars</h3>
-            <p class="duration">—</p>
-            <p class="description">Document de préparation au TP du 26 mars : consignes, matériel requis et objectifs à atteindre.</p>
-            <span class="badge">Important</span>
-        </a>
+    <!-- 05bisTPmontagepriseelectrique.docx -->
+    <a href="./TP/05bisTPmontagepriseelectrique.docx" class="course-card tp">
+      <span class="course-type">TP bis</span>
+      <h3>TP – Montage Prise Électrique</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Montage complet d'une prise électrique : préparation des fils, connexion, encastrement et test.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+    <!-- 05lapriseelectriqueeleve.docx -->
+    <a href="./TP/05lapriseelectriqueeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – La Prise Électrique</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Câblage de prises 2P+T, respect des couleurs de fils, tests de continuité.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    <!-- ===== CORRECTIONS (PROFESSEUR) ===== -->
-    <h3 class="period-title">✅ Corrections Professeur</h3>
+    <!-- 06laprisecommandeeeleve.docx -->
+    <a href="./TP/06laprisecommandeeeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – La Prise Commandée</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Câblage et mise en œuvre d'une prise commandée par un interrupteur.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 5 – CIRCUITS D'ALLUMAGE
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">🔧 TPs – Circuits d'Allumage &amp; Va-et-Vient</h3>
+  <div class="courses-grid">
+
+    <!-- 007TP03-CablageSimpleAllumage.docx -->
+    <a href="./TP/007TP03-CablageSimpleAllumage.docx" class="course-card tp">
+      <span class="course-type">TP 3</span>
+      <h3>TP – Câblage Simple Allumage</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Câblage d'un circuit simple allumage sur platine. Schéma développé et raccordements.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+    <!-- 07lesimpleallumageeeleve.docx -->
+    <a href="./TP/07lesimpleallumageeeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Le Simple Allumage</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Étude et réalisation complète d'un circuit de simple allumage.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+    <!-- 08ledoubleallumageeeleve.docx -->
+    <a href="./TP/08ledoubleallumageeeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Le Double Allumage</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Montage d'un circuit double allumage. Analyse du schéma et réalisation sur platine.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+    <!-- 009TP4-Cablagevasetvient.docx -->
+    <a href="./TP/009TP4-Cablagevasetvient.docx" class="course-card tp">
+      <span class="course-type">TP 4</span>
+      <h3>TP – Câblage Va-et-Vient</h3>
+      <p class="duration">4 heures</p>
+      <p class="description">Câblage d'un circuit va-et-vient sur platine : schéma, câblage et test de fonctionnement.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+    <!-- 09levaetvienteleve.docx -->
+    <a href="./TP/09levaetvienteleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Le Va-et-Vient</h3>
+      <p class="duration">4 heures</p>
+      <p class="description">Montage va-et-vient, télérupteur, minuterie. Tests et dépannage de circuits.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+    <!-- 012synthèselumiereeleve.docx -->
+    <a href="./TP/012synth%C3%A8selumiereeleve.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Synthèse Lumière</h3>
+      <p class="duration">4 heures</p>
+      <p class="description">Synthèse sur les circuits d'éclairage : simple allumage, double allumage et va-et-vient réunis.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SECTION 6 – ÉVALUATIONS & DEVOIRS
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">📝 Devoirs &amp; Évaluations</h3>
+  <div class="courses-grid">
+
+    <!-- 013devoirinterrupteurseleve.docx -->
+    <a href="./TP/013devoirinterrupteurseleve.docx" class="course-card projet">
+      <span class="course-type">Devoir</span>
+      <h3>Devoir – Interrupteurs N°1</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Devoir écrit sur les interrupteurs, circuits d'allumage et schémas électriques.</p>
+      <span class="badge">Important</span>
+    </a>
+
+    <!-- 014devoirinterrupteurseleveN2.docx -->
+    <a href="./TP/014devoirinterrupteurseleveN2.docx" class="course-card projet">
+      <span class="course-type">Devoir</span>
+      <h3>Devoir – Interrupteurs N°2</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Deuxième devoir sur les interrupteurs et circuits d'allumage. Niveau supérieur.</p>
+      <span class="badge">Important</span>
+    </a>
+
+    <!-- 015devoirinstalLelec.docx -->
+    <a href="./TP/015devoirinstalLelec.docx" class="course-card projet">
+      <span class="course-type">Devoir</span>
+      <h3>Devoir – Installation Électrique</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Évaluation sur les installations électriques domestiques, normes et schémas.</p>
+      <span class="badge">Important</span>
+    </a>
+
+    <!-- TP_Preparation_26mars.docx -->
+    <a href="./TP/TP_Preparation_26mars.docx" class="course-card projet">
+      <span class="course-type">Préparation</span>
+      <h3>Préparation TP – 26 Mars</h3>
+      <p class="duration">—</p>
+      <p class="description">Document de préparation au TP du 26 mars : consignes, matériel requis et objectifs à atteindre.</p>
+      <span class="badge">Important</span>
+    </a>
+
+  </div>
+ 
+  <!-- ===== CORRECTIONS (PROFESSEUR) ===== -->
+    <h3 class="period-title"> Corrections Professeur</h3>
     <div class="courses-grid">
 
         <!-- ===== CARTE DÉDIÉE PAGE CORRECTIONS ===== -->
@@ -261,139 +414,201 @@ if (!localStorage.getItem('access-seconde')) {
             </p>
             <span class="badge" style="background: #e74c3c; color: white;">🔐 Accéder à l'espace</span>
         </a>
-
+ </div>
        
-    </div>
+  <!-- ══════════════════════════════════════
+       SECTION 7 – HABILITATION ÉLECTRIQUE
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">📅 Formation Habilitation Électrique B1V</h3>
+  <div class="courses-grid">
 
-    <!-- ===== HABILITATION ÉLECTRIQUE ===== -->
-    <h3 class="period-title">📅 Septembre - Janvier : Formation Habilitation Électrique</h3>
-    <div class="courses-grid">
+    <!-- Site principal ePrévention -->
+    <a href="https://eprevention.fr/login" target="_blank" rel="noopener noreferrer" class="course-card tp" style="border: 2px solid #f59e0b;">
+      <span class="course-type" style="background:#f59e0b;">🌐 Site Principal</span>
+      <h3>Plateforme ePrévention</h3>
+      <p class="duration">Accès en ligne</p>
+      <p class="description">Site principal de la formation habilitation électrique. Connexion obligatoire pour les exercices, évaluations et suivi de progression.</p>
+      <span class="badge" style="background:#f59e0b; color:#000;">⭐ Accéder au site</span>
+    </a>
 
-        <a href="./TP/91%20habilitation%20electrique%20internet.pdf" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Formation Habilitation Électrique</h3>
-            <p class="duration">14 heures</p>
-            <p class="description">Réglementation électrique, risques électriques, zones de travail, EPI, consignation, gestes de sécurité.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 902habilitationelectriqueinternet.pdf -->
+    <a href="./TP/902habilitationelectriqueinternet.pdf" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Formation Habilitation Électrique</h3>
+      <p class="duration">14 heures</p>
+      <p class="description">Réglementation électrique, risques électriques, zones de travail, EPI, consignation, gestes de sécurité.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="https://eprevention.fr/login" target="_blank" rel="noopener noreferrer" class="course-card tp" style="border: 2px solid #f59e0b;">
-            <span class="course-type" style="background:#f59e0b;">🌐 Site Principal</span>
-            <h3>Plateforme ePrévention</h3>
-            <p class="duration">— Accès en ligne</p>
-            <p class="description">Site principal de la formation habilitation électrique. Connexion obligatoire pour les exercices, évaluations et suivi de progression en ligne.</p>
-            <span class="badge" style="background:#f59e0b; color:#000;">⭐ Accéder au site</span>
-        </a>
+    <!-- 901habilitationquestionELEV.docx -->
+    <a href="./TP/901habilitationquestionELEV.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>Questions Habilitation Électrique</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Questionnaire élève sur les notions d'habilitation électrique, réglementation et sécurité.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>Formation Pratique sur Site Epreuv</h3>
-            <p class="duration">7 heures</p>
-            <p class="description">Formation pratique sur le site Epreuv, mise en situation réelle, gestes de secours, manipulation sécurisée.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 903faireuneconsignation.docx -->
+    <a href="./TP/903faireuneconsignation.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Faire une Consignation</h3>
+      <p class="duration">2 heures</p>
+      <p class="description">Procédure complète de consignation électrique : mise hors tension, condamnation, vérification d'absence de tension.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+    <!-- 900EVALUATION-B1V-ch1&2.rtf -->
+    <a href="./TP/900EVALUATION-B1V-ch1%262.rtf" class="course-card projet">
+      <span class="course-type">Évaluation</span>
+      <h3>Évaluation B1V – Chapitres 1 &amp; 2</h3>
+      <p class="duration">1 heure</p>
+      <p class="description">Évaluation théorique sur les chapitres 1 et 2 de la formation habilitation électrique B1V.</p>
+      <span class="badge">Important</span>
+    </a>
 
-    <!-- ===== PFMP ===== -->
-    <div class="pfmp-banner">
-        <h3>🏢 Stage PFMP - Février (2-3 semaines)</h3>
-        <p>Stage en entreprise - Découverte du milieu professionnel électrique</p>
-    </div>
+    <!-- 902EVALUATION01B1V.doc -->
+    <a href="./TP/902EVALUATION01B1V.doc" class="course-card projet">
+      <span class="course-type">Évaluation</span>
+      <h3>Évaluation Habilitation B1V – N°1</h3>
+      <p class="duration">3 heures</p>
+      <p class="description">Évaluation théorique et pratique pour l'obtention de l'habilitation électrique B1V.</p>
+      <span class="badge">Important</span>
+    </a>
 
-    <!-- ===== NFC 15-100 & ÉVALUATION B1V ===== -->
-    <h3 class="period-title">📅 Mars - Avril: Suite Électricité - Norme NFC 15-100 &amp; Évaluation B1V</h3>
-    <div class="courses-grid">
+    <!-- Formation pratique -->
+    <a href="#" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>Formation Pratique sur Site Epreuv</h3>
+      <p class="duration">7 heures</p>
+      <p class="description">Formation pratique sur le site Epreuv, mise en situation réelle, gestes de secours, manipulation sécurisée.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Suite Électricité - Norme NFC 15-100</h3>
-            <p class="duration">12 heures</p>
-            <p class="description">Sections de câbles, protection différentielle, circuits spécialisés, volumes salle de bain, hauteurs réglementaires.</p>
-            <span class="badge">Disponible</span>
-        </a>
+  </div>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Installation Conforme NFC 15-100</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Réalisation d'une installation électrique domestique complète respectant la norme NFC 15-100.</p>
-            <span class="badge">Disponible</span>
-        </a>
+  <!-- ══════════════════════════════════════
+       PFMP
+  ══════════════════════════════════════ -->
+  <div class="pfmp-banner">
+    <h3>🏢 Stage PFMP – Février (2-3 semaines)</h3>
+    <p>Stage en entreprise – Découverte du milieu professionnel électrique</p>
+  </div>
 
-        <a href="#" class="course-card projet">
-            <span class="course-type">Évaluation</span>
-            <h3>Évaluation Habilitation B1V</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Évaluation théorique pour l'obtention de l'habilitation électrique B1V.</p>
-            <span class="badge">Important</span>
-        </a>
+  <!-- ══════════════════════════════════════
+       NORME NFC 15-100 & ÉVAL B1V
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">📅 Mars : Norme NFC 15-100 &amp; Évaluation B1V</h3>
+  <div class="courses-grid">
 
-        <a href="./TP/150%20faire%20une%20consignation.docx" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Faire une Consignation</h3>
-            <p class="duration">2 heures</p>
-            <p class="description">Procédure complète de consignation électrique : mise hors tension, condamnation, vérification d'absence de tension.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <a href="#" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Norme NFC 15-100</h3>
+      <p class="duration">12 heures</p>
+      <p class="description">Sections de câbles, protection différentielle, circuits spécialisés, volumes salle de bain, hauteurs réglementaires.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card projet">
-            <span class="course-type">Évaluation</span>
-            <h3>Évaluation Habilitation B1V</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Évaluation pratique pour l'obtention de l'habilitation électrique B1V.</p>
-            <span class="badge">Important</span>
-        </a>
+    <a href="#" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Installation Conforme NFC 15-100</h3>
+      <p class="duration">8 heures</p>
+      <p class="description">Réalisation d'une installation électrique domestique complète respectant la norme NFC 15-100.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+  </div>
+ <!-- ══════════════════════════════════════
+       PFMP
+  ══════════════════════════════════════ -->
+  <div class="pfmp-banner">
+    <h3>🏢 Stage PFMP2 – Mai (2-3 semaines)</h3>
+    <p>Stage en entreprise – Découverte du milieu professionnel électrique</p>
+  </div>
+  <!-- ══════════════════════════════════════
+       ÉLECTRONIQUE – MAI / JUIN
+  ══════════════════════════════════════ -->
+  <h3 class="period-title">📅 Mai – Juin : Électronique (ELN)</h3>
+  <div class="courses-grid">
 
-    <!-- ===== PFMP 2 ===== -->
-    <div class="pfmp-banner">
-        <h3>🏢 Stage PFMP2 - Mai (2-3 semaines)</h3>
-        <p>Stage en entreprise - Découverte du milieu professionnel électrique</p>
-    </div>
+    <!-- 01coursBaseEnElnMTNEeleve.docx -->
+    <a href="./ELN/01coursBaseEnElnMTNEeleve.docx" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Cours de Base en Électronique</h3>
+      <p class="duration">—</p>
+      <p class="description">Introduction aux fondamentaux de l'électronique : composants, conventions, premiers circuits.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    <!-- ===== ÉLECTRONIQUE ===== -->
-    <h3 class="period-title">📅 Mai - Juin : Bases en Électronique</h3>
-    <div class="courses-grid">
+    <!-- 01-laloidesnoeuds.docx -->
+    <a href="./ELN/01-laloidesnoeuds.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – La Loi des Nœuds</h3>
+      <p class="duration">—</p>
+      <p class="description">Étude et application de la loi des nœuds (loi de Kirchhoff des courants) sur des circuits simples.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Introduction à l'Électronique</h3>
-            <p class="duration">8 heures</p>
-            <p class="description">Différence électricité/électronique. Composants passifs : résistances, condensateurs, diodes, LED. Code couleur.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 02-latensiongénéralités.docx -->
+    <a href="./ELN/02-latensiong%C3%A9n%C3%A9ralit%C3%A9s.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – La Tension : Généralités</h3>
+      <p class="duration">—</p>
+      <p class="description">Notions générales sur la tension électrique : définition, mesure, représentation et unités.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - LED &amp; Résistance de Limitation</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Calcul et réalisation d'un circuit LED avec résistance appropriée. Application de la loi d'Ohm.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 02-tensionleslois.docx -->
+    <a href="./ELN/02-tensionleslois.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – La Tension : Les Lois</h3>
+      <p class="duration">—</p>
+      <p class="description">Lois des tensions (loi de Kirchhoff des tensions / loi des mailles) : théorie et exercices d'application.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Découverte des Diodes</h3>
-            <p class="duration">3 heures</p>
-            <p class="description">Étude de la diode, tests, redressement simple alternance, observation à l'oscilloscope.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 03-puissanceeténergie2.docx -->
+    <a href="./ELN/03-puissanceet%C3%A9nergie2.docx" class="course-card tp">
+      <span class="course-type">TP</span>
+      <h3>TP – Puissance &amp; Énergie</h3>
+      <p class="duration">—</p>
+      <p class="description">Calcul de la puissance électrique et de l'énergie consommée. Applications sur des circuits réels.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Identification Composants</h3>
-            <p class="duration">2 heures</p>
-            <p class="description">Reconnaissance des composants électroniques courants, lecture code couleur résistances, lecture de datasheet.</p>
-            <span class="badge">Disponible</span>
-        </a>
+    <!-- 04-TDlesignalsinusoidal.docx -->
+    <a href="./ELN/04-TDlesignalsinusoidal.docx" class="course-card tp">
+      <span class="course-type">TD</span>
+      <h3>TD – Le Signal Sinusoïdal</h3>
+      <p class="duration">—</p>
+      <p class="description">Travaux dirigés sur le signal sinusoïdal : période, fréquence, amplitude, valeur efficace.</p>
+      <span class="badge">Disponible</span>
+    </a>
 
-    </div>
+    <!-- 04-TDlesignalsinusoidalsuite.docx -->
+    <a href="./ELN/04-TDlesignalsinusoidalsuite.docx" class="course-card tp">
+      <span class="course-type">TD (suite)</span>
+      <h3>TD – Signal Sinusoïdal (Suite)</h3>
+      <p class="duration">—</p>
+      <p class="description">Suite des travaux dirigés sur le signal sinusoïdal : exercices avancés et applications pratiques.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+    <!-- 05-Logiqueetbinaireeleves.pdf -->
+    <a href="./ELN/05-Logiqueetbinaireeleves.pdf" class="course-card">
+      <span class="course-type">Cours</span>
+      <h3>Logique &amp; Numération Binaire</h3>
+      <p class="duration">—</p>
+      <p class="description">Introduction à la logique combinatoire et à la numération binaire : bases, conversions et portes logiques.</p>
+      <span class="badge">Disponible</span>
+    </a>
+
+  </div>
+
 </div>
 
 <footer>
-    <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
+  <p>© 2024-2025 – Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
 </footer>
 
 </body>
