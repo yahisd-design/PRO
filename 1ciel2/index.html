@@ -15,7 +15,7 @@ if (!localStorage.getItem('access-ciel2')) {
 
 <header>
     <h1>🤖 1CIEL2 - Électronique Appliquée & Systèmes Embarqués</h1>
-    <p class="subtitle">Année 2024-2025</p>
+    <p class="subtitle">Année 2025-2026</p>
     <a href="../index.html" class="back-button">← Retour à l'accueil</a>
 </header>
 
@@ -23,210 +23,343 @@ if (!localStorage.getItem('access-ciel2')) {
     <div class="intro">
         <p class="level-description">
             <strong>Objectif :</strong> Développer les compétences en électronique appliquée, incluant l'étude des composants de base, la conception et la simulation de circuits, ainsi que la mise en œuvre sur maquette et logiciels (Proteus, KiCad, Arduino).<br>
-            <strong>Volume horaire :</strong> 5h/semaine (2h cours/TD + 3h TP) sur 36 semaines<br>
-            <strong>Compétences :</strong> C04 (Analyser), C06 (Valider), C07 (Réaliser), C08 (Communiquer)
+            <strong>Volume horaire :</strong> 5h/semaine (2h cours/TD + 3h TP) sur 36 semaines &nbsp;|&nbsp;
+            <strong>Compétences :</strong> C04 (Analyser) · C06 (Valider) · C07 (Réaliser) · C08 (Communiquer)
         </p>
     </div>
 
-    <h3 class="period-title">📅 Septembre : Composants de Base</h3>
+    <!-- ══════════════════════════════════════════ -->
+    <!--  SEPTEMBRE — Composants de Base           -->
+    <!-- ══════════════════════════════════════════ -->
+    <h3 class="period-title">📅 Septembre (3 semaines) : Composants de Base — Résistances & Diodes</h3>
     <div class="courses-grid">
-        <a href="#" class="course-card">
+
+        <a href="./electronique/01_coursLoismaillesETnoeuds.docx" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Associations de Résistances</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Lois d'Ohm & Kirchhoff, montages série/parallèle, calculs tension/courant/résistance.</p>
+            <h3>Lois des Mailles & des Nœuds</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Lois d'Ohm & Kirchhoff (mailles, nœuds), montages série/parallèle, diviseur de tension. Calculs tension / courant / résistance équivalente.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card tp">
+        <a href="./electronique/RESSOURCE-3.1.4-Les-resistances-1.docx" class="course-card">
+            <span class="course-type">Ressource</span>
+            <h3>Ressource — Les Résistances</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Fiche ressource complète sur les résistances : codes couleur, valeurs normalisées, séries E12/E24, associations.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/TP-ACTIVITE-3.1.4-Les-resistances-1.docx" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Associations de Résistances</h3>
+            <h3>TP-Activité — Associations de Résistances</h3>
             <p class="duration">4 heures</p>
-            <p class="description">Montages série/parallèle, mesures, vérification calculs théoriques.</p>
+            <p class="description">Montages série/parallèle sur breadboard, mesures au multimètre, vérification des calculs théoriques. CR à rendre.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card">
+        <a href="./electronique/TP01_resistances.docx" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP01 — Résistances (Proteus)</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Simulation de montages résistifs sous Proteus, mesure des tensions et courants, validation par le calcul.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/0-diode_eleve_cours.docx" class="course-card">
             <span class="course-type">Cours</span>
             <h3>Étude des Diodes</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Jonction PN, caractéristiques diode, LED et calcul résistance de limitation.</p>
+            <p class="duration">2 heures</p>
+            <p class="description">Jonction PN, caractéristiques directe/inverse, seuil de conduction, LED et calcul de résistance de limitation.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card tp">
-            <span class="course-type">TP</span>
-            <h3>TP - Diodes et Redressement</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">Redressement simple/double alternance, observation oscilloscope.</p>
+        <a href="./electronique/RESSOURCE-3.1.7-Les-diodes.docx" class="course-card">
+            <span class="course-type">Ressource</span>
+            <h3>Ressource — Les Diodes</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Fiche ressource diodes : types (redresseuse, zener, LED, Schottky), caractéristiques, datasheets.</p>
             <span class="badge">Disponible</span>
         </a>
+
+        <a href="./electronique/RESSOURCE-3.1.7-Les-diodes.pdf" class="course-card">
+            <span class="course-type">Ressource</span>
+            <h3>Ressource — Les Diodes (PDF)</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Version PDF de la fiche ressource diodes pour impression et annotations en cours.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/TP-ACTIVITE-3.1.7-Les-diodes.docx" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP-Activité — Diodes & Redressement</h3>
+            <p class="duration">4 heures</p>
+            <p class="description">Redressement simple / double alternance, observation à l'oscilloscope, courbe caractéristique. CR à rendre.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/TP02_electroniquePROTEUSeleve.docx" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP02 — Électronique sur Proteus</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Simulation de circuits diodes sous Proteus : redressement, courbe I/V, vérification des calculs de limitation LED.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
     </div>
 
+    <!-- ══════════════════════════════════════════ -->
+    <!--  PFMP 3                                   -->
+    <!-- ══════════════════════════════════════════ -->
     <div class="pfmp-banner">
-        <h3>🏢 PFMP 3 - Octobre (4 semaines)</h3>
-        <p>Découverte et application en milieu professionnel</p>
+        <h3>🏢 PFMP 3 — Octobre (4 semaines)</h3>
+        <p>Découverte et application des compétences en milieu professionnel · Câblage · Tests · Maintenance électronique · Rédaction rapport PFMP · Compétences C01, C09, C10, C11</p>
     </div>
 
-    <h3 class="period-title">📅 Novembre : Composants Passifs & Transistors</h3>
+    <!-- ══════════════════════════════════════════ -->
+    <!--  NOVEMBRE — Composants Passifs & Transistors -->
+    <!-- ══════════════════════════════════════════ -->
+    <h3 class="period-title">📅 Novembre (4 semaines) : Composants Passifs — Self, Capacité & Transistors</h3>
     <div class="courses-grid">
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Self et Capacité</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Bobines d'inductance, condensateurs, comportement en courant continu/alternatif.</p>
+
+        <a href="./electronique/RESSOURCE-3.1.5-Les-capacites-1.docx" class="course-card">
+            <span class="course-type">Ressource</span>
+            <h3>Ressource — Les Condensateurs</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Fiche ressource condensateurs : capacité, énergie électrique, charge/décharge RC, constante de temps τ.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card tp">
+        <a href="./electronique/RESSOURCE-3.1.6-Les-selfs.docx" class="course-card">
+            <span class="course-type">Ressource</span>
+            <h3>Ressource — Les Selfs (Inductances)</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Fiche ressource bobines : inductance, énergie magnétique, réactance inductive, comportement en CC/CA.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/TP-ACTIVITE-3.1.5-Les-capacites-1.docx" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Self et Capacité</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">Mesures inductance/capacité, charge/décharge condensateur, circuits LC.</p>
+            <h3>TP-Activité — Condensateurs</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Mesures de capacités, charge/décharge condensateur, tracé de courbe RC, détermination de τ expérimental.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card">
-            <span class="course-type">Cours</span>
-            <h3>Transistors et Relais</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">BJT NPN/PNP, transistor en commutation, pilotage relais électromagnétiques.</p>
-            <span class="badge">Disponible</span>
-        </a>
-
-        <a href="#" class="course-card tp">
+        <a href="./electronique/TP-ACTIVITE-3.1.6-Les-selfs.docx" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Transistor & Relais</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">Commande de relais par transistor, pilotage charge puissante, protection diode de roue libre.</p>
+            <h3>TP-Activité — Selfs & Circuits LC</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Mesures d'inductances, circuits LC, observation des oscillations, résonance série/parallèle.</p>
             <span class="badge">Disponible</span>
         </a>
-    </div>
 
-    <h3 class="period-title">📅 Décembre : Transistors & Relais (Suite)</h3>
-    <div class="courses-grid">
-        <a href="#" class="course-card">
+        <a href="./electronique/03_cours_transistor.pdf" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Transistors et Relais (Suite)</h3>
-            <p class="duration">6 heures</p>
-            <p class="description">Approfondissement commutation, calculs dimensionnement, applications pratiques.</p>
+            <h3>Transistors & Relais</h3>
+            <p class="duration">3 heures</p>
+            <p class="description">BJT NPN/PNP, structure, polarisation, transistor en commutation (bloqué/saturé), pilotage de relais électromagnétiques.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card tp">
+        <a href="./electronique/03-bisCoursTransistor.pdf" class="course-card">
+            <span class="course-type">Cours</span>
+            <h3>Transistors — Cours Complémentaire</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Approfondissement : dimensionnement BJT, calculs IB / IC / VCE sat, montages en cascade, applications pratiques.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/Cours-support-transistor.pdf" class="course-card">
+            <span class="course-type">Cours</span>
+            <h3>Support de Cours — Transistors</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Document de support synthétique pour le cours transistors : formules, schémas de polarisation, règles de dimensionnement.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/exo transistor.pdf" class="course-card">
+            <span class="course-type">Exercices</span>
+            <h3>Exercices — Transistors</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Série d'exercices de dimensionnement et de calculs autour du transistor BJT en commutation et en amplification.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/Relai-exerciceDevaluation.rtf" class="course-card">
+            <span class="course-type">Exercices</span>
+            <h3>Exercices d'Évaluation — Relais</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Fiche d'exercices d'évaluation sur le relais électromagnétique : calculs bobine, diode de roue libre, pilotage par transistor.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/TP_moteur_relais_et_transistor.docx" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Applications Transistors & Relais</h3>
-            <p class="duration">4 heures</p>
-            <p class="description">Montages complexes, commande multiple charges, automatismes simples.</p>
+            <h3>TP — Transistor, Relais & Moteur</h3>
+            <p class="duration">6 heures</p>
+            <p class="description">Commande de relais par transistor, protection diode de roue libre, pilotage d'un moteur DC via transistor. CR à rendre.</p>
             <span class="badge">Disponible</span>
         </a>
+
     </div>
 
-    <h3 class="period-title">📅 Janvier : Signaux Électriques</h3>
+    <!-- ══════════════════════════════════════════ -->
+    <!--  DÉCEMBRE — Transistors (suite) & Signaux -->
+    <!-- ══════════════════════════════════════════ -->
+    <h3 class="period-title">📅 Décembre (3 semaines) : Transistors & Relais (Suite) + Signaux Électriques</h3>
     <div class="courses-grid">
-        <a href="#" class="course-card">
+
+        <a href="./electronique/02-cours-signauxvariables.docx" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Signaux Électriques</h3>
-            <p class="duration">8 heures</p>
-            <p class="description">Signaux analogiques, numériques, PWM, caractéristiques temporelles et fréquentielles.</p>
+            <h3>Signaux Variables & Électriques</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Signaux analogiques, numériques, PWM. Caractéristiques temporelles (période, fréquence, amplitude) et fréquentielles. Lecture oscilloscope numérique.</p>
             <span class="badge">Disponible</span>
         </a>
+
+        <a href="./electronique/02-TDlesignalsinusoidal 2evaluation.docx" class="course-card tp">
+            <span class="course-type">TD / Évaluation</span>
+            <h3>TD — Signaux Sinusoïdaux + Évaluation</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">TD sur les signaux sinusoïdaux + évaluation formative : calculs de période, fréquence, valeur efficace, rapport cyclique PWM.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/Evaluation_2h_Technique_Electronique_Transistor.docx" class="course-card tp">
+            <span class="course-type">Évaluation</span>
+            <h3>Évaluation 2h — Électronique / Transistor</h3>
+            <p class="duration">2 heures</p>
+            <p class="description">Évaluation technique 2h sur l'ensemble Transistors & Relais : calculs IB, IC, VCE, dimensionnement et analyse de montage. C04/C06/C07.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./electronique/exercice_ciel_xor_elev.pdf" class="course-card">
+            <span class="course-type">Exercices</span>
+            <h3>Exercice — Chiffrement XOR (initiation)</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Initiation au chiffrement XOR : principe bit à bit, calculs manuels, préparation au projet cybersécurité Arduino.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
     </div>
 
-    <h3 class="period-title">📅 Janvier - Février : Arduino</h3>
+    <!-- ══════════════════════════════════════════ -->
+    <!--  JANVIER — Arduino                        -->
+    <!-- ══════════════════════════════════════════ -->
+    <h3 class="period-title">📅 Janvier (4 semaines) : Initiation Arduino & Langage C</h3>
     <div class="courses-grid">
+
         <a href="./Arduino/coursarduino.html" class="course-card">
             <span class="course-type">Cours</span>
             <h3>Formation Arduino Complète</h3>
-            <p class="duration">16 heures</p>
-            <p class="description">Syntaxe C++, E/S digitales/analogiques, PWM, capteurs, servomoteurs.</p>
+            <p class="duration">6 heures</p>
+            <p class="description">Architecture Arduino (ATmega328, broches), syntaxe C/C++, setup()/loop(), pinMode, digitalWrite, digitalRead, analogRead, analogWrite (PWM).</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card tp">
+        <a href="./Arduino/01-fiche_tp_arduino_sos.docx" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Arduino : Bases & Applications</h3>
-            <p class="duration">12 heures</p>
-            <p class="description">Lecture analogique ADC, contrôle LED/moteurs PWM, capteurs, moniteur série.</p>
+            <h3>TP01 — Arduino : SOS & LED</h3>
+            <p class="duration">3 heures</p>
+            <p class="description">Premiers programmes Arduino : clignotement LED, signal SOS en morse, contrôle de sortie numérique, moniteur série.</p>
             <span class="badge">Disponible</span>
         </a>
-        
-                 <a href="CCF.html" class="level-card ciel2">
-                    <svg class="icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Document/ccf -->
-                        <defs>
-                            <linearGradient id="docGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#A78BFA;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Document -->
-                        <rect x="50" y="30" width="100" height="140" rx="5" fill="url(#docGrad)" stroke="#6D28D9" stroke-width="3"/>
-                        <!-- Coin plié -->
-                        <path d="M 150 30 L 150 50 L 130 50 Z" fill="#9333EA" stroke="#6D28D9" stroke-width="2"/>
-                        <!-- Lignes de texte -->
-                        <line x1="65" y1="60" x2="135" y2="60" stroke="#FFF" stroke-width="3" opacity="0.8"/>
-                        <line x1="65" y1="75" x2="125" y2="75" stroke="#FFF" stroke-width="3" opacity="0.8"/>
-                        <line x1="65" y1="90" x2="135" y2="90" stroke="#FFF" stroke-width="3" opacity="0.8"/>
-                        <line x1="65" y1="105" x2="115" y2="105" stroke="#FFF" stroke-width="3" opacity="0.8"/>
-                        <!-- Badge diplôme -->
-                        <circle cx="100" cy="135" r="20" fill="#FFD700" stroke="#FFA500" stroke-width="3"/>
-                        <path d="M 100 125 L 105 135 L 100 132 L 95 135 Z" fill="#FF6B00"/>
-                        <text x="100" y="142" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8B4513" text-anchor="middle">BAC</text>
-                    </svg>
-                    <h3>ccf</h3>
-                    <p>bac-pro-ciel</p>
-                    <div class="info">BAC CIEL professionnel</div>
-                </a>
- 
+
+        <a href="./Arduino/02-Fiche_TP_Arduino_SOS_1CIEL_suite.docx" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP02 — Arduino : SOS (Suite)</h3>
+            <p class="duration">3 heures</p>
+            <p class="description">Suite du TP SOS : lecture analogique ADC, capteur de lumière LDR, contrôle de luminosité LED par PWM.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="./Arduino/03-TP_Arduino_Alarme_Morse_eleves.docx" class="course-card tp">
+            <span class="course-type">TP</span>
+            <h3>TP03 — Arduino : Alarme & Morse</h3>
+            <p class="duration">3 heures</p>
+            <p class="description">Système d'alarme sonore (buzzer), codage Morse sur LED, capteur PIR HC-SR501, contrôle moteur DC par PWM.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
+        <a href="ccf.html" class="course-card projet">
+            <span class="course-type">CCF</span>
+            <h3>🎓 Mini-Projet — Système d'Alarme (CCF)</h3>
+            <p class="duration">Évaluation</p>
+            <p class="description">Projet CCF : capteur PIR + buzzer + LED + affichage série. Code C structuré, fonctionnalité complète, rapport technique. BAC PRO CIEL.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
     </div>
 
-    <h3 class="period-title">📅 Février - Mai : Projet Arduino Cybersécurité</h3>
+    <!-- ══════════════════════════════════════════ -->
+    <!--  FÉVRIER → MAI — Projet Cybersécurité    -->
+    <!-- ══════════════════════════════════════════ -->
+    <h3 class="period-title">📅 Février — Mai : Projet Arduino Cybersécurité — Gestionnaire de Mots de Passe</h3>
     <div class="courses-grid">
+
         <a href="./Cybersecurity/cybersecu.html" class="course-card projet">
-            <span class="course-type">Projet(cours+tp) </span>
-            <h3>Projet Arduino Cybersécurité</h3>
+            <span class="course-type">Projet (cours + TP)</span>
+            <h3>🔐 Gestionnaire de Mots de Passe & Chiffrement XOR</h3>
             <p class="duration">35 heures</p>
-            <p class="description">Projet complet intégrant Arduino et concepts de cybersécurité : analyse, conception, programmation, tests, documentation.</p>
+            <p class="description">Projet complet 5 phases : Analyse & Conception (4h) → Cours Cybersécurité Arduino (4h) → Développement clavier 4×4 / LCD I2C / EEPROM / XOR (16h) → Tests & Validation (3h) → Documentation dossier technique. Évaluation U32/U2.</p>
             <span class="badge">Disponible</span>
         </a>
+
+        <a href="./electronique/exercice_ciel_xor_elev.pdf" class="course-card">
+            <span class="course-type">Exercices</span>
+            <h3>Exercices — Chiffrement XOR (approfondissement)</h3>
+            <p class="duration">Auto</p>
+            <p class="description">Exercices avancés XOR : clé de chiffrement, chiffrement/déchiffrement manuel, attaque par force brute, validation du code C.</p>
+            <span class="badge">Disponible</span>
+        </a>
+
     </div>
 
+    <!-- ══════════════════════════════════════════ -->
+    <!--  PFMP 4                                   -->
+    <!-- ══════════════════════════════════════════ -->
     <div class="pfmp-banner">
-        <h3>🏢 PFMP 4 - Mars-Avril (4 semaines)</h3>
-        <p>Mise en œuvre des compétences en environnement professionnel</p>
+        <h3>🏢 PFMP 4 — Mars-Avril (4 semaines)</h3>
+        <p>Mise en situation professionnelle réelle · Compétences C03 à C11 · Rapport + annexes techniques · Soutenance orale devant jury · Unités U2 / U31 / U32</p>
     </div>
 
-    <h3 class="period-title">📅 Mai - Juin : Conception PCB avec KiCad</h3>
+    <!-- ══════════════════════════════════════════ -->
+    <!--  MAI → JUIN — Conception PCB KiCad       -->
+    <!-- ══════════════════════════════════════════ -->
+    <h3 class="period-title">📅 Mai — Juin (4 semaines) : Conception PCB avec KiCad</h3>
     <div class="courses-grid">
+
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
-            <h3>Introduction à KiCad</h3>
-            <p class="duration">10 heures</p>
-            <p class="description">Interface KiCad, création schéma électrique, symboles, bibliothèques.</p>
+            <h3>Introduction à KiCad — Schéma Électrique</h3>
+            <p class="duration">3 heures</p>
+            <p class="description">Interface KiCad : Schematic Editor & PCB Editor. Création d'un schéma électrique, symboles de composants, bibliothèques, annotation, vérification ERC.</p>
             <span class="badge">Disponible</span>
         </a>
 
         <a href="#" class="course-card">
             <span class="course-type">Cours</span>
             <h3>Routage de Carte PCB</h3>
-            <p class="duration">10 heures</p>
-            <p class="description">Empreintes, placement composants, routage pistes, plans de masse, export Gerber.</p>
+            <p class="duration">3 heures</p>
+            <p class="description">Empreintes (footprints), placement optimal des composants, routage mono/double couche, plans de masse, règles DRC, nomenclature BOM, export Gerber.</p>
             <span class="badge">Disponible</span>
         </a>
 
-        <a href="#" class="course-card tp">
+        <a href="./KiCad/TP_Kicad.docx" class="course-card tp">
             <span class="course-type">TP</span>
-            <h3>TP - Conception Carte PCB</h3>
-            <p class="duration">15 heures</p>
-            <p class="description">Schéma complet sous KiCad, routage PCB, nomenclature, export fichiers de fabrication.</p>
+            <h3>TP — Conception Carte PCB Complète</h3>
+            <p class="duration">6 heures</p>
+            <p class="description">Schéma complet d'un circuit étudié en cours (ex. alarme Arduino), routage PCB sous KiCad, export Gerber validé. Dossier PCB noté. U2 ciblée.</p>
             <span class="badge">Disponible</span>
         </a>
+
     </div>
+
 </div>
 
 <footer>
-    <p>© 2024-2025 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
+    <p>© 2025-2026 - Yahia Isddiken | <a href="../index.html">Retour à l'accueil</a></p>
 </footer>
 
 </body>
