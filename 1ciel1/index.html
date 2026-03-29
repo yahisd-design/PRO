@@ -562,8 +562,9 @@
 <body>
 
 <script>
-  // Simple access check - adapt to your auth system
-  // if (!localStorage.getItem('access-ciel1')) window.location.href = '/';
+if (!localStorage.getItem('access-ciel1')) {
+  window.location.href = '/';
+}
 </script>
 
 <!-- ════════════════ HEADER ════════════════ -->
