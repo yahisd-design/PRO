@@ -100,9 +100,21 @@ main{position:relative;z-index:1;padding:26px;max-width:1380px;margin:0 auto}
 .legend{position:fixed;bottom:22px;right:22px;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:12px 14px;font-size:10px;display:flex;flex-direction:column;gap:5px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
 .legend-title{font-size:9px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
 .legend-item{display:flex;align-items:center;gap:7px}.legend-dot{width:7px;height:7px;border-radius:50%}
-.save-btn{position:fixed;bottom:22px;left:22px;z-index:200;background:var(--accent);color:#0d1117;border:none;border-radius:9px;padding:9px 18px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 18px rgba(88,166,255,.28);transition:transform .15s,box-shadow .15s}
+
+/* ── Boutons du bas ─────────────────────────────────────────────────────── */
+.bottom-actions{position:fixed;bottom:22px;left:22px;z-index:200;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.save-btn{background:var(--accent);color:#0d1117;border:none;border-radius:9px;padding:9px 18px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 4px 18px rgba(88,166,255,.28);transition:transform .15s,box-shadow .15s}
 .save-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(88,166,255,.38)}
 .save-flash{animation:flash .4s ease}@keyframes flash{0%,100%{background:var(--accent)}50%{background:#0be881}}
+.dl-btn{border:none;border-radius:9px;padding:9px 18px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:7px;transition:transform .15s,box-shadow .15s}
+.dl-btn:hover{transform:translateY(-2px)}
+.dl-progression{background:rgba(255,123,84,.18);color:#ff7b54;border:1px solid rgba(255,123,84,.4);box-shadow:0 4px 14px rgba(255,123,84,.18)}
+.dl-progression:hover{box-shadow:0 8px 22px rgba(255,123,84,.30)}
+.dl-rapport{background:rgba(163,113,247,.18);color:#c084fc;border:1px solid rgba(163,113,247,.4);box-shadow:0 4px 14px rgba(163,113,247,.18)}
+.dl-rapport:hover{box-shadow:0 8px 22px rgba(163,113,247,.30)}
+.dl-flash{animation:dlflash .4s ease}@keyframes dlflash{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ── Lock screen ─────────────────────────────────────────────────────────── */
 #lock-screen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;}
 #lock-screen::before{content:'';position:fixed;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:.22;pointer-events:none;}
 .lock-box{position:relative;z-index:1;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px 44px;width:100%;max-width:420px;box-shadow:0 24px 60px rgba(0,0,0,.6);text-align:center;animation:lockIn .4s cubic-bezier(.4,0,.2,1);}
@@ -182,7 +194,13 @@ main{position:relative;z-index:1;padding:26px;max-width:1380px;margin:0 auto}
     <div class="legend-item"><div class="legend-dot" style="background:var(--projet-c)"></div> Projet</div>
   </div>
 </div>
-<button class="save-btn" onclick="saveAll()" id="save-local-btn">💾 Sauvegarder</button>
+
+<!-- ── Boutons du bas ─────────────────────────────────────────────────── -->
+<div class="bottom-actions">
+  <button class="save-btn" onclick="saveAll()" id="save-local-btn">💾 Sauvegarder</button>
+  <button class="dl-btn dl-progression" onclick="downloadProgressionWord()" id="dl-prog-btn">📄 Progression Word</button>
+  <button class="dl-btn dl-rapport" onclick="downloadRapportWord()" id="dl-rapport-btn">📊 Rapport de Suivi Word</button>
+</div>
 
 <script>
 // ── CC LISTS ──────────────────────────────────────────────────────────────────
@@ -203,13 +221,11 @@ const ICONS  = {cours:'📘',tp:'🔧',eval:'📝',site:'🌐',notice:'📄',pro
 const LABELS = {cours:'Cours',tp:'TP / TD',eval:'Évaluation',site:'Site',notice:'Notice',projet:'Projet'};
 
 // ══════════════════════════════════════════════════════════════════════════════
-// PROGRAMMES — données exactes des fichiers docx uploadés
+// PROGRAMMES
 // ══════════════════════════════════════════════════════════════════════════════
 const PROGRAMS = {
 
-  // ── SECONDE MTNE (Plan_Progression_Seconde_MTNE_2024-2025.docx) ──────────
   mtne: { ccList: CC_MTNE, periods: [
-
     { label:"📅 Septembre – Octobre : Découverte, Prérequis & Grandeurs Électriques", modules:[
       { id:"mtne-outillage", title:"🧰 Outillage & Prérequis Câblage", duree:"4h",
         objectif:"Identifier les outils de l'électricien. Respecter les règles de sécurité de base. Préparer son poste de travail.",
@@ -218,7 +234,6 @@ const PROGRAMS = {
           {type:"tp",name:"TP – Caisse à Outils de l'Électricien",file:"01caisseAoutils.docx",href:"./TP/01caisseAoutils.docx"},
           {type:"tp",name:"TP 1 – Prérequis Câblage",file:"001TPCABLAGE-prerequis.docx",href:"./TP/001TPCABLAGE-prerequis.docx"},
         ], cc:{CC1:"I",CC2:"I"} },
-
       { id:"mtne-grandeurs", title:"⚡ Grandeurs & Unités Électriques — Loi d'Ohm, puissance", duree:"8h",
         objectif:"Comprendre et utiliser les grandeurs électriques fondamentales. Maîtriser les conversions d'unités. Appliquer la loi d'Ohm et les formules de puissance.",
         comp:["CC3","CC4","CC6"], eval:"Comptes rendus TP — Exercices notés (formative)",
@@ -229,7 +244,6 @@ const PROGRAMS = {
           {type:"tp",name:"EXO 2 – Grandeurs & Unités",file:"01-03EXO2unitesgrandeur.odt",href:"./TP/01-03EXO2unitesgrandeur.odt"},
           {type:"tp",name:"EXP 3 – Unités & Grandeurs",file:"01-04EXP3unites_grandeur.odt",href:"./TP/01-04EXP3unites_grandeur.odt"},
         ], cc:{CC3:"I",CC4:"I",CC6:"I"} },
-
       { id:"mtne-codecouleur", title:"📋 Caractéristiques Techniques & Code Couleur Résistances", duree:"4h",
         objectif:"Lire et interpréter une documentation technique. Identifier une résistance par son code couleur. Utiliser un multimètre pour mesurer.",
         comp:["CC3","CC6"], eval:"Quiz code couleur — Mesures au multimètre — Formative",
@@ -238,7 +252,6 @@ const PROGRAMS = {
           {type:"tp",name:"TP – Code Couleur Résistances",file:"02-01resistancecodedescouleurs.docx",href:"./TP/02-01resistancecodedescouleurs.docx"},
         ], cc:{CC3:"I",CC6:"I"} },
     ]},
-
     { label:"📅 Octobre – Novembre : Pince Ampèremétrique & Mesures", modules:[
       { id:"mtne-pince", title:"🔌 Pince Ampèremétrique & Mesures de courant", duree:"6h",
         objectif:"Comprendre le principe de la pince ampèremétrique. Effectuer des mesures de courant en sécurité sans coupure. Interpréter les résultats.",
@@ -249,7 +262,6 @@ const PROGRAMS = {
           {type:"tp",name:"TP – Utilisation Pince Ampèremétrique",file:"02-04UtilisationpinceampEremEtriqueeleve.docx",href:"./TP/02-04UtilisationpinceampEremEtriqueeleve.docx"},
         ], cc:{CC3:"A",CC6:"A"} },
     ]},
-
     { label:"📅 Novembre : Éléments & Installations Électriques", modules:[
       { id:"mtne-install", title:"🏠 Éléments & Installation Électrique + Maquette", duree:"9h30",
         objectif:"Identifier les éléments d'une installation domestique. Lire un cahier des charges. Réaliser un montage électrique sur maquette.",
@@ -263,7 +275,6 @@ const PROGRAMS = {
           {type:"tp",name:"TP – Montage Électrique sur Maquette",file:"010TPmontageelectriquemaquette.doc",href:"./TP/010TPmontageelectriquemaquette.doc"},
         ], cc:{CC3:"A",CC4:"I",CC9:"I"} },
     ]},
-
     { label:"📅 Novembre – Décembre : Prises Électriques", modules:[
       { id:"mtne-prises", title:"🔌 Prises Électriques (simple, commandée, 2P+T)", duree:"9h",
         objectif:"Câbler une prise électrique 2P+T correctement. Respecter le code couleur des conducteurs. Réaliser une prise commandée par interrupteur.",
@@ -275,7 +286,6 @@ const PROGRAMS = {
           {type:"tp",name:"TP – La Prise Commandée",file:"06laprisecommandeeeleve.docx",href:"./TP/06laprisecommandeeeleve.docx"},
         ], cc:{CC4:"A",CC6:"A"} },
     ]},
-
     { label:"📅 Novembre – Janvier : Circuits d'Allumage & Va-et-Vient", modules:[
       { id:"mtne-allumage", title:"💡 Simple Allumage, Double Allumage & Va-et-Vient", duree:"15h",
         objectif:"Câbler des circuits simple et double allumage. Réaliser un va-et-vient. Lire et produire des schémas développés.",
@@ -289,7 +299,6 @@ const PROGRAMS = {
           {type:"tp",name:"TP – Le Va-et-Vient",file:"09levaetvienteleve.docx",href:"./TP/09levaetvienteleve.docx"},
         ], cc:{CC3:"A",CC4:"A",CC9:"A"} },
     ]},
-
     { label:"📅 Janvier – Mars : Évaluations, Synthèse & Habilitation Électrique B1V", modules:[
       { id:"mtne-devoirs", title:"📝 Devoirs & Synthèse Lumière", duree:"5h",
         objectif:"Évaluer les acquis sur les circuits d'allumage. Synthétiser les connaissances sur les installations. Préparer le TP du 26 mars.",
@@ -301,7 +310,6 @@ const PROGRAMS = {
           {type:"eval",name:"Devoir – Installation Électrique",file:"015devoirinstalLelec.docx",href:"./TP/015devoirinstalLelec.docx"},
           {type:"eval",name:"Préparation TP 26 mars",file:"TP_Preparation_26mars.docx",href:"./TP/TP_Preparation_26mars.docx"},
         ], cc:{CC1:"A",CC3:"A"} },
-
       { id:"mtne-b1v", title:"⚡ Habilitation Électrique B1V — Formation théorique + pratique + évaluation", duree:"14h",
         objectif:"Identifier les risques électriques. Appliquer les procédures de sécurité (EPI/EPC, consignation). Obtenir l'habilitation B1V (théorique + pratique).",
         comp:["CC1","CC2","CC3"], eval:"QCM théorique B1V + Épreuve pratique B1V — CERTIFICATIF — Site ePrévention requis",
@@ -314,9 +322,7 @@ const PROGRAMS = {
           {type:"eval", name:"Évaluation B1V N°1",file:"902EVALUATION01B1V.doc",href:"./TP/902EVALUATION01B1V.doc"},
         ], cc:{CC1:"M",CC2:"M",CC3:"A"} },
     ]},
-
     { pfmp:"🏢 PFMP 1 – Stage en entreprise – Février (2 à 3 semaines) — Découverte du milieu professionnel électrique" },
-
     { label:"📅 Mars – Avril : Norme NFC 15-100 & Validation B1V Finale", modules:[
       { id:"mtne-nfc", title:"🏗️ Norme NFC 15-100, Consignation & Évaluation B1V Finale", duree:"14h",
         objectif:"Réaliser une installation conforme NFC 15-100. Maîtriser la procédure de consignation/déconsignation. Valider l'habilitation B1V (QUIZ théorique + pratique).",
@@ -329,9 +335,7 @@ const PROGRAMS = {
           {type:"eval", name:"Épreuve Pratique B1V Finale",file:"902EVALUATION01B1V.doc",href:"./TP/902EVALUATION01B1V.doc"},
         ], cc:{CC3:"M",CC4:"M"} },
     ]},
-
     { pfmp:"🏢 PFMP 2 – Stage en entreprise – Mai (2 à 3 semaines) — Mise en pratique professionnelle" },
-
     { label:"📅 Mai – Juin : Électronique (ELN) — Lois, Signaux & Logique Binaire", modules:[
       { id:"mtne-eln", title:"🔬 Bases de l'Électronique — Lois, Signaux sinusoïdaux, Logique binaire", duree:"12h",
         objectif:"Appliquer les lois de Kirchhoff (nœuds & mailles). Analyser un signal sinusoïdal. Comprendre les bases de la logique binaire et de la numération.",
@@ -349,10 +353,7 @@ const PROGRAMS = {
     ]},
   ]},
 
-
-  // ── 1CIEL1 (Progression_1CIEL1.docx) ─────────────────────────────────────
   ciel1: { ccList: CC_1CIEL, periods: [
-
     { label:"📅 Septembre (3 semaines) : Logique Combinatoire – Révisions & Bases", modules:[
       { id:"c1-codage", title:"🔢 Cours – Systèmes de Codage (6h)", duree:"6h",
         objectif:"Maîtriser les systèmes de numération : binaire, octal, hexadécimal, conversions entre bases. Connaître les codages BCD et Gray.",
@@ -361,7 +362,6 @@ const PROGRAMS = {
           {type:"cours",name:"Cours – Systèmes de Codage",file:"Numrationccours.pdf",href:"./Num/Numrationccours.pdf"},
           {type:"cours",name:"Cours 02 – Systèmes de Codage",file:"Numération-el.doc",href:"./Num/Numération-el.doc"},
         ], cc:{C03:"I",C04:"I"} },
-
       { id:"c1-logique-intro", title:"⚡ Cours – Logique Combinatoire (2h) + TP Introduction Logique (4h)", duree:"2h cours + 4h TP",
         objectif:"Connaître les portes logiques de base (ET, OU, NON, NAND, NOR, XOR). Construire des tables de vérité. Introduction à l'algèbre de Boole. Simulation Proteus.",
         comp:["C03","C04"], eval:"CR de TP Proteus — Mini-évaluations formatives",
@@ -370,9 +370,7 @@ const PROGRAMS = {
           {type:"tp",   name:"TP – Introduction Logique (Proteus)",file:"(simulation Proteus)",href:"#"},
         ], cc:{C03:"I",C04:"I"} },
     ]},
-
     { pfmp:"🏢 PFMP 3 – Octobre (4 semaines) — Découverte du milieu professionnel CIEL : activités réelles d'installation et maintenance" },
-
     { label:"📅 Novembre – Janvier (7 semaines) : Logique Combinatoire Avancée & Mini-Projet Coffre-Fort", modules:[
       { id:"c1-boole-av", title:"🧮 Cours – Algèbre de Boole Avancée (3h)", duree:"3h",
         objectif:"Appliquer les lois de De Morgan. Simplifier des équations logiques. Maîtriser les théorèmes fondamentaux de l'algèbre de Boole.",
@@ -380,14 +378,12 @@ const PROGRAMS = {
         ressources:[
           {type:"cours",name:"Cours – Algèbre de Boole Avancée",file:"fonctions_logiques_Eleves_.doc",href:"./Bool/fonctions_logiques_Eleves_.doc"},
         ], cc:{C03:"A",C04:"A"} },
-
       { id:"c1-karnaugh", title:"📊 Cours – Tableaux de Karnaugh (3h)", duree:"3h",
         objectif:"Utiliser la méthode de Karnaugh pour simplifier des équations logiques (2, 3, 4 variables). Identifier les regroupements optimaux et obtenir les équations minimales.",
         comp:["C03","C04","C06","C07"], eval:"Exercices Karnaugh notés",
         ressources:[
           {type:"cours",name:"Cours – Tableaux de Karnaugh",file:"fonctions_logiques_Eleves_.doc",href:"./Bool/fonctions_logiques_Eleves_.doc"},
         ], cc:{C03:"A",C04:"A"} },
-
       { id:"c1-coffre", title:"🚀 Mini-Projet – Coffre-Fort Sécurisé (16h) 📝 CCF", duree:"16h",
         objectif:"Concevoir un système de verrouillage à code binaire. Simuler sur Proteus et TinkercCad. Réaliser le câblage, rédiger un dossier technique et présenter oralement.",
         comp:["C03","C04","C06","C07"], eval:"CCF — Fonctionnalité du prototype + Dossier + Soutenance orale",
@@ -395,8 +391,7 @@ const PROGRAMS = {
           {type:"projet",name:"Mini-Projet – Coffre-Fort Sécurisé",file:"Projet Coffre-sécurité.pdf",href:"./3 Projet/Projet Coffre-sécurité.pdf"},
         ], cc:{C03:"A",C04:"A",C06:"A",C07:"A"} },
     ]},
-
-    { label:"📅 Février – Mars (fil rouge jusqu'à PFMP4) : Réseaux Informatiques, Virtualisation & Active Directory", modules:[
+    { label:"📅 Février – Mars : Réseaux Informatiques, Virtualisation & Active Directory", modules:[
       { id:"c1-reseau-ipv", title:"🌐 Cours – Réseau Informatique (3h + présentation 3h)", duree:"3h + 3h présentation",
         objectif:"Comprendre l'adressage IPv4 et IPv6. Maîtriser le CIDR et les sous-réseaux. Connaître les rôles des équipements : Switch, Routeur, DNS, DHCP.",
         comp:["C03","C04"], eval:"Évaluation écrite adressage (IPv4/IPv6 — U31)",
@@ -404,28 +399,24 @@ const PROGRAMS = {
           {type:"cours",name:"Cours – Réseau Informatique",file:"cours_reseau_bac_pro_ciel.pdf",href:"./ReseauInfo/cours_reseau_bac_pro_ciel.pdf"},
           {type:"cours",name:"Présentation – Réseau Informatique",file:"cours_reseau_bac_pro_ciel.pptx",href:"./ReseauInfo/cours_reseau_bac_pro_ciel.pptx"},
         ], cc:{C03:"I",C04:"A"} },
-
       { id:"c1-lan", title:"🏠 Cours – Réseau Domestique LAN (6h)", duree:"6h",
         objectif:"Comprendre l'architecture d'un réseau domestique. Maîtriser le modèle OSI et l'adressage IP. Configurer un réseau local.",
         comp:["C04","C09"], eval:"TD adressage — Exercices OSI",
         ressources:[
           {type:"cours",name:"Cours – Réseau Domestique LAN",file:"Reseau_Domestique_LAN.pptx",href:"./ReseauInfo/Reseau_Domestique_LAN.pptx"},
         ], cc:{C04:"A",C09:"I"} },
-
       { id:"c1-virtualisation", title:"💻 Cours – Virtualisation VirtualBox (4h)", duree:"4h",
         objectif:"Comprendre les concepts de virtualisation. Installer VirtualBox. Créer et configurer des machines virtuelles.",
         comp:["C04","C09"], eval:"TP pratique installation VM",
         ressources:[
           {type:"cours",name:"Cours – Virtualisation Serveur/Client",file:"cours_virtualisation_serveur_client.pdf",href:"./AD/cours_virtualisation_serveur_client.pdf"},
         ], cc:{C04:"A",C09:"A"} },
-
       { id:"c1-ad", title:"🖥️ TP – Installation Active Directory (8h)", duree:"8h",
         objectif:"Installer AD DS. Créer un domaine Windows Server. Gérer les utilisateurs et les groupes. Tester les connexions client-serveur.",
         comp:["C09","C10","C11"], eval:"TP noté Active Directory — Rapport de configuration (U31)",
         ressources:[
           {type:"tp",name:"TP – Installation AD DS + VM Serveur/Client",file:"VMserverClientcomp.pdf",href:"./AD/VMserverClientcomp.pdf"},
         ], cc:{C09:"A",C10:"A",C11:"I"} },
-
       { id:"c1-gpo", title:"🔐 TP – GPO & Partages Réseau Sécurisés (6h)", duree:"6h",
         objectif:"Créer et déployer des stratégies de groupe (GPO). Configurer des partages réseau sécurisés. Évaluation pratique et rapport.",
         comp:["C09","C10","C11"], eval:"Évaluation pratique + Rapport de configuration (U31)",
@@ -433,9 +424,7 @@ const PROGRAMS = {
           {type:"tp",name:"TP – GPO & Partages Réseau",file:"VMserverClientcomp.pdf",href:"./AD/VMserverClientcomp.pdf"},
         ], cc:{C09:"A",C10:"A",C11:"A"} },
     ]},
-
     { pfmp:"🏢 PFMP 4 – Mars / Avril (4 semaines) — Mise en situation professionnelle : application des compétences C03 à C11 en contexte réel" },
-
     { label:"📅 Mai (3 semaines) : Réseaux VLAN & Routage Inter-VLAN", modules:[
       { id:"c1-vlan-cours", title:"🔀 Cours – Réseaux Locaux Virtuels VLAN (4h)", duree:"4h",
         objectif:"Comprendre la segmentation réseau par VLAN. Configurer un switch administrable Cisco. Maîtriser le VLAN 802.1Q.",
@@ -443,21 +432,18 @@ const PROGRAMS = {
         ressources:[
           {type:"cours",name:"Cours – Réseaux Locaux Virtuels VLAN",file:"(à ajouter)",href:"#"},
         ], cc:{C04:"A",C10:"A"} },
-
       { id:"c1-vlan-routage", title:"↔️ Cours – VLAN & Routage Inter-VLAN (4h)", duree:"4h",
         objectif:"Approfondir la segmentation réseau. Configurer le routage inter-VLAN (router-on-a-stick). Tester les communications ping inter-VLAN.",
         comp:["C04","C06","C09","C10","C11"], eval:"TP configuration — Tests ping inter-VLAN",
         ressources:[
           {type:"cours",name:"Cours – VLAN & Routage Inter-VLAN",file:"(à ajouter)",href:"#"},
         ], cc:{C04:"A",C09:"A",C10:"A"} },
-
       { id:"c1-tp-vlan", title:"🔬 TP – Configuration VLAN Cisco (4h)", duree:"4h",
         objectif:"Mettre en œuvre les VLAN sur switch Cisco. Configurer le routage inter-VLAN. Dépanner le réseau segmenté. Rédiger un rapport technique.",
         comp:["C04","C06","C09","C10","C11"], eval:"Fonctionnalité réseau (C06) + CR de TP Cisco (U31)",
         ressources:[
           {type:"tp",name:"TP – Configuration VLAN Cisco",file:"(à ajouter)",href:"#"},
         ], cc:{C06:"A",C09:"M",C10:"M",C11:"A"} },
-
       { id:"c1-mini-reseau", title:"🚀 Mini-Projet – Réseau Entreprise par Service (8h)", duree:"8h",
         objectif:"Concevoir un réseau segmenté par service (RH, Compta, IT). Produire une documentation réseau complète (schéma, plan d'adressage).",
         comp:["C04","C06","C09","C10","C11"], eval:"Dossier VLAN / Mini-projet — C10/C11 — U31 ciblée",
@@ -465,7 +451,6 @@ const PROGRAMS = {
           {type:"projet",name:"Mini-projet – Réseau Entreprise par Service",file:"(à ajouter)",href:"#"},
         ], cc:{C03:"A",C04:"A",C06:"A",C10:"M"} },
     ]},
-
     { label:"📅 Juin (2 semaines) : Habilitation Électrique BR & Projet Professionnel Final", modules:[
       { id:"c1-br-cours", title:"⚡ Cours – Préparation Habilitation Électrique BR (4h)", duree:"4h",
         objectif:"Maîtriser le cadre réglementaire BR (NF C 18-510). Comprendre l'analyse de risques électriques. Maîtriser les procédures de consignation/déconsignation.",
@@ -473,7 +458,6 @@ const PROGRAMS = {
         ressources:[
           {type:"cours",name:"Cours – Réglementation Habilitation Électrique BR",file:"(à ajouter)",href:"#"},
         ], cc:{C03:"A",C04:"M"} },
-
       { id:"c1-br-tp", title:"🔬 TP – Gestes de Sécurité BR (4h)", duree:"4h",
         objectif:"Appliquer les gestes de sécurité BR. Réaliser des études de cas. Préparer et passer la certification BR.",
         comp:["C01","C03","C06","C07","C08","C09","C10"], eval:"Observation des gestes — QCM certification BR",
@@ -481,7 +465,6 @@ const PROGRAMS = {
           {type:"tp",  name:"TP – Gestes de Sécurité BR",file:"(à ajouter)",href:"#"},
           {type:"eval",name:"Exercices pratiques BR – Certification",file:"(à ajouter)",href:"#"},
         ], cc:{C06:"M"} },
-
       { id:"c1-projet-final", title:"🚀 Projet Professionnel Final (16h) 📝 CCF", duree:"16h",
         objectif:"Mobiliser toutes les compétences acquises dans un projet intégrateur : électronique + réseaux + programmation. Conception, réalisation, présentation orale.",
         comp:["C01","C03","C06","C07","C08","C09","C10"], eval:"CCF — Dossier technique + Soutenance orale (U2/U32)",
@@ -493,181 +476,117 @@ const PROGRAMS = {
     ]},
   ]},
 
-
-  // ── 1CIEL2 (Progression_1CIEL2.docx) ─────────────────────────────────────
   ciel2: { ccList: CC_1CIEL, periods: [
-
     { label:"📅 Septembre (3 semaines) : Composants de Base — Résistances & Diodes", modules:[
       { id:"c2-resist-cours", title:"⚡ Cours – Associations de Résistances (2h)", duree:"2h",
         objectif:"Appliquer les lois d'Ohm et Kirchhoff. Calculer des montages série/parallèle. Maîtriser le diviseur de tension.",
         comp:["C04","C06","C07"], eval:"QCM calculs résistances",
-        ressources:[
-          {type:"cours",name:"Cours – Associations de Résistances",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"I",C06:"I"} },
-
+        ressources:[{type:"cours",name:"Cours – Associations de Résistances",file:"(à ajouter)",href:"#"}], cc:{C04:"I",C06:"I"} },
       { id:"c2-resist-tp", title:"🔬 TP – Associations de Résistances (4h)", duree:"4h",
         objectif:"Réaliser des montages série/parallèle sur breadboard. Effectuer des mesures au multimètre. Vérifier les calculs théoriques.",
         comp:["C04","C06","C07"], eval:"TP noté montage — CR de manipulation",
-        ressources:[
-          {type:"tp",name:"TP – Associations de Résistances",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"I",C06:"I",C07:"I"} },
-
+        ressources:[{type:"tp",name:"TP – Associations de Résistances",file:"(à ajouter)",href:"#"}], cc:{C04:"I",C06:"I",C07:"I"} },
       { id:"c2-diodes-cours", title:"💡 Cours – Étude des Diodes (2h)", duree:"2h",
         objectif:"Comprendre la jonction PN. Étudier les caractéristiques de la diode (directe/inverse). Calculer la résistance de limitation d'une LED.",
         comp:["C04","C06","C07"], eval:"QCM connaissances composants",
-        ressources:[
-          {type:"cours",name:"Cours – Étude des Diodes",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"I",C06:"I"} },
-
+        ressources:[{type:"cours",name:"Cours – Étude des Diodes",file:"(à ajouter)",href:"#"}], cc:{C04:"I",C06:"I"} },
       { id:"c2-diodes-tp", title:"🔬 TP – Diodes et Redressement (4h)", duree:"4h",
         objectif:"Réaliser un redressement simple et double alternance. Observer les signaux à l'oscilloscope.",
         comp:["C04","C06","C07"], eval:"TP noté montage diode — CR de manipulation",
-        ressources:[
-          {type:"tp",name:"TP – Diodes et Redressement",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"I",C06:"I",C07:"I"} },
+        ressources:[{type:"tp",name:"TP – Diodes et Redressement",file:"(à ajouter)",href:"#"}], cc:{C04:"I",C06:"I",C07:"I"} },
     ]},
-
     { pfmp:"🏢 PFMP 3 – Octobre (4 semaines) — Découverte du milieu professionnel : installation, câblage et maintenance électronique" },
-
     { label:"📅 Novembre (4 semaines) : Composants Passifs — Self & Capacité + Transistors & Relais", modules:[
       { id:"c2-self-cours", title:"🔋 Cours – Self et Capacité (2h)", duree:"2h",
-        objectif:"Étudier les bobines (inductance, énergie magnétique) et condensateurs (capacité, énergie électrique). Comprendre la charge/décharge RC, la constante de temps τ et la réactance.",
+        objectif:"Étudier les bobines et condensateurs. Comprendre la charge/décharge RC, la constante de temps τ et la réactance.",
         comp:["C04","C06","C07"], eval:"QCM composants passifs",
-        ressources:[
-          {type:"cours",name:"Cours – Self et Capacité",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C06:"I"} },
-
+        ressources:[{type:"cours",name:"Cours – Self et Capacité",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C06:"I"} },
       { id:"c2-self-tp", title:"🔬 TP – Self et Capacité (4h)", duree:"4h",
         objectif:"Mesurer inductance et capacité. Observer charge/décharge du condensateur. Étudier les circuits LC à l'oscilloscope.",
         comp:["C04","C06","C07"], eval:"TP noté Self/Capa — CR de manipulation",
-        ressources:[
-          {type:"tp",name:"TP – Self et Capacité",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C06:"A",C07:"A"} },
-
+        ressources:[{type:"tp",name:"TP – Self et Capacité",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C06:"A",C07:"A"} },
       { id:"c2-transistors-cours", title:"🔌 Cours – Transistors et Relais (3h)", duree:"3h",
-        objectif:"Étudier les transistors BJT NPN/PNP. Maîtriser la commutation (bloqué/saturé). Piloter un relais électromagnétique. Protection par diode de roue libre.",
+        objectif:"Étudier les transistors BJT NPN/PNP. Maîtriser la commutation (bloqué/saturé). Piloter un relais électromagnétique.",
         comp:["C04","C06","C07"], eval:"QCM transistors",
-        ressources:[
-          {type:"cours",name:"Cours – Transistors et Relais",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C06:"I"} },
-
+        ressources:[{type:"cours",name:"Cours – Transistors et Relais",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C06:"I"} },
       { id:"c2-transistors-tp", title:"🔬 TP – Transistor & Relais (6h)", duree:"6h",
         objectif:"Réaliser la commande d'un relais par transistor. Piloter une charge puissante. Protéger le montage par une diode de roue libre.",
         comp:["C04","C06","C07"], eval:"TP noté Transistor-Relais — CR de manipulation",
-        ressources:[
-          {type:"tp",name:"TP – Transistor & Relais",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C06:"A",C07:"A"} },
+        ressources:[{type:"tp",name:"TP – Transistor & Relais",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C06:"A",C07:"A"} },
     ]},
-
     { label:"📅 Décembre (3 semaines) : Transistors & Relais Approfondissement + Signaux Électriques", modules:[
       { id:"c2-transistors-suite", title:"📐 Cours – Transistors & Relais Suite (6h) + TP Applications (4h)", duree:"6h cours + 4h TP",
-        objectif:"Approfondir le dimensionnement BJT (calcul IB, IC, VCEsat). Réaliser des montages complexes. Concevoir des automatismes simples (capteur → transistor → relais).",
+        objectif:"Approfondir le dimensionnement BJT (calcul IB, IC, VCEsat). Réaliser des montages complexes. Concevoir des automatismes simples.",
         comp:["C04","C06","C07","C08"], eval:"TP noté automatisme — Exercices dimensionnement",
         ressources:[
           {type:"cours",name:"Cours – Transistors et Relais (Approfond.)",file:"(à ajouter)",href:"#"},
           {type:"tp",   name:"TP – Applications Transistors & Relais",file:"(à ajouter)",href:"#"},
         ], cc:{C04:"A",C06:"A",C07:"A"} },
-
       { id:"c2-signaux", title:"📡 Cours – Signaux Électriques (2h)", duree:"2h",
-        objectif:"Distinguer signaux analogiques, numériques et PWM. Maîtriser les caractéristiques temporelles et fréquentielles. Introduction à l'acquisition de signal.",
+        objectif:"Distinguer signaux analogiques, numériques et PWM. Maîtriser les caractéristiques temporelles et fréquentielles.",
         comp:["C04","C06","C07","C08"], eval:"QCM signaux électriques",
-        ressources:[
-          {type:"cours",name:"Cours – Signaux Électriques",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A"} },
+        ressources:[{type:"cours",name:"Cours – Signaux Électriques",file:"(à ajouter)",href:"#"}], cc:{C04:"A"} },
     ]},
-
     { label:"📅 Janvier (4 semaines) : Initiation Arduino + Cours de C + Mini-Projet Système d'Alarme", modules:[
       { id:"c2-arduino-cours", title:"🤖 Cours – Formation Arduino Complète (6h)", duree:"6h",
         objectif:"Maîtriser la syntaxe C/C++ sur Arduino. Utiliser les E/S digitales et analogiques. Contrôler le PWM. Interfacer capteurs et moniteur série.",
         comp:["C04","C07","C08"], eval:"TP notés Arduino",
-        ressources:[
-          {type:"cours",name:"Cours – Formation Arduino Complète",file:"coursarduino.html",href:"./Arduino/coursarduino.html"},
-        ], cc:{C04:"A",C07:"A",C08:"I"} },
-
+        ressources:[{type:"cours",name:"Cours – Formation Arduino Complète",file:"coursarduino.html",href:"./Arduino/coursarduino.html"}], cc:{C04:"A",C07:"A",C08:"I"} },
       { id:"c2-langage-c", title:"💻 Cours – Langage C sous Arduino (8h)", duree:"8h",
-        objectif:"Maîtriser les types, variables, pointeurs, tableaux et structures en C. Comprendre les fonctions et le passage par référence. Gérer la mémoire (FLASH, EEPROM).",
+        objectif:"Maîtriser les types, variables, pointeurs, tableaux et structures en C. Comprendre les fonctions et le passage par référence.",
         comp:["C04","C07","C08"], eval:"QCM langage C — Exercices de code",
-        ressources:[
-          {type:"cours",name:"Cours – Langage C sous Arduino",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C08:"A"} },
-
+        ressources:[{type:"cours",name:"Cours – Langage C sous Arduino",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C08:"A"} },
       { id:"c2-arduino-tp", title:"🔬 TP – Arduino : Bases & Applications (12h)", duree:"12h",
-        objectif:"Lire des capteurs analogiques (ADC). Contrôler LED et moteurs PWM. Utiliser le moniteur série. Câbler des capteurs (lumière, température).",
+        objectif:"Lire des capteurs analogiques (ADC). Contrôler LED et moteurs PWM. Utiliser le moniteur série. Câbler des capteurs.",
         comp:["C04","C07","C08"], eval:"TP notés par séance — CR de manipulation",
-        ressources:[
-          {type:"tp",name:"TP – Arduino : Bases & Applications",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C06:"A",C07:"A",C08:"A"} },
-
+        ressources:[{type:"tp",name:"TP – Arduino : Bases & Applications",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C06:"A",C07:"A",C08:"A"} },
       { id:"c2-alarme", title:"🚀 Mini-Projet – Système d'Alarme 📝 CCF", duree:"CCF",
-        objectif:"Concevoir un système d'alarme avec capteur PIR, buzzer et LED. Afficher sur moniteur série. Écrire un code C structuré et fonctionnel. Soutenir oralement.",
+        objectif:"Concevoir un système d'alarme avec capteur PIR, buzzer et LED. Afficher sur moniteur série. Écrire un code C structuré et fonctionnel.",
         comp:["C04","C07","C08"], eval:"CCF — Fonctionnalité + Code C + Soutenance orale (U2/U32)",
         ressources:[
           {type:"projet",name:"Mini-Projet – Système d'Alarme",file:"(à ajouter)",href:"#"},
           {type:"eval",  name:"CCF – Grille d'évaluation",file:"ccf.html",href:"ccf.html"},
         ], cc:{C03:"A",C04:"A",C06:"A",C07:"A",C08:"A"} },
     ]},
-
-    { label:"📅 Février → Mai (fil rouge) : Projet Arduino Cybersécurité — Gestionnaire MDP & Chiffrement XOR", modules:[
+    { label:"📅 Février → Mai : Projet Arduino Cybersécurité — Gestionnaire MDP & Chiffrement XOR", modules:[
       { id:"c2-cyber-p1", title:"📋 Phase 1 – Analyse & Conception (4h)", duree:"4h",
-        objectif:"Rédiger le cahier des charges. Concevoir l'architecture système. Introduire la cybersécurité (CIA, menaces, chiffrement). Choisir les composants (clavier 4×4, LCD I2C, EEPROM).",
+        objectif:"Rédiger le cahier des charges. Concevoir l'architecture système. Introduire la cybersécurité (CIA, menaces, chiffrement).",
         comp:["C03","C04","C06","C07","C08"], eval:"Dossier CDC rendu — Diagramme fonctionnel — Liste matériel",
-        ressources:[
-          {type:"projet",name:"Projet Cybersécurité – Phase 1 Conception",file:"cybersecu.html",href:"./Cybersecurity/cybersecu.html"},
-        ], cc:{C03:"A",C04:"A"} },
-
+        ressources:[{type:"projet",name:"Projet Cybersécurité – Phase 1 Conception",file:"cybersecu.html",href:"./Cybersecurity/cybersecu.html"}], cc:{C03:"A",C04:"A"} },
       { id:"c2-cyber-p2", title:"💡 Phase 2 – Cours Cybersécurité Arduino (4h)", duree:"4h",
-        objectif:"Comprendre l'algorithme XOR (principe, clé, chiffrement/déchiffrement). Maîtriser le stockage sécurisé EEPROM. Étudier l'authentification PIN avec compteur de tentatives.",
-        comp:["C03","C04","C06","C07","C08"], eval:"QCM cybersécurité — Exercices XOR sur papier — Démonstration chiffrement",
-        ressources:[
-          {type:"cours",name:"Cours – Cybersécurité & Chiffrement XOR",file:"cybersecu.html",href:"./Cybersecurity/cybersecu.html"},
-        ], cc:{C04:"A",C08:"A"} },
-
+        objectif:"Comprendre l'algorithme XOR. Maîtriser le stockage sécurisé EEPROM. Étudier l'authentification PIN avec compteur de tentatives.",
+        comp:["C03","C04","C06","C07","C08"], eval:"QCM cybersécurité — Exercices XOR sur papier",
+        ressources:[{type:"cours",name:"Cours – Cybersécurité & Chiffrement XOR",file:"cybersecu.html",href:"./Cybersecurity/cybersecu.html"}], cc:{C04:"A",C08:"A"} },
       { id:"c2-cyber-p3", title:"🔬 Phase 3 – Développement & TP (16h)", duree:"16h",
-        objectif:"Câbler le clavier matriciel 4×4. Afficher sur LCD I2C les mots de passe déchiffrés. Coder le chiffrement XOR en C. Gérer les utilisateurs (ajout, suppression) avec EEPROM.",
-        comp:["C03","C04","C06","C07","C08"], eval:"Code source commenté — Maquette Arduino fonctionnelle — Tests unitaires par fonction",
+        objectif:"Câbler le clavier matriciel 4×4. Afficher sur LCD I2C. Coder le chiffrement XOR en C. Gérer les utilisateurs avec EEPROM.",
+        comp:["C03","C04","C06","C07","C08"], eval:"Code source commenté — Maquette Arduino fonctionnelle — Tests unitaires",
         ressources:[
           {type:"tp",    name:"TP – Développement Gestionnaire MDP",file:"cybersecu.html",href:"./Cybersecurity/cybersecu.html"},
           {type:"projet",name:"Projet Arduino Cybersécurité (cours+tp)",file:"cybersecu.html",href:"./Cybersecurity/cybersecu.html"},
         ], cc:{C04:"A",C07:"A",C08:"A"} },
-
       { id:"c2-cyber-p4", title:"✅ Phase 4 – Tests & Validation (3h)", duree:"3h",
         objectif:"Vérifier le chiffrement/déchiffrement XOR. Tester la protection brute-force PIN. Rédiger le tableau de tests et le PV de recette.",
         comp:["C03","C04","C06","C07","C08"], eval:"Tableau de tests rempli — PV de recette",
-        ressources:[
-          {type:"eval",name:"PV de recette – Tests & Validation",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"A",C06:"A",C08:"A"} },
-
+        ressources:[{type:"eval",name:"PV de recette – Tests & Validation",file:"(à ajouter)",href:"#"}], cc:{C04:"A",C06:"A",C08:"A"} },
       { id:"c2-cyber-p5", title:"🚀 Phase 5 – Documentation & CCF Soutenance 📝 CCF", duree:"soutenance",
-        objectif:"Rédiger le dossier technique complet. Présenter oralement devant jury. Démontrer le système en direct (gestionnaire MDP + chiffrement XOR fonctionnel).",
+        objectif:"Rédiger le dossier technique complet. Présenter oralement devant jury. Démontrer le système en direct.",
         comp:["C01","C03","C04","C06","C07","C08"], eval:"CCF — Dossier technique + Soutenance orale devant jury (U2/U32)",
-        ressources:[
-          {type:"eval",name:"CCF – Grille d'évaluation Projet Cyber",file:"ccf.html",href:"ccf.html"},
-        ], cc:{C03:"M",C06:"M",C08:"M"} },
+        ressources:[{type:"eval",name:"CCF – Grille d'évaluation Projet Cyber",file:"ccf.html",href:"ccf.html"}], cc:{C03:"M",C06:"M",C08:"M"} },
     ]},
-
     { pfmp:"🏢 PFMP 4 – Mars / Avril (4 semaines) — Mise en œuvre des compétences C03 à C11 en environnement professionnel réel" },
-
     { label:"📅 Juin (4 semaines) : Conception PCB avec KiCad", modules:[
       { id:"c2-kicad-schema", title:"📐 Cours – Introduction à KiCad (3h)", duree:"3h",
-        objectif:"Découvrir l'interface KiCad. Créer un schéma électrique. Utiliser les symboles de composants et les bibliothèques. Réaliser l'annotation et vérifier avec l'ERC.",
+        objectif:"Découvrir l'interface KiCad. Créer un schéma électrique. Utiliser les symboles de composants et les bibliothèques. Vérifier avec l'ERC.",
         comp:["C03","C04","C06","C07"], eval:"TP guidé schéma — Vérification ERC",
-        ressources:[
-          {type:"cours",name:"Cours – Introduction à KiCad",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"M",C07:"A"} },
-
+        ressources:[{type:"cours",name:"Cours – Introduction à KiCad",file:"(à ajouter)",href:"#"}], cc:{C04:"M",C07:"A"} },
       { id:"c2-kicad-routage", title:"🖥️ Cours – Routage de Carte PCB (3h)", duree:"3h",
         objectif:"Placer les empreintes (footprints). Router les pistes (1 et 2 couches). Créer un plan de masse. Vérifier avec le DRC. Exporter les fichiers Gerber.",
         comp:["C03","C04","C06","C07"], eval:"Projet PCB — Vérification DRC — Export Gerber",
-        ressources:[
-          {type:"cours",name:"Cours – Routage de Carte PCB",file:"(à ajouter)",href:"#"},
-        ], cc:{C04:"M",C07:"A"} },
-
+        ressources:[{type:"cours",name:"Cours – Routage de Carte PCB",file:"(à ajouter)",href:"#"}], cc:{C04:"M",C07:"A"} },
       { id:"c2-kicad-tp", title:"🔬 TP – Conception Carte PCB Complète (6h)", duree:"6h",
-        objectif:"Réaliser le schéma complet d'un circuit vu en cours (ex. alarme). Router le PCB. Produire la nomenclature BOM. Exporter et valider les fichiers de fabrication Gerber.",
+        objectif:"Réaliser le schéma complet d'un circuit vu en cours. Router le PCB. Produire la nomenclature BOM. Exporter et valider les fichiers Gerber.",
         comp:["C03","C04","C06","C07"], eval:"Dossier PCB (schéma + routage + BOM + Gerber) — U2 ciblée",
-        ressources:[
-          {type:"tp",name:"TP – Conception Carte PCB Complète",file:"(à ajouter)",href:"#"},
-        ], cc:{C03:"A",C04:"M",C06:"M",C07:"M"} },
+        ressources:[{type:"tp",name:"TP – Conception Carte PCB Complète",file:"(à ajouter)",href:"#"}], cc:{C03:"A",C04:"M",C06:"M",C07:"M"} },
     ]},
   ]},
 };
@@ -804,6 +723,265 @@ function saveAll(){
   const btn=document.getElementById('save-local-btn');
   btn.classList.add('save-flash'); btn.textContent='✅ Sauvegardé !';
   setTimeout(()=>{ btn.classList.remove('save-flash'); btn.innerHTML='💾 Sauvegarder'; },1500);
+}
+
+// ── UTILITAIRES TÉLÉCHARGEMENT ────────────────────────────────────────────────
+function getCurrentKey(){
+  const view=document.querySelector('.class-view.active');
+  if(!view) return 'mtne';
+  return view.id.replace('view-','');
+}
+function getClassName(key){ return {mtne:'Seconde MTNE',ciel1:'1CIEL1',ciel2:'1CIEL2'}[key]||key; }
+
+function triggerDownload(html, filename){
+  const blob=new Blob(['\ufeff',html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function flashBtn(id, msg){
+  const btn=document.getElementById(id);
+  const orig=btn.innerHTML;
+  btn.classList.add('dl-flash'); btn.textContent=msg;
+  setTimeout(()=>{ btn.classList.remove('dl-flash'); btn.innerHTML=orig; },1800);
+}
+
+// ── DOCUMENT WORD : PROGRESSION ──────────────────────────────────────────────
+function downloadProgressionWord(){
+  const key=getCurrentKey();
+  const prog=PROGRAMS[key];
+  const className=getClassName(key);
+  const now=new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+
+  const levelColors={'I':'#b8860b','A':'#b85c00','M':'#1a7a3e','E':'#5b21b6'};
+  const levelBg={'I':'#fff9c4','A':'#ffe8cc','M':'#d4f7e7','E':'#ede9fe'};
+  const typeColors={cours:'#1565c0',tp:'#b45309',eval:'#6d28d9',site:'#065f46',notice:'#7c5c00',projet:'#831843'};
+  const typeBg={cours:'#dbeafe',tp:'#fef3c7',eval:'#ede9fe',site:'#d1fae5',notice:'#fefce8',projet:'#fce7f3'};
+
+  let body='';
+  for(const period of prog.periods){
+    if(period.pfmp){
+      body+=`<tr><td colspan="5" style="background:#fff7ed;border:2px dashed #fb923c;padding:10px 14px;color:#9a3412;font-weight:bold;text-align:center;font-size:12pt">${period.pfmp}</td></tr>
+             <tr><td colspan="5" style="height:8px"></td></tr>`;
+      continue;
+    }
+    // Period header
+    body+=`<tr><td colspan="5" style="background:#1e293b;color:#f8fafc;padding:8px 14px;font-size:12pt;font-weight:bold">${period.label}</td></tr>`;
+    for(const mod of period.modules){
+      const merged=Object.assign({},mod.cc);
+      const ccChips=Object.entries(merged).map(([c,v])=>`<span style="display:inline-block;background:${levelBg[v]||'#f1f5f9'};color:${levelColors[v]||'#374151'};border:1px solid ${levelColors[v]||'#9ca3af'};border-radius:4px;padding:1px 7px;font-size:9pt;font-weight:bold;margin:1px">${c}&nbsp;:&nbsp;${v}</span>`).join(' ');
+      const resRows=mod.ressources.map(r=>`<div style="margin:3px 0;padding:4px 8px;background:${typeBg[r.type]||'#f8fafc'};border-left:3px solid ${typeColors[r.type]||'#64748b'};border-radius:3px;font-size:9pt"><b style="color:${typeColors[r.type]||'#374151'}">${LABELS[r.type]}</b> — ${r.name} <span style="color:#94a3b8;font-size:8pt">(${r.file})</span></div>`).join('');
+      body+=`
+        <tr>
+          <td style="width:34%;padding:10px 12px;border:1px solid #e2e8f0;vertical-align:top">
+            <div style="font-size:12pt;font-weight:bold;color:#0f172a;margin-bottom:4px">${mod.title}</div>
+            <div style="font-size:9pt;color:#64748b;margin-bottom:8px">⏱ ${mod.duree} &nbsp;·&nbsp; ${mod.ressources.length} ressource(s)</div>
+            <div style="background:#f0fdf4;border-left:3px solid #16a34a;padding:6px 9px;border-radius:3px;font-size:10pt;color:#14532d;margin-bottom:6px"><b>🎯 Objectif :</b><br>${mod.objectif}</div>
+            <div style="background:#fdf4ff;border-left:3px solid #a855f7;padding:6px 9px;border-radius:3px;font-size:10pt;color:#4a044e"><b>✅ Évaluation :</b><br>${mod.eval}</div>
+          </td>
+          <td style="width:36%;padding:10px 12px;border:1px solid #e2e8f0;vertical-align:top">${resRows||'<span style="color:#94a3b8;font-size:9pt">Aucune ressource</span>'}</td>
+          <td style="width:18%;padding:10px 12px;border:1px solid #e2e8f0;vertical-align:top">${ccChips||'<span style="color:#94a3b8;font-size:9pt">—</span>'}</td>
+          <td style="width:7%;padding:10px 12px;border:1px solid #e2e8f0;vertical-align:middle;text-align:center"><span style="font-size:11pt;color:#94a3b8">—</span></td>
+          <td style="width:5%;padding:10px 12px;border:1px solid #e2e8f0;vertical-align:middle;text-align:center"><span style="font-size:13pt">○</span></td>
+        </tr>`;
+    }
+    body+=`<tr><td colspan="5" style="height:6px"></td></tr>`;
+  }
+
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Progression ${className}</title>
+<style>
+  body{font-family:Calibri,sans-serif;font-size:11pt;margin:1.5cm 2cm}
+  table{border-collapse:collapse;width:100%}
+  td,th{vertical-align:top}
+</style>
+</head><body>
+<table style="width:100%;margin-bottom:20px;border-bottom:3px solid #1e293b">
+  <tr>
+    <td style="padding-bottom:12px">
+      <div style="font-size:22pt;font-weight:bold;color:#0f172a">📚 Progression Pédagogique — ${className}</div>
+      <div style="font-size:11pt;color:#475569;margin-top:4px">Yahia Isddiken &nbsp;|&nbsp; Année scolaire 2024-2025 &nbsp;|&nbsp; BAC PRO CIEL</div>
+      <div style="font-size:9pt;color:#94a3b8;margin-top:2px">Généré le ${now}</div>
+    </td>
+  </tr>
+</table>
+<table style="width:100%;border-collapse:collapse;margin-bottom:6px">
+  <tr style="background:#334155;color:#f8fafc">
+    <th style="padding:8px 12px;font-size:10pt;text-align:left;width:34%">Module / Objectif / Évaluation</th>
+    <th style="padding:8px 12px;font-size:10pt;text-align:left;width:36%">Ressources pédagogiques</th>
+    <th style="padding:8px 12px;font-size:10pt;text-align:left;width:18%">Compétences (CC)</th>
+    <th style="padding:8px 12px;font-size:10pt;text-align:center;width:7%">Durée</th>
+    <th style="padding:8px 12px;font-size:10pt;text-align:center;width:5%">✓</th>
+  </tr>
+  ${body}
+</table>
+<div style="margin-top:20px;padding:10px 14px;background:#f1f5f9;border-radius:6px;font-size:9pt;color:#64748b">
+  Légende niveaux CC : 
+  <span style="background:#fff9c4;color:#b8860b;padding:1px 7px;border-radius:4px;border:1px solid #b8860b;margin:0 3px">I — Initiation</span>
+  <span style="background:#ffe8cc;color:#b85c00;padding:1px 7px;border-radius:4px;border:1px solid #b85c00;margin:0 3px">A — Approfondissement</span>
+  <span style="background:#d4f7e7;color:#1a7a3e;padding:1px 7px;border-radius:4px;border:1px solid #1a7a3e;margin:0 3px">M — Maîtrise</span>
+  <span style="background:#ede9fe;color:#5b21b6;padding:1px 7px;border-radius:4px;border:1px solid #5b21b6;margin:0 3px">E — Évaluation</span>
+</div>
+</body></html>`;
+
+  triggerDownload(html, `Progression_${className.replace(/ /g,'_')}_2024-2025.doc`);
+  flashBtn('dl-prog-btn','✅ Téléchargé !');
+}
+
+// ── DOCUMENT WORD : RAPPORT DE SUIVI ─────────────────────────────────────────
+function downloadRapportWord(){
+  const key=getCurrentKey();
+  const prog=PROGRAMS[key];
+  const className=getClassName(key);
+  const mods=getAllMods(key);
+  const total=mods.length;
+  const done=mods.filter(m=>getMS(m.id).done).length;
+  const pct=total?Math.round(done/total*100):0;
+  const now=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const dateFile=new Date().toISOString().slice(0,10);
+
+  const levelLabels={'I':'Initiation','A':'Approfond.','M':'Maîtrise','E':'Évaluation'};
+  const levelBg={'I':'#fff9c4','A':'#ffe8cc','M':'#d4f7e7','E':'#ede9fe'};
+  const levelColors={'I':'#b8860b','A':'#b85c00','M':'#1a7a3e','E':'#5b21b6'};
+
+  // Tableau récap
+  let recapRows='';
+  for(const period of prog.periods){
+    if(period.pfmp){
+      recapRows+=`<tr><td colspan="4" style="background:#fff7ed;border:1px dashed #fb923c;padding:7px 12px;color:#9a3412;font-weight:bold;text-align:center">${period.pfmp}</td></tr>`;
+      continue;
+    }
+    recapRows+=`<tr><td colspan="4" style="background:#1e293b;color:#f8fafc;padding:6px 12px;font-weight:bold;font-size:10pt">${period.label}</td></tr>`;
+    for(const mod of period.modules){
+      const ms=getMS(mod.id);
+      const isDone=ms.done;
+      recapRows+=`
+        <tr style="background:${isDone?'#f0fdf4':'#fffbeb'}">
+          <td style="padding:8px 10px;border:1px solid #e2e8f0;font-size:10pt;color:#0f172a">${mod.title}</td>
+          <td style="padding:8px 10px;border:1px solid #e2e8f0;font-size:9pt;color:#475569;text-align:center">${mod.duree}</td>
+          <td style="padding:8px 10px;border:1px solid #e2e8f0;text-align:center">
+            ${isDone
+              ? '<span style="background:#dcfce7;color:#166534;border:1px solid #16a34a;border-radius:4px;padding:2px 10px;font-weight:bold;font-size:9pt">✅ Terminé</span>'
+              : '<span style="background:#fef9c3;color:#854d0e;border:1px solid #ca8a04;border-radius:4px;padding:2px 10px;font-weight:bold;font-size:9pt">⏳ En cours</span>'
+            }
+          </td>
+          <td style="padding:8px 10px;border:1px solid #e2e8f0;font-size:9pt;color:#374151;font-style:${ms.notes?'normal':'italic'};color:${ms.notes?'#0f172a':'#9ca3af'}">${ms.notes||'Aucune note'}</td>
+        </tr>`;
+    }
+  }
+
+  // Section détail CC
+  let detailBlocks='';
+  for(const period of prog.periods){
+    if(period.pfmp){
+      detailBlocks+=`<div style="background:#fff7ed;border:2px dashed #fb923c;padding:8px 14px;color:#9a3412;font-weight:bold;text-align:center;margin:10px 0;border-radius:4px">${period.pfmp}</div>`;
+      continue;
+    }
+    detailBlocks+=`<div style="background:#1e293b;color:#f8fafc;padding:7px 14px;font-weight:bold;font-size:11pt;margin:14px 0 6px 0;border-radius:4px">${period.label}</div>`;
+    for(const mod of period.modules){
+      const ms=getMS(mod.id);
+      const merged=Object.assign({},mod.cc,ms.cc||{});
+      const isDone=ms.done;
+      const ccHtml=Object.entries(merged).map(([c,v])=>v?`<span style="display:inline-block;background:${levelBg[v]||'#f1f5f9'};color:${levelColors[v]||'#374151'};border:1px solid ${levelColors[v]||'#9ca3af'};border-radius:4px;padding:1px 8px;font-size:9pt;font-weight:bold;margin:2px">${c} — ${levelLabels[v]||v}</span>`:''
+      ).filter(Boolean).join(' ') || '<span style="color:#94a3b8;font-size:9pt">Aucun niveau renseigné</span>';
+      detailBlocks+=`
+        <div style="background:${isDone?'#f0fdf4':'#fafafa'};border:1px solid ${isDone?'#bbf7d0':'#e2e8f0'};border-radius:6px;padding:10px 14px;margin:5px 0">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+            <span style="font-size:11pt;font-weight:bold;color:#0f172a">${mod.title}</span>
+            ${isDone
+              ? '<span style="background:#dcfce7;color:#166534;border:1px solid #16a34a;border-radius:4px;padding:1px 10px;font-size:9pt;font-weight:bold">✅ Terminé</span>'
+              : '<span style="background:#fef9c3;color:#854d0e;border:1px solid #ca8a04;border-radius:4px;padding:1px 10px;font-size:9pt;font-weight:bold">⏳ En cours</span>'
+            }
+          </div>
+          <div style="font-size:9pt;color:#64748b;margin-bottom:7px">⏱ ${mod.duree} &nbsp;·&nbsp; Compétences visées : ${mod.comp.join(', ')}</div>
+          <div style="margin-bottom:6px"><b style="font-size:9pt;color:#475569">Niveaux CC :</b><br>${ccHtml}</div>
+          ${ms.notes?`<div style="background:#f5f3ff;border-left:3px solid #8b5cf6;padding:5px 9px;border-radius:3px;font-size:9pt;color:#4c1d95;margin-top:5px">📝 <b>Notes :</b> ${ms.notes}</div>`:''}
+        </div>`;
+    }
+  }
+
+  // Synthèse CC globale
+  const best={};
+  for(const mod of mods){
+    const ms=getMS(mod.id); const merged=Object.assign({},mod.cc,ms.cc||{});
+    for(const[k,v] of Object.entries(merged)){ if(!v) continue; const o={'I':1,'A':2,'M':3,'E':4};
+      if(!best[k]||o[v]>o[best[k]]) best[k]=v; }
+  }
+  const synth=prog.ccList.map(cc=>`
+    <tr>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-family:monospace;font-weight:bold;color:#1e293b">${cc.code}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;font-size:10pt;color:#374151">${cc.name}</td>
+      <td style="padding:6px 10px;border:1px solid #e2e8f0;text-align:center">
+        ${best[cc.code]?`<span style="background:${levelBg[best[cc.code]]};color:${levelColors[best[cc.code]]};border:1px solid ${levelColors[best[cc.code]]};border-radius:4px;padding:2px 12px;font-weight:bold;font-size:9pt">${best[cc.code]} — ${levelLabels[best[cc.code]]}</span>`:'<span style="color:#94a3b8;font-size:9pt">Non traité</span>'}
+      </td>
+    </tr>`).join('');
+
+  const html=`<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Rapport de Suivi ${className}</title>
+<style>body{font-family:Calibri,sans-serif;font-size:11pt;margin:1.5cm 2cm}table{border-collapse:collapse;width:100%}</style>
+</head><body>
+
+<table style="width:100%;margin-bottom:16px;border-bottom:3px solid #1e293b;padding-bottom:12px">
+  <tr>
+    <td>
+      <div style="font-size:22pt;font-weight:bold;color:#0f172a">📊 Rapport de Suivi Pédagogique</div>
+      <div style="font-size:11pt;color:#475569;margin-top:4px">Classe : <b>${className}</b> &nbsp;|&nbsp; Enseignant : Yahia Isddiken &nbsp;|&nbsp; 2024-2025</div>
+      <div style="font-size:9pt;color:#94a3b8;margin-top:2px">Généré le ${now}</div>
+    </td>
+    <td style="text-align:right;vertical-align:middle">
+      <div style="display:inline-block;background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;padding:10px 18px;text-align:center">
+        <div style="font-size:26pt;font-weight:bold;color:#1d4ed8">${pct}%</div>
+        <div style="font-size:9pt;color:#1e40af">${done} / ${total} modules terminés</div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<!-- Barre de progression visuelle -->
+<div style="margin-bottom:18px">
+  <div style="font-size:9pt;color:#64748b;margin-bottom:4px">Progression globale</div>
+  <div style="background:#e2e8f0;border-radius:6px;height:14px;width:100%;overflow:hidden">
+    <div style="background:linear-gradient(90deg,#3b82f6,#06b6d4);height:14px;width:${pct}%;border-radius:6px"></div>
+  </div>
+</div>
+
+<h2 style="font-size:14pt;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:5px;margin-top:20px">📋 Récapitulatif des Modules</h2>
+<table style="border-collapse:collapse;width:100%;margin-bottom:20px">
+  <tr style="background:#334155;color:#f8fafc">
+    <th style="padding:8px 10px;text-align:left;font-size:10pt;width:42%">Module</th>
+    <th style="padding:8px 10px;text-align:center;font-size:10pt;width:12%">Durée</th>
+    <th style="padding:8px 10px;text-align:center;font-size:10pt;width:16%">Statut</th>
+    <th style="padding:8px 10px;text-align:left;font-size:10pt;width:30%">Notes / Observations</th>
+  </tr>
+  ${recapRows}
+</table>
+
+<h2 style="font-size:14pt;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:5px;margin-top:24px">🎯 Détail par Module — Compétences & Niveaux</h2>
+${detailBlocks}
+
+<h2 style="font-size:14pt;color:#1e293b;border-bottom:2px solid #e2e8f0;padding-bottom:5px;margin-top:24px">📈 Synthèse Globale des Compétences</h2>
+<table style="border-collapse:collapse;width:60%;margin-bottom:20px">
+  <tr style="background:#334155;color:#f8fafc">
+    <th style="padding:7px 10px;text-align:left;font-size:10pt;width:15%">Code</th>
+    <th style="padding:7px 10px;text-align:left;font-size:10pt;width:50%">Compétence</th>
+    <th style="padding:7px 10px;text-align:center;font-size:10pt;width:35%">Niveau atteint</th>
+  </tr>
+  ${synth}
+</table>
+
+<div style="margin-top:24px;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;font-size:9pt;color:#64748b">
+  Légende : 
+  <span style="background:#fff9c4;color:#b8860b;padding:1px 7px;border-radius:4px;border:1px solid #b8860b;margin:0 2px">I — Initiation</span>
+  <span style="background:#ffe8cc;color:#b85c00;padding:1px 7px;border-radius:4px;border:1px solid #b85c00;margin:0 2px">A — Approfondissement</span>
+  <span style="background:#d4f7e7;color:#1a7a3e;padding:1px 7px;border-radius:4px;border:1px solid #1a7a3e;margin:0 2px">M — Maîtrise</span>
+  <span style="background:#ede9fe;color:#5b21b6;padding:1px 7px;border-radius:4px;border:1px solid #5b21b6;margin:0 2px">E — Évaluation</span>
+</div>
+
+</body></html>`;
+
+  triggerDownload(html, `Rapport_Suivi_${className.replace(/ /g,'_')}_${dateFile}.doc`);
+  flashBtn('dl-rapport-btn','✅ Téléchargé !');
 }
 
 // ── MOT DE PASSE ──────────────────────────────────────────────────────────────
