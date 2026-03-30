@@ -578,6 +578,31 @@ main {
 }
 .dl-ressources:hover { box-shadow: 0 8px 22px rgba(255,123,84,.30); }
 
+/* Bouton : télécharger le .docx de progression du répertoire */
+.dl-progression {
+  background: rgba(88,166,255,.16);
+  color: #58a6ff;
+  border: 1px solid rgba(88,166,255,.4);
+  box-shadow: 0 4px 14px rgba(88,166,255,.18);
+}
+.dl-progression:hover { box-shadow: 0 8px 22px rgba(88,166,255,.30); }
+
+/* Bouton : générer le rapport de suivi Word */
+.dl-rapport {
+  background: rgba(163,113,247,.16);
+  color: #a371f7;
+  border: 1px solid rgba(163,113,247,.4);
+  box-shadow: 0 4px 14px rgba(163,113,247,.18);
+}
+.dl-rapport:hover { box-shadow: 0 8px 22px rgba(163,113,247,.30); }
+
+/* Flash pour les boutons de téléchargement */
+.dl-flash { animation: dlFlash .4s ease; }
+@keyframes dlFlash {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .45; }
+}
+
 /* Modale de téléchargement */
 .dl-modal-backdrop {
   position: fixed;
@@ -912,11 +937,24 @@ main {
      BOUTONS DU BAS (coin bas-gauche)
      ═══════════════════════════════════════════════════════════ -->
 <div class="bottom-actions">
+  <!-- Sauvegarde locale (localStorage) -->
   <button class="save-btn" onclick="saveAll()" id="save-local-btn">
     💾 Sauvegarder
   </button>
+
+  <!-- Ouvre la modale listant toutes les ressources pédagogiques -->
   <button class="dl-btn dl-ressources" onclick="openDlModal()" id="dl-res-btn">
-    📂 Télécharger les ressources
+    📂 Ressources du cours
+  </button>
+
+  <!-- Télécharge directement le fichier .docx de progression depuis le répertoire -->
+  <button class="dl-btn dl-progression" onclick="downloadProgression()" id="dl-prog-btn">
+    📄 Ma Progression Word
+  </button>
+
+  <!-- Génère un rapport de suivi Word à partir des notes/coches/niveaux CC saisis -->
+  <button class="dl-btn dl-rapport" onclick="downloadRapport()" id="dl-rapport-btn">
+    📊 Rapport de Suivi Word
   </button>
 </div>
 
@@ -2275,6 +2313,358 @@ function openDlModal() {
 function closeDlModal() {
   const modal = document.getElementById('dl-modal');
   if (modal) modal.remove();
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   7b. TÉLÉCHARGEMENT — Progression Word (fichier .docx du répertoire)
+   ──────────────────────────────────────────────────────────────────
+   Chaque classe a son propre fichier .docx dans le même répertoire
+   que progression.html.
+   ⚠️ Si vous renommez les fichiers, mettez à jour PROGRESSION_FILES.
+   ══════════════════════════════════════════════════════════════════ */
+
+const PROGRESSION_FILES = {
+  mtne:  './Plan_Progression_Seconde_MTNE_2024-2025.docx',
+  ciel1: './Progression_1CIEL1.docx',
+  ciel2: './Progression_1CIEL2.docx',
+};
+
+function downloadProgression() {
+  const key  = getCurrentKey();
+  const href = PROGRESSION_FILES[key];
+  if (!href) return;
+
+  /* Crée un lien temporaire et déclenche le téléchargement */
+  const a = document.createElement('a');
+  a.href     = href;
+  a.download = href.split('/').pop();   // nom du fichier tel quel
+  a.click();
+
+  /* Feedback visuel sur le bouton */
+  const btn = document.getElementById('dl-prog-btn');
+  const orig = btn.innerHTML;
+  btn.classList.add('dl-flash');
+  btn.textContent = '✅ Ouverture…';
+  setTimeout(() => { btn.classList.remove('dl-flash'); btn.innerHTML = orig; }, 1800);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   7c. TÉLÉCHARGEMENT — Rapport de Suivi Word (généré depuis l'état)
+   ──────────────────────────────────────────────────────────────────
+   Produit un document Word (.doc compatible) qui reflète exactement
+   ce que vous avez saisi dans la page :
+     • Module coché ✅ / en cours ⏳
+     • Niveaux CC modifiés par vos sélecteurs
+     • Notes / observations saisies dans l'onglet 📝
+   ══════════════════════════════════════════════════════════════════ */
+
+function downloadRapport() {
+  const key       = getCurrentKey();
+  const prog      = PROGRAMS[key];
+  const className = getClassName(key);
+  const mods      = getAllModules(key);
+  const total     = mods.length;
+  const done      = mods.filter(m => getModuleState(m.id).done).length;
+  const pct       = total ? Math.round(done / total * 100) : 0;
+  const now       = new Date().toLocaleDateString('fr-FR', {
+                      weekday: 'long', day: '2-digit',
+                      month: 'long',   year: 'numeric'
+                    });
+  const dateFile  = new Date().toISOString().slice(0, 10);
+
+  /* Couleurs niveaux CC */
+  const levelBg    = { I:'#fff9c4', A:'#ffe8cc', M:'#d4f7e7', E:'#ede9fe' };
+  const levelColor = { I:'#7a5c00', A:'#7a3000', M:'#145a30', E:'#4a1b8c' };
+  const levelLabel = { I:'Initiation', A:'Approfond.', M:'Maîtrise', E:'Évaluation' };
+
+  /* ── Section 1 : Récapitulatif des modules ── */
+  let recapRows = '';
+  for (const period of prog.periods) {
+    if (period.pfmp) {
+      recapRows += `
+        <tr>
+          <td colspan="4"
+              style="background:#fff7ed; border:1px dashed #fb923c; padding:7px 12px;
+                     color:#9a3412; font-weight:bold; text-align:center">
+            ${period.pfmp}
+          </td>
+        </tr>`;
+      continue;
+    }
+    recapRows += `
+      <tr>
+        <td colspan="4"
+            style="background:#1e293b; color:#f8fafc; padding:6px 12px;
+                   font-weight:bold; font-size:10pt">
+          ${period.label}
+        </td>
+      </tr>`;
+
+    for (const mod of period.modules) {
+      const ms     = getModuleState(mod.id);
+      const isDone = ms.done;
+      const statusCell = isDone
+        ? `<span style="background:#dcfce7; color:#166534; border:1px solid #16a34a;
+                        border-radius:4px; padding:2px 10px; font-weight:bold; font-size:9pt">
+             ✅ Terminé
+           </span>`
+        : `<span style="background:#fef9c3; color:#854d0e; border:1px solid #ca8a04;
+                        border-radius:4px; padding:2px 10px; font-weight:bold; font-size:9pt">
+             ⏳ En cours
+           </span>`;
+
+      recapRows += `
+        <tr style="background:${isDone ? '#f0fdf4' : '#fffbeb'}">
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:10pt">${mod.title}</td>
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:9pt;
+                     color:#475569; text-align:center">${mod.duree}</td>
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; text-align:center">
+            ${statusCell}
+          </td>
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:9pt;
+                     color:${ms.notes ? '#0f172a' : '#9ca3af'};
+                     font-style:${ms.notes ? 'normal' : 'italic'}">
+            ${ms.notes || 'Aucune note'}
+          </td>
+        </tr>`;
+    }
+  }
+
+  /* ── Section 2 : Détail par module (CC + notes) ── */
+  let detailBlocks = '';
+  for (const period of prog.periods) {
+    if (period.pfmp) {
+      detailBlocks += `
+        <div style="background:#fff7ed; border:2px dashed #fb923c; padding:8px 14px;
+                    color:#9a3412; font-weight:bold; text-align:center;
+                    margin:10px 0; border-radius:4px">
+          ${period.pfmp}
+        </div>`;
+      continue;
+    }
+    detailBlocks += `
+      <div style="background:#1e293b; color:#f8fafc; padding:7px 14px; font-weight:bold;
+                  font-size:11pt; margin:14px 0 6px 0; border-radius:4px">
+        ${period.label}
+      </div>`;
+
+    for (const mod of period.modules) {
+      const ms     = getModuleState(mod.id);
+      const isDone = ms.done;
+      /* Fusionne les niveaux CC par défaut + ceux saisis par l'enseignant */
+      const ccMerged = Object.assign({}, mod.cc, ms.cc || {});
+
+      const ccChips = Object.entries(ccMerged)
+        .filter(([, v]) => v)
+        .map(([code, level]) =>
+          `<span style="display:inline-block;
+                        background:${levelBg[level] || '#f1f5f9'};
+                        color:${levelColor[level] || '#374151'};
+                        border:1px solid ${levelColor[level] || '#9ca3af'};
+                        border-radius:4px; padding:1px 8px;
+                        font-size:9pt; font-weight:bold; margin:2px">
+             ${code} — ${levelLabel[level] || level}
+           </span>`
+        ).join(' ') || '<span style="color:#94a3b8; font-size:9pt">Aucun niveau renseigné</span>';
+
+      const statusBadge = isDone
+        ? `<span style="background:#dcfce7; color:#166534; border:1px solid #16a34a;
+                        border-radius:4px; padding:1px 10px; font-size:9pt; font-weight:bold">
+             ✅ Terminé
+           </span>`
+        : `<span style="background:#fef9c3; color:#854d0e; border:1px solid #ca8a04;
+                        border-radius:4px; padding:1px 10px; font-size:9pt; font-weight:bold">
+             ⏳ En cours
+           </span>`;
+
+      detailBlocks += `
+        <div style="background:${isDone ? '#f0fdf4' : '#fafafa'};
+                    border:1px solid ${isDone ? '#bbf7d0' : '#e2e8f0'};
+                    border-radius:6px; padding:10px 14px; margin:5px 0">
+          <div style="display:flex; justify-content:space-between;
+                      align-items:flex-start; margin-bottom:6px">
+            <span style="font-size:11pt; font-weight:bold; color:#0f172a">
+              ${mod.title}
+            </span>
+            ${statusBadge}
+          </div>
+          <div style="font-size:9pt; color:#64748b; margin-bottom:7px">
+            ⏱ ${mod.duree} &nbsp;·&nbsp; Compétences visées : ${mod.comp.join(', ')}
+          </div>
+          <div style="margin-bottom:6px">
+            <b style="font-size:9pt; color:#475569">Niveaux CC :</b><br>
+            ${ccChips}
+          </div>
+          ${ms.notes
+            ? `<div style="background:#f5f3ff; border-left:3px solid #8b5cf6;
+                           padding:5px 9px; border-radius:3px;
+                           font-size:9pt; color:#3b0764; margin-top:5px">
+                 📝 <b>Notes :</b> ${ms.notes}
+               </div>`
+            : ''}
+        </div>`;
+    }
+  }
+
+  /* ── Section 3 : Synthèse CC globale ── */
+  const best        = {};
+  const levelOrder  = { I:1, A:2, M:3, E:4 };
+  for (const mod of mods) {
+    const ms     = getModuleState(mod.id);
+    const merged = Object.assign({}, mod.cc, ms.cc || {});
+    for (const [code, level] of Object.entries(merged)) {
+      if (!level) continue;
+      if (!best[code] || levelOrder[level] > levelOrder[best[code]]) best[code] = level;
+    }
+  }
+
+  const synthRows = prog.ccList.map(cc => `
+    <tr>
+      <td style="padding:6px 10px; border:1px solid #e2e8f0;
+                 font-family:monospace; font-weight:bold; color:#1e293b">${cc.code}</td>
+      <td style="padding:6px 10px; border:1px solid #e2e8f0; font-size:10pt; color:#374151">${cc.name}</td>
+      <td style="padding:6px 10px; border:1px solid #e2e8f0; text-align:center">
+        ${best[cc.code]
+          ? `<span style="background:${levelBg[best[cc.code]]};
+                          color:${levelColor[best[cc.code]]};
+                          border:1px solid ${levelColor[best[cc.code]]};
+                          border-radius:4px; padding:2px 12px;
+                          font-weight:bold; font-size:9pt">
+               ${best[cc.code]} — ${levelLabel[best[cc.code]]}
+             </span>`
+          : '<span style="color:#94a3b8; font-size:9pt">Non traité</span>'
+        }
+      </td>
+    </tr>`).join('');
+
+  /* ── Assemblage du document HTML-Word ── */
+  const html = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset='utf-8'>
+  <title>Rapport de Suivi — ${className}</title>
+  <style>
+    body { font-family: Calibri, sans-serif; font-size: 11pt; margin: 1.5cm 2cm; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { vertical-align: top; }
+  </style>
+</head>
+<body>
+
+<!-- En-tête du rapport -->
+<table style="width:100%; margin-bottom:16px; border-bottom:3px solid #1e293b; padding-bottom:12px">
+  <tr>
+    <td>
+      <div style="font-size:22pt; font-weight:bold; color:#0f172a">
+        📊 Rapport de Suivi Pédagogique
+      </div>
+      <div style="font-size:11pt; color:#475569; margin-top:4px">
+        Classe : <b>${className}</b> &nbsp;|&nbsp;
+        Enseignant : Yahia Isddiken &nbsp;|&nbsp; 2024-2025
+      </div>
+      <div style="font-size:9pt; color:#94a3b8; margin-top:2px">
+        Généré le ${now}
+      </div>
+    </td>
+    <td style="text-align:right; vertical-align:middle">
+      <div style="display:inline-block; background:#dbeafe; border:2px solid #3b82f6;
+                  border-radius:8px; padding:10px 18px; text-align:center">
+        <div style="font-size:26pt; font-weight:bold; color:#1d4ed8">${pct}%</div>
+        <div style="font-size:9pt; color:#1e40af">${done} / ${total} modules terminés</div>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<!-- Barre de progression visuelle -->
+<div style="margin-bottom:18px">
+  <div style="font-size:9pt; color:#64748b; margin-bottom:4px">Progression globale</div>
+  <div style="background:#e2e8f0; border-radius:6px; height:14px; width:100%; overflow:hidden">
+    <div style="background:linear-gradient(90deg,#3b82f6,#06b6d4);
+                height:14px; width:${pct}%; border-radius:6px"></div>
+  </div>
+</div>
+
+<!-- Section 1 : Récapitulatif -->
+<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
+           padding-bottom:5px; margin-top:20px">
+  📋 Récapitulatif des Modules
+</h2>
+<table style="border-collapse:collapse; width:100%; margin-bottom:20px">
+  <tr style="background:#334155; color:#f8fafc">
+    <th style="padding:8px 10px; text-align:left;   font-size:10pt; width:42%">Module</th>
+    <th style="padding:8px 10px; text-align:center; font-size:10pt; width:12%">Durée</th>
+    <th style="padding:8px 10px; text-align:center; font-size:10pt; width:16%">Statut</th>
+    <th style="padding:8px 10px; text-align:left;   font-size:10pt; width:30%">Notes / Observations</th>
+  </tr>
+  ${recapRows}
+</table>
+
+<!-- Section 2 : Détail par module -->
+<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
+           padding-bottom:5px; margin-top:24px">
+  🎯 Détail par Module — Compétences & Niveaux
+</h2>
+${detailBlocks}
+
+<!-- Section 3 : Synthèse CC -->
+<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
+           padding-bottom:5px; margin-top:24px">
+  📈 Synthèse Globale des Compétences
+</h2>
+<table style="border-collapse:collapse; width:60%; margin-bottom:20px">
+  <tr style="background:#334155; color:#f8fafc">
+    <th style="padding:7px 10px; text-align:left;   font-size:10pt; width:15%">Code</th>
+    <th style="padding:7px 10px; text-align:left;   font-size:10pt; width:50%">Compétence</th>
+    <th style="padding:7px 10px; text-align:center; font-size:10pt; width:35%">Niveau atteint</th>
+  </tr>
+  ${synthRows}
+</table>
+
+<!-- Légende -->
+<div style="margin-top:24px; padding:10px 14px; background:#f8fafc;
+            border:1px solid #e2e8f0; border-radius:6px; font-size:9pt; color:#64748b">
+  Légende :
+  <span style="background:#fff9c4; color:#7a5c00; padding:1px 7px;
+               border-radius:4px; border:1px solid #7a5c00; margin:0 2px">
+    I — Initiation
+  </span>
+  <span style="background:#ffe8cc; color:#7a3000; padding:1px 7px;
+               border-radius:4px; border:1px solid #7a3000; margin:0 2px">
+    A — Approfondissement
+  </span>
+  <span style="background:#d4f7e7; color:#145a30; padding:1px 7px;
+               border-radius:4px; border:1px solid #145a30; margin:0 2px">
+    M — Maîtrise
+  </span>
+  <span style="background:#ede9fe; color:#4a1b8c; padding:1px 7px;
+               border-radius:4px; border:1px solid #4a1b8c; margin:0 2px">
+    E — Évaluation
+  </span>
+</div>
+
+</body>
+</html>`;
+
+  /* Déclenche le téléchargement */
+  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `Rapport_Suivi_${className.replace(/ /g, '_')}_${dateFile}.doc`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  /* Feedback visuel */
+  const btn  = document.getElementById('dl-rapport-btn');
+  const orig = btn.innerHTML;
+  btn.classList.add('dl-flash');
+  btn.textContent = '✅ Téléchargé !';
+  setTimeout(() => { btn.classList.remove('dl-flash'); btn.innerHTML = orig; }, 1800);
 }
 
 
