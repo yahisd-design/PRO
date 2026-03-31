@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Suivi TP Électricité</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Arial,sans-serif;background:#0f1117;color:#e0e3ef;min-height:100vh;padding-bottom:80px}
+
+/* HEADER */
+#header{position:sticky;top:0;z-index:99;background:#0f1117;border-bottom:1px solid #2a2d3e}
+#header-top{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 0}
+#header-top span{font-size:11px;color:#666;font-family:monospace;letter-spacing:.5px}
+#clock{background:#1a1d27;color:#888;padding:3px 9px;border-radius:20px;font-size:12px;font-family:monospace;border:1px solid #2a2d3e}
+
+/* ONGLETS */
+#tabs{display:flex;gap:5px;padding:8px 12px 0;overflow-x:auto;scrollbar-width:none}
+#tabs::-webkit-scrollbar{display:none}
+.tab{flex-shrink:0;padding:7px 11px 9px;border-radius:7px 7px 0 0;font-size:12px;font-weight:bold;cursor:pointer;background:#1a1d27;color:#666;border:1px solid transparent;border-bottom:none;display:flex;align-items:center;gap:5px}
+.tab.on{background:#141720;color:#e0e3ef;border-color:#2a2d3e}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tprog{font-size:10px;font-family:monospace;color:#555}
+.tab.on .tprog{color:#888}
+
+/* MAIN */
+#main{padding:12px}
+
+/* CARTE BINOME */
+.bcard{display:flex;align-items:center;gap:12px;padding:13px;border-radius:10px;margin-bottom:10px;border:1px solid #2a2d3e}
+.bcirc{width:50px;height:50px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.bcirc-s{font-size:9px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase}
+.bcirc-n{font-size:24px;font-family:monospace;line-height:1}
+.broom{font-size:18px;font-weight:bold}
+.btask{font-size:12px;color:#888;margin-top:2px;line-height:1.3}
+
+/* BARRE PROG */
+.progrow{display:flex;align-items:center;gap:10px;padding:9px 13px;background:#1a1d27;border-radius:8px;margin-bottom:10px;border:1px solid #2a2d3e}
+.progbar{flex:1;height:5px;background:#2a2d3e;border-radius:3px;overflow:hidden}
+.progfill{height:100%;border-radius:3px;transition:width .3s}
+.progpct{font-size:12px;font-family:monospace;color:#888;min-width:38px;text-align:right}
+
+/* NOTE */
+.notebox{padding:11px 13px;background:#141720;border:1px solid #2a2d3e;border-radius:10px;margin-bottom:10px}
+.notebox-lbl{font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:8px}
+.noterow{display:flex;gap:10px;align-items:flex-start}
+.ninp-wrap{display:flex;flex-direction:column;align-items:center;gap:2px}
+.ninp{width:66px;height:52px;background:#1a1d27;border:1px solid #3a3d4e;border-radius:7px;color:#e0e3ef;font-size:24px;text-align:center;font-family:monospace}
+.ninp:focus{outline:none;border-color:#4d8ff5}
+.ndenom{font-size:11px;color:#555;font-family:monospace}
+.obstxt{flex:1;height:56px;background:#1a1d27;border:1px solid #3a3d4e;border-radius:7px;color:#e0e3ef;font-size:13px;padding:8px 10px;resize:none}
+.obstxt:focus{outline:none;border-color:#4d8ff5}
+.obstxt::placeholder{color:#555}
+
+/* PHASES */
+.phase{border:1px solid #2a2d3e;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.phdr{display:flex;align-items:center;gap:9px;padding:11px 12px;background:#141720;cursor:pointer;user-select:none;-webkit-user-select:none}
+.pico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.pmeta{flex:1}
+.pname{font-size:13px;font-weight:bold}
+.ptime{font-size:11px;color:#666;margin-top:1px}
+.pbadge{font-size:11px;font-family:monospace;padding:2px 8px;border-radius:20px;background:#1a1d27;color:#666}
+.pbadge.full{background:rgba(63,207,142,.15);color:#3fcf8e}
+.pchev{color:#555;transition:transform .2s;flex-shrink:0}
+.phase.open .pchev{transform:rotate(180deg)}
+.pbody{display:none;background:#1a1d27}
+.phase.open .pbody{display:block}
+
+/* ITEMS */
+.chk{display:flex;align-items:flex-start;gap:11px;padding:11px 12px;border-top:1px solid #2a2d3e;cursor:pointer;user-select:none;-webkit-user-select:none;transition:background .1s}
+.chk:active{background:rgba(255,255,255,.03)}
+.chk.on{background:rgba(63,207,142,.05)}
+.cbox{width:22px;height:22px;border-radius:6px;border:2px solid #3a3d4e;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.chk.on .cbox{background:#3fcf8e;border-color:#3fcf8e}
+.ccheck{display:none}
+.chk.on .ccheck{display:block}
+.ctxt{flex:1}
+.clbl{font-size:13px;font-weight:600;line-height:1.35}
+.chk.on .clbl{text-decoration:line-through;color:#666}
+.csub{font-size:11px;color:#555;margin-top:3px;line-height:1.4;font-style:italic}
+.ccc{font-size:10px;font-family:monospace;padding:2px 6px;border-radius:4px;background:rgba(77,143,245,.15);color:#4d8ff5;flex-shrink:0;margin-top:3px}
+
+/* BARRE BAS */
+#botbar{position:fixed;bottom:0;left:0;right:0;background:#141720;border-top:1px solid #2a2d3e;padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;z-index:100}
+.btn{padding:13px 14px;border-radius:10px;border:none;font-size:13px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s,transform .1s;font-family:Arial,sans-serif}
+.btn:active{transform:scale(.97);opacity:.85}
+.btn-rst{background:#1a1d27;color:#888;border:1px solid #2a2d3e;flex:0 0 auto}
+.btn-dl{background:#4d8ff5;color:#fff;flex:1}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* TOAST */
+#toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(12px);background:#3fcf8e;color:#0f1117;font-weight:bold;font-size:13px;padding:9px 20px;border-radius:20px;opacity:0;transition:all .3s;z-index:200;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-top">
+    <span>TP ÉLECTRICITÉ · NF C15-100 · M. ISDDIKEN</span>
+    <span id="clock">--:--</span>
+  </div>
+  <div id="tabs"></div>
+</div>
+
+<div id="main"></div>
+
+<div id="botbar">
+  <button class="btn btn-rst" onclick="resetBinome()">&#x21BA;</button>
+  <button class="btn btn-dl" id="dlbtn" onclick="exportDocx()">
+    &#11015; &nbsp;Générer le rapport DOCX
+  </button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ===== DONNÉES ===== */
+var BINOMES = [
+  {id:1, room:'Chambre 1',  task:'Simple Allumage & Prise 16A',             col:'#2e75b6', bg:'rgba(46,117,182,.13)',  hex:'2E75B6', hexbg:'D6E4F0'},
+  {id:2, room:'Couloir',    task:'Va-et-Vient · 2 points de commande',      col:'#c55a11', bg:'rgba(197,90,17,.13)',   hex:'C55A11', hexbg:'FCE4D6'},
+  {id:3, room:'Cuisine',    task:'Double Allumage & Prise commandée Hotte', col:'#548235', bg:'rgba(84,130,53,.13)',   hex:'548235', hexbg:'E2EFDA'},
+  {id:4, room:'Chambre 2',  task:'Va-et-Vient & Prise 16A',                 col:'#9b4dca', bg:'rgba(155,77,202,.13)', hex:'9B4DCA', hexbg:'EDE0F5'},
+  {id:5, room:'Salon',      task:'Double Allumage & Prise TV',              col:'#c0392b', bg:'rgba(192,57,43,.13)',   hex:'C0392B', hexbg:'FDECEA'},
+  {id:6, room:'Entrée',     task:'Va-et-Vient & Allumage Placard',          col:'#138496', bg:'rgba(19,132,150,.13)', hex:'138496', hexbg:'D1F2F8'},
+];
+
+var PHASES = [
+  {name:'Arrivée & installation', time:'14h00 – 14h15', ico:'📋', icobg:'#1a2537', icoc:'#4d8ff5',
+   items:[
+    {lbl:'Tenue correcte (vêtements de travail)',  sub:'Pas de bijoux — cheveux attachés si longs', cc:'CC2'},
+    {lbl:'Poste propre, matériel en place',        sub:'Outils sortis, planche maquette posée, rien qui traîne', cc:'CC2'},
+    {lbl:'Étiquette maquette collée & complétée', sub:'Noms des 2 élèves écrits lisiblement', cc:'CC2'},
+    {lbl:'Sujet TP lu et compris',                sub:'Posez : "C\'est quoi votre mission ?"', cc:'CC1'},
+  ]},
+  {name:'Phase schéma', time:'14h15 – 14h40', ico:'✏️', icobg:'#251a37', icoc:'#a070f5',
+   items:[
+    {lbl:'Schéma unifilaire tracé AVANT câblage',  sub:'Stylo + règle dehors, PAS les câbles', cc:'CC1'},
+    {lbl:'Symboles NF C15-100 utilisés',           sub:'Interrupteur, douille, prise — pas de dessin libre', cc:'CC3'},
+    {lbl:'Sections de câbles indiquées',           sub:'1,5 mm² éclairage / 2,5 mm² prises — écrit sur schéma', cc:'CC3'},
+    {lbl:'Zone localisée sur le plan archi',       sub:'Ils pointent leur pièce — pas juste "je sais"', cc:'CC1'},
+  ]},
+  {name:'Câblage en cours', time:'14h40 – 15h30', ico:'⚡', icobg:'#1a2e1a', icoc:'#3fcf8e',
+   items:[
+    {lbl:'Couleurs conducteurs respectées',        sub:'Phase rouge/marron · Neutre bleu · PE vert/jaune', cc:'CC4'},
+    {lbl:'Dénudage propre : 10 mm précis',         sub:'Pas de stries, pas de cuivre visible hors borne', cc:'CC4'},
+    {lbl:'Phase coupée par l\'interrupteur',       sub:'Posez : "Tu coupes quoi ?" → réponse : la phase', cc:'CC4'},
+    {lbl:'Aucune connexion volante / hors boîte',  sub:'Toute jonction dans appareillage ou boîte fermée', cc:'CC4'},
+    {lbl:'Polarité prise respectée',              sub:'Phase à droite, neutre à gauche, PE en haut', cc:'CC4'},
+    {lbl:'Disjoncteur calibré & étiqueté',        sub:'10A éclairage · 16A prise · identifié au tableau', cc:'CC4'},
+  ]},
+  {name:'Contrôle final', time:'15h30 – 15h45', ico:'✅', icobg:'#2a2a16', icoc:'#f5a623',
+   items:[
+    {lbl:'Vérification visuelle faite par l\'élève', sub:'Posez : "T\'as vérifié ? Tu es sûr ?" avant mise sous tension', cc:'CC5'},
+    {lbl:'Installation fonctionne au 1er essai',     sub:'Allumage OK, prise OK, disjoncteur ne saute pas', cc:'CC6'},
+    {lbl:'L\'élève explique son câblage',            sub:'Posez : "Pourquoi 1,5 mm² ici ?" — répond seul', cc:'CC8'},
+  ]},
+  {name:'Rangement & questions théo.', time:'15h45 – 16h00', ico:'📝', icobg:'#2a1a1a', icoc:'#e85d5d',
+   items:[
+    {lbl:'Poste rangé, outils nettoyés',            sub:'Câbles enroulés, rien au sol', cc:'CC2'},
+    {lbl:'Questions individuelles répondues',       sub:'Chacun répond seul, sans copier', cc:'CC8'},
+    {lbl:'Grille d\'évaluation complétée',          sub:'Note pratique + théorie = note finale /20', cc:'CC8'},
+  ]},
+];
+
+var TOTAL = PHASES.reduce(function(a,p){return a+p.items.length;},0);
+
+/* ===== ÉTAT ===== */
+var cur = 0;
+var S = BINOMES.map(function(){
+  return {checks: PHASES.map(function(p){return Array(p.items.length).fill(false);}), note:'', obs:'', open:[0]};
+});
+
+function s(){return S[cur];}
+function done(i){return S[i].checks.reduce(function(a,arr){return a+arr.filter(Boolean).length;},0);}
+function pct(i){return Math.round(done(i)/TOTAL*100);}
+
+/* ===== HORLOGE ===== */
+function tick(){
+  var n=new Date();
+  document.getElementById('clock').textContent=
+    ('0'+n.getHours()).slice(-2)+':'+('0'+n.getMinutes()).slice(-2);
+}
+tick(); setInterval(tick,10000);
+
+/* ===== TABS ===== */
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = BINOMES.map(function(b,i){
+    return '<div class="tab'+(i===cur?' on':'')+'" onclick="switchTo('+i+')">'
+      +'<span class="dot" style="background:'+b.col+'"></span>'
+      +'B'+b.id
+      +'<span class="tprog">'+done(i)+'/'+TOTAL+'</span>'
+      +'</div>';
+  }).join('');
+}
+
+/* ===== MAIN ===== */
+function renderMain(){
+  var b=BINOMES[cur], st=s(), d=done(cur), p=pct(cur);
+  var html='';
+
+  /* carte binôme */
+  html+='<div class="bcard" style="background:'+b.bg+';border-color:'+b.col+'44">'
+    +'<div class="bcirc" style="background:'+b.col+'22;border:2px solid '+b.col+'44">'
+    +'<span class="bcirc-s" style="color:'+b.col+'">Bin.</span>'
+    +'<span class="bcirc-n" style="color:'+b.col+'">'+b.id+'</span>'
+    +'</div>'
+    +'<div><div class="broom">'+b.room+'</div><div class="btask">'+b.task+'</div></div>'
+    +'</div>';
+
+  /* barre progression */
+  html+='<div class="progrow">'
+    +'<div class="progbar"><div class="progfill" style="width:'+p+'%;background:'+(p===100?'#3fcf8e':b.col)+'"></div></div>'
+    +'<div class="progpct" style="color:'+(p===100?'#3fcf8e':'#888')+'">'+d+'/'+TOTAL+'</div>'
+    +'</div>';
+
+  /* note */
+  html+='<div class="notebox">'
+    +'<div class="notebox-lbl">Note & observations professeur</div>'
+    +'<div class="noterow">'
+    +'<div class="ninp-wrap">'
+    +'<input class="ninp" type="number" min="0" max="20" placeholder="--" value="'+st.note+'" oninput="S[cur].note=this.value">'
+    +'<span class="ndenom">/ 20</span>'
+    +'</div>'
+    +'<textarea class="obstxt" placeholder="Observations, points faibles, erreurs constatées…" oninput="S[cur].obs=this.value">'+st.obs+'</textarea>'
+    +'</div></div>';
+
+  /* phases */
+  var pcols=[{bg:'#1a2537',c:'#4d8ff5'},{bg:'#251a37',c:'#a070f5'},{bg:'#1a2e1a',c:'#3fcf8e'},{bg:'#2a2a16',c:'#f5a623'},{bg:'#2a1a1a',c:'#e85d5d'}];
+  PHASES.forEach(function(ph,pi){
+    var pdone=st.checks[pi].filter(Boolean).length;
+    var isOpen=st.open.indexOf(pi)>=0;
+    html+='<div class="phase'+(isOpen?' open':'')+'" id="ph'+pi+'">'
+      +'<div class="phdr" onclick="togglePhase('+pi+')">'
+      +'<div class="pico" style="background:'+pcols[pi].bg+';color:'+pcols[pi].c+'">'+ph.ico+'</div>'
+      +'<div class="pmeta"><div class="pname">'+ph.name+'</div><div class="ptime">'+ph.time+'</div></div>'
+      +'<span class="pbadge'+(pdone===ph.items.length?' full':'')+'">'+pdone+'/'+ph.items.length+'</span>'
+      +'<svg class="pchev" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>'
+      +'</div>'
+      +'<div class="pbody">';
+
+    ph.items.forEach(function(item,ii){
+      var checked=st.checks[pi][ii];
+      html+='<div class="chk'+(checked?' on':'')+'" onclick="toggle('+pi+','+ii+')">'
+        +'<div class="cbox"><svg class="ccheck" width="12" height="12" fill="none" stroke="white" stroke-width="2.5" viewBox="0 0 12 12"><path d="M1.5 6L4.5 9L10.5 3"/></svg></div>'
+        +'<div class="ctxt"><div class="clbl">'+item.lbl+'</div><div class="csub">'+item.sub+'</div></div>'
+        +'<span class="ccc">'+item.cc+'</span>'
+        +'</div>';
+    });
+
+    html+='</div></div>';
+  });
+
+  document.getElementById('main').innerHTML=html;
+}
+
+/* ===== INTERACTIONS ===== */
+function switchTo(i){cur=i;renderTabs();renderMain();window.scrollTo(0,0);}
+
+function togglePhase(pi){
+  var st=s(), idx=st.open.indexOf(pi);
+  if(idx>=0) st.open.splice(idx,1); else st.open.push(pi);
+  renderMain();
+}
+
+function toggle(pi,ii){
+  var st=s();
+  st.checks[pi][ii]=!st.checks[pi][ii];
+  if(st.checks[pi].every(Boolean)&&pi<PHASES.length-1&&st.open.indexOf(pi+1)<0) st.open.push(pi+1);
+  renderTabs(); renderMain();
+}
+
+function resetBinome(){
+  if(!confirm('Réinitialiser binôme '+BINOMES[cur].id+' — '+BINOMES[cur].room+' ?')) return;
+  S[cur]={checks:PHASES.map(function(p){return Array(p.items.length).fill(false);}),note:'',obs:'',open:[0]};
+  renderTabs(); renderMain();
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
+
+/* ===== EXPORT DOCX ===== */
+function exportDocx(){
+  var btn=document.getElementById('dlbtn');
+  btn.disabled=true; btn.textContent='Génération en cours…';
+
+  var script=document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js';
+  script.onload=function(){buildDocx(btn);};
+  script.onerror=function(){
+    btn.disabled=false; btn.innerHTML='&#11015; &nbsp;Générer le rapport DOCX';
+    showToast('⚠ Erreur réseau — vérifiez la connexion');
+  };
+  document.head.appendChild(script);
+}
+
+function buildDocx(btn){
+  try{
+    var _=window.docx;
+    var Doc=_.Document,Pkr=_.Packer,Par=_.Paragraph,TR=_.TextRun,
+        Tbl=_.Table,TblRow=_.TableRow,TblCell=_.TableCell,
+        Al=_.AlignmentType,Wt=_.WidthType,Bs=_.BorderStyle,
+        St=_.ShadingType,Va=_.VerticalAlign;
+
+    var now=new Date();
+    var ds=('0'+now.getDate()).slice(-2)+'/'+('0'+(now.getMonth()+1)).slice(-2)+'/'+now.getFullYear()
+        +' '+('0'+now.getHours()).slice(-2)+'h'+('0'+now.getMinutes()).slice(-2);
+
+    var bd={style:Bs.SINGLE,size:1,color:'CCCCCC'};
+    var bdH={style:Bs.SINGLE,size:1,color:'1F4E79'};
+    var brd={top:bd,bottom:bd,left:bd,right:bd};
+    var brdH={top:bdH,bottom:bdH,left:bdH,right:bdH};
+    var marg={top:70,bottom:70,left:110,right:110};
+
+    function p(ch,opts){
+      opts=opts||{};
+      return new Par({alignment:opts.c?Al.CENTER:Al.LEFT,spacing:{before:opts.b||0,after:opts.a||60},children:ch});
+    }
+    function t(txt,opts){
+      opts=opts||{};
+      return new TR({text:txt,font:'Arial',size:opts.s||20,bold:!!opts.bold,italics:!!opts.it,color:opts.col||'222222',strike:!!opts.st});
+    }
+    function tc(ch,w,opts){
+      opts=opts||{};
+      return new TblCell({width:{size:w,type:Wt.DXA},borders:opts.brd||brd,
+        shading:opts.fill?{type:St.CLEAR,fill:opts.fill}:undefined,
+        margins:marg,verticalAlign:Va.CENTER,columnSpan:opts.span||1,children:ch});
+    }
+    function row(cells){return new TblRow({children:cells});}
+
+    var ch=[];
+
+    /* TITRE */
+    ch.push(p([t('SUIVI TP ÉLECTRICITÉ — NF C15-100',{bold:true,s:28,col:'1F4E79'})],{c:true,a:40}));
+    ch.push(p([t('M. ISDDIKEN · Lycée Champollion, Lattes · 2nde PRO MTNE · Généré le '+ds,{s:17,col:'777777',it:true})],{c:true,a:300}));
+
+    /* SYNTHÈSE */
+    ch.push(p([t('Tableau de synthèse — avancement de la classe',{bold:true,s:22,col:'1F4E79'})],{a:100}));
+
+    var sRows=[row([
+      tc([p([t('Binôme',{bold:true,s:18,col:'FFFFFF'})],{c:true})],1800,{fill:'1F4E79',brd:brdH}),
+      tc([p([t('Zone / Tâche',{bold:true,s:18,col:'FFFFFF'})])],3200,{fill:'1F4E79',brd:brdH}),
+      tc([p([t('Avancement',{bold:true,s:18,col:'FFFFFF'})],{c:true})],1500,{fill:'1F4E79',brd:brdH}),
+      tc([p([t('Note /20',{bold:true,s:18,col:'FFFFFF'})],{c:true})],1060,{fill:'1F4E79',brd:brdH}),
+      tc([p([t('Observations',{bold:true,s:18,col:'FFFFFF'})])],1800,{fill:'1F4E79',brd:brdH}),
+    ])];
+
+    BINOMES.forEach(function(b,i){
+      var d=done(i),p2=pct(i),st=S[i];
+      var sc=p2===100?'375623':(p2>=50?'7B3F00':'7B1F1F');
+      var sbg=p2===100?'E2EFDA':(p2>=50?'FFF2CC':'FDECEA');
+      sRows.push(row([
+        tc([p([t('B'+b.id+' — '+b.room,{bold:true,s:18,col:b.hex})],{c:true})],1800,{fill:b.hexbg}),
+        tc([p([t(b.task,{s:17})])],3200),
+        tc([p([t(d+'/'+TOTAL+' ('+p2+'%)',{bold:p2===100,s:18,col:sc})],{c:true})],1500,{fill:sbg}),
+        tc([p([t(st.note?st.note+'/20':'—',{bold:!!st.note,s:18,col:st.note?'000000':'999999'})],{c:true})],1060),
+        tc([p([t(st.obs||'—',{s:16,col:st.obs?'222222':'999999',it:!st.obs})])],1800),
+      ]));
+    });
+
+    ch.push(new Tbl({width:{size:9360,type:Wt.DXA},columnWidths:[1800,3200,1500,1060,1800],rows:sRows}));
+
+    /* DÉTAIL BINÔMES */
+    BINOMES.forEach(function(b,i){
+      var st=S[i], d=done(i), p2=pct(i);
+      var phbgs=['E8EEF6','EDE8F4','E4EDE4','F4F1E8','F4E8E8','E5EEF0'];
+
+      ch.push(new Par({spacing:{before:340,after:120},
+        border:{bottom:{style:Bs.SINGLE,size:6,color:b.hex}},
+        children:[
+          t('Binôme '+b.id+' — '+b.room,{bold:true,s:24,col:b.hex}),
+          t('  ·  '+b.task,{s:17,col:'888888',it:true}),
+          t('  ·  '+d+'/'+TOTAL+' ('+p2+'%)',{s:17,col:p2===100?'375623':'888888'}),
+        ]}));
+
+      if(st.note||st.obs){
+        ch.push(p([
+          t('Note : ',{bold:true,s:20,col:b.hex}),
+          t(st.note?st.note+'/20':'—',{bold:true,s:20}),
+          t('   Observations : ',{bold:true,s:18,col:'555555'}),
+          t(st.obs||'—',{s:18,it:!st.obs,col:st.obs?'222222':'999999'}),
+        ],{b:60,a:120}));
+      }
+
+      PHASES.forEach(function(ph,pi){
+        var pdone=st.checks[pi].filter(Boolean).length;
+        var phRows=[row([tc([p([
+          t(ph.ico+'  '+ph.name,{bold:true,s:18}),
+          t('   '+ph.time,{s:15,col:'888888',it:true}),
+          t('   '+pdone+'/'+ph.items.length,{s:15,bold:pdone===ph.items.length,col:pdone===ph.items.length?'375623':'888888'}),
+        ])],9360,{fill:phbgs[i],span:3})])];
+
+        ph.items.forEach(function(item,ii){
+          var chk=st.checks[pi][ii];
+          phRows.push(row([
+            tc([p([t(chk?'☑':'☐',{s:20,col:chk?'375623':'AAAAAA'})],{c:true})],360),
+            tc([p([t(item.lbl,{bold:true,s:18,st:chk,col:chk?'999999':'222222'}),t('   '+item.sub,{s:15,col:'999999',it:true})])],7640),
+            tc([p([t(item.cc,{s:14,bold:true,col:'4F8EF7'})],{c:true})],1360),
+          ]));
+        });
+
+        ch.push(new Tbl({width:{size:9360,type:Wt.DXA},columnWidths:[360,7640,1360],rows:phRows}));
+        ch.push(p([],{a:80}));
+      });
+    });
+
+    var doc=new Doc({sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:800,right:800,bottom:800,left:800}}},children:ch}]});
+
+    Pkr.toBlob(doc).then(function(blob){
+      var url=URL.createObjectURL(blob);
+      var a=document.createElement('a');
+      a.href=url;
+      var fn='Suivi_TP_'+('0'+now.getDate()).slice(-2)+('0'+(now.getMonth()+1)).slice(-2)+'_'+('0'+now.getHours()).slice(-2)+'h'+('0'+now.getMinutes()).slice(-2)+'.docx';
+      a.download=fn; a.click();
+      URL.revokeObjectURL(url);
+      showToast('✓ Rapport téléchargé !');
+      btn.disabled=false; btn.innerHTML='&#11015; &nbsp;Générer le rapport DOCX';
+    });
+  } catch(e){
+    console.error(e);
+    showToast('⚠ Erreur : '+e.message);
+    btn.disabled=false; btn.innerHTML='&#11015; &nbsp;Générer le rapport DOCX';
+  }
+}
+
+/* ===== INIT ===== */
+renderTabs();
+renderMain();
+</script>
+</body>
+</html>
