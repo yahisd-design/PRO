@@ -2353,15 +2353,11 @@ function downloadProgression() {
 /* ══════════════════════════════════════════════════════════════════
    7c. TÉLÉCHARGEMENT — Rapport de Suivi Word (généré depuis l'état)
    ──────────────────────────────────────────────────────────────────
-   Produit un vrai document Word (.doc) bien formaté.
-   Règles appliquées pour la compatibilité Word / LibreOffice :
-     - Largeurs en % sur <colgroup><col> (les pixels fixes ne fonctionnent pas)
-     - Table width:100% obligatoire pour que les % soient calculés
-     - word-break:break-word sur toutes les cellules
-     - Aucun dégradé CSS (non supporté → barre pleine à la place)
-     - Aucun border-radius (non supporté)
-     - Aucun emoji dans le contenu (rendu comme images cassées)
-     - display:inline-block interdit → <span> inline uniquement
+   Produit un document Word (.doc compatible) qui reflète exactement
+   ce que vous avez saisi dans la page :
+     • Module coché ✅ / en cours ⏳
+     • Niveaux CC modifiés par vos sélecteurs
+     • Notes / observations saisies dans l'onglet 📝
    ══════════════════════════════════════════════════════════════════ */
 
 function downloadRapport() {
@@ -2374,155 +2370,147 @@ function downloadRapport() {
   const pct       = total ? Math.round(done / total * 100) : 0;
   const now       = new Date().toLocaleDateString('fr-FR', {
                       weekday: 'long', day: '2-digit',
-                      month:   'long', year: 'numeric'
+                      month: 'long',   year: 'numeric'
                     });
   const dateFile  = new Date().toISOString().slice(0, 10);
 
-  /* ── Helpers Word-safe ─────────────────────────────────────── */
+  /* Couleurs niveaux CC */
+  const levelBg    = { I:'#fff9c4', A:'#ffe8cc', M:'#d4f7e7', E:'#ede9fe' };
+  const levelColor = { I:'#7a5c00', A:'#7a3000', M:'#145a30', E:'#4a1b8c' };
+  const levelLabel = { I:'Initiation', A:'Approfond.', M:'Maîtrise', E:'Évaluation' };
 
-  const levelBg    = { I:'#FFFACD', A:'#FFE4C4', M:'#D5F5E3', E:'#E8DAEF' };
-  const levelFg    = { I:'#7D6608', A:'#7B3100', M:'#145A32', E:'#4A235A' };
-  const levelBd    = { I:'#B7950B', A:'#A04000', M:'#1E8449', E:'#7D3C98' };
-  const levelLabel = { I:'Initiation', A:'Approfond.', M:'Maitrise', E:'Evaluation' };
-
-  /* Badge statut — texte coloré simple sans span/border (évite les coupures en colonne étroite) */
-  function statusBadge(isDone) {
-    return isDone
-      ? `<b style="color:#1E8449;font-size:9.5pt">&#10003; Termine</b>`
-      : `<span style="color:#B7950B;font-size:9.5pt">&#9654; En cours</span>`;
-  }
-
-  /* Badge CC (inline span) */
-  function ccBadge(code, level) {
-    if (!level) return '';
-    return `<span style="background:${levelBg[level]};color:${levelFg[level]};
-                          border:1px solid ${levelBd[level]};
-                          padding:1px 5px;font-weight:bold;font-size:9pt"
-            >${code}:${levelLabel[level]}</span> `;
-  }
-
-  /* Supprime les emojis (rendu cassé dans Word) */
-  function stripEmoji(str) {
-    return (str || '').replace(
-      /[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|\uD83C[\uDDE0-\uDDFF]/gu, ''
-    ).trim();
-  }
-
-  /* CSS partagé pour toutes les cellules */
-  const TD = `padding:5px 7px;border:1px solid #CCC;
-              vertical-align:top;word-break:break-word;
-              overflow-wrap:break-word;font-family:Calibri,sans-serif`;
-
-  /* ── Section 1 : Récapitulatif ─────────────────────────────── */
-  /* Colonnes : Module 44%, Durée 8%, Statut 14%, Notes 34% */
-
+  /* ── Section 1 : Récapitulatif des modules ── */
   let recapRows = '';
   for (const period of prog.periods) {
-
     if (period.pfmp) {
       recapRows += `
         <tr>
-          <td colspan="4" style="${TD};background:#FEF5E7;border:1px solid #F0B27A;
-               color:#784212;font-weight:bold;text-align:center;font-size:9pt">
-            Stage en entreprise — ${stripEmoji(period.pfmp)}
+          <td colspan="4"
+              style="background:#fff7ed; border:1px dashed #fb923c; padding:7px 12px;
+                     color:#9a3412; font-weight:bold; text-align:center">
+            ${period.pfmp}
           </td>
         </tr>`;
       continue;
     }
-
     recapRows += `
       <tr>
-        <td colspan="4" style="${TD};background:#1B2631;color:#F8F9FA;
-             font-weight:bold;font-size:9.5pt">
-          ${stripEmoji(period.label)}
+        <td colspan="4"
+            style="background:#1e293b; color:#f8fafc; padding:6px 12px;
+                   font-weight:bold; font-size:10pt">
+          ${period.label}
         </td>
       </tr>`;
 
     for (const mod of period.modules) {
-      const ms    = getModuleState(mod.id);
-      const rowBg = ms.done ? '#EAFAF1' : '#FDFEFE';
+      const ms     = getModuleState(mod.id);
+      const isDone = ms.done;
+      const statusCell = isDone
+        ? `<span style="background:#dcfce7; color:#166534; border:1px solid #16a34a;
+                        border-radius:4px; padding:2px 10px; font-weight:bold; font-size:9pt">
+             ✅ Terminé
+           </span>`
+        : `<span style="background:#fef9c3; color:#854d0e; border:1px solid #ca8a04;
+                        border-radius:4px; padding:2px 10px; font-weight:bold; font-size:9pt">
+             ⏳ En cours
+           </span>`;
 
       recapRows += `
-        <tr style="background:${rowBg}">
-          <td style="${TD};font-size:10pt;color:#17202A">${stripEmoji(mod.title)}</td>
-          <td style="${TD};font-size:9pt;color:#5D6D7E;text-align:center">${mod.duree}</td>
-          <td style="${TD};text-align:center">${statusBadge(ms.done)}</td>
-          <td style="${TD};font-size:9pt;
-               color:${ms.notes ? '#17202A' : '#AAB7B8'};
-               font-style:${ms.notes ? 'normal' : 'italic'}">
+        <tr style="background:${isDone ? '#f0fdf4' : '#fffbeb'}">
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:10pt">${mod.title}</td>
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:9pt;
+                     color:#475569; text-align:center">${mod.duree}</td>
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; text-align:center">
+            ${statusCell}
+          </td>
+          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:9pt;
+                     color:${ms.notes ? '#0f172a' : '#9ca3af'};
+                     font-style:${ms.notes ? 'normal' : 'italic'}">
             ${ms.notes || 'Aucune note'}
           </td>
         </tr>`;
     }
   }
 
-  /* ── Section 2 : Détail par module ────────────────────────── */
-  /* 2 colonnes : Gauche 52% (titre+statut+notes), Droite 48% (CC) */
-
-  let detailRows = '';
+  /* ── Section 2 : Détail par module (CC + notes) ── */
+  let detailBlocks = '';
   for (const period of prog.periods) {
-
     if (period.pfmp) {
-      detailRows += `
-        <tr>
-          <td colspan="2" style="${TD};background:#FEF5E7;border:1px solid #F0B27A;
-               color:#784212;font-weight:bold;text-align:center;font-size:9pt">
-            Stage en entreprise — ${stripEmoji(period.pfmp)}
-          </td>
-        </tr>`;
+      detailBlocks += `
+        <div style="background:#fff7ed; border:2px dashed #fb923c; padding:8px 14px;
+                    color:#9a3412; font-weight:bold; text-align:center;
+                    margin:10px 0; border-radius:4px">
+          ${period.pfmp}
+        </div>`;
       continue;
     }
-
-    detailRows += `
-      <tr>
-        <td colspan="2" style="${TD};background:#1B2631;color:#F8F9FA;
-             font-weight:bold;font-size:10pt">
-          ${stripEmoji(period.label)}
-        </td>
-      </tr>`;
+    detailBlocks += `
+      <div style="background:#1e293b; color:#f8fafc; padding:7px 14px; font-weight:bold;
+                  font-size:11pt; margin:14px 0 6px 0; border-radius:4px">
+        ${period.label}
+      </div>`;
 
     for (const mod of period.modules) {
-      const ms       = getModuleState(mod.id);
-      const leftBd   = ms.done ? '#1E8449' : '#AAB7B8';
+      const ms     = getModuleState(mod.id);
+      const isDone = ms.done;
+      /* Fusionne les niveaux CC par défaut + ceux saisis par l'enseignant */
       const ccMerged = Object.assign({}, mod.cc, ms.cc || {});
 
-      const ccHTML = Object.entries(ccMerged)
+      const ccChips = Object.entries(ccMerged)
         .filter(([, v]) => v)
-        .map(([code, level]) => ccBadge(code, level))
-        .join('') ||
-        `<span style="color:#AAB7B8;font-size:9pt">Aucun niveau renseigne</span>`;
+        .map(([code, level]) =>
+          `<span style="display:inline-block;
+                        background:${levelBg[level] || '#f1f5f9'};
+                        color:${levelColor[level] || '#374151'};
+                        border:1px solid ${levelColor[level] || '#9ca3af'};
+                        border-radius:4px; padding:1px 8px;
+                        font-size:9pt; font-weight:bold; margin:2px">
+             ${code} — ${levelLabel[level] || level}
+           </span>`
+        ).join(' ') || '<span style="color:#94a3b8; font-size:9pt">Aucun niveau renseigné</span>';
 
-      detailRows += `
-        <tr>
-          <td style="${TD};border-left:3px solid ${leftBd}">
-            <p style="margin:0 0 3px 0;font-size:10.5pt;font-weight:bold;color:#17202A">
-              ${stripEmoji(mod.title)}
-            </p>
-            <p style="margin:0 0 3px 0;font-size:8.5pt;color:#5D6D7E">
-              Duree : ${mod.duree} | Competences : ${mod.comp.join(', ')}
-            </p>
-            <p style="margin:0 0 3px 0">${statusBadge(ms.done)}</p>
-            ${ms.notes
-              ? `<p style="margin:4px 0 0 0;padding:4px 7px;background:#F4ECF7;
-                           border-left:3px solid #7D3C98;font-size:8.5pt;color:#3B0764">
-                   Notes : ${ms.notes}
-                 </p>`
-              : ''}
-          </td>
-          <td style="${TD}">
-            <p style="margin:0 0 4px 0;font-size:8.5pt;font-weight:bold;color:#5D6D7E">
-              Niveaux CC atteints :
-            </p>
-            <p style="margin:0;line-height:1.9">${ccHTML}</p>
-          </td>
-        </tr>
-        <tr><td colspan="2" style="height:3px;padding:0;border:none;font-size:1pt"> </td></tr>`;
+      const statusBadge = isDone
+        ? `<span style="background:#dcfce7; color:#166534; border:1px solid #16a34a;
+                        border-radius:4px; padding:1px 10px; font-size:9pt; font-weight:bold">
+             ✅ Terminé
+           </span>`
+        : `<span style="background:#fef9c3; color:#854d0e; border:1px solid #ca8a04;
+                        border-radius:4px; padding:1px 10px; font-size:9pt; font-weight:bold">
+             ⏳ En cours
+           </span>`;
+
+      detailBlocks += `
+        <div style="background:${isDone ? '#f0fdf4' : '#fafafa'};
+                    border:1px solid ${isDone ? '#bbf7d0' : '#e2e8f0'};
+                    border-radius:6px; padding:10px 14px; margin:5px 0">
+          <div style="display:flex; justify-content:space-between;
+                      align-items:flex-start; margin-bottom:6px">
+            <span style="font-size:11pt; font-weight:bold; color:#0f172a">
+              ${mod.title}
+            </span>
+            ${statusBadge}
+          </div>
+          <div style="font-size:9pt; color:#64748b; margin-bottom:7px">
+            ⏱ ${mod.duree} &nbsp;·&nbsp; Compétences visées : ${mod.comp.join(', ')}
+          </div>
+          <div style="margin-bottom:6px">
+            <b style="font-size:9pt; color:#475569">Niveaux CC :</b><br>
+            ${ccChips}
+          </div>
+          ${ms.notes
+            ? `<div style="background:#f5f3ff; border-left:3px solid #8b5cf6;
+                           padding:5px 9px; border-radius:3px;
+                           font-size:9pt; color:#3b0764; margin-top:5px">
+                 📝 <b>Notes :</b> ${ms.notes}
+               </div>`
+            : ''}
+        </div>`;
     }
   }
 
-  /* ── Section 3 : Synthèse CC ──────────────────────────────── */
-  const best       = {};
-  const levelOrder = { I:1, A:2, M:3, E:4 };
+  /* ── Section 3 : Synthèse CC globale ── */
+  const best        = {};
+  const levelOrder  = { I:1, A:2, M:3, E:4 };
   for (const mod of mods) {
     const ms     = getModuleState(mod.id);
     const merged = Object.assign({}, mod.cc, ms.cc || {});
@@ -2532,26 +2520,26 @@ function downloadRapport() {
     }
   }
 
-  const synthRows = prog.ccList.map((cc, i) => {
-    const level = best[cc.code];
-    const bg    = i % 2 === 0 ? '#F8F9FA' : '#FFFFFF';
-    const badge = level
-      ? `<span style="background:${levelBg[level]};color:${levelFg[level]};
-                      border:1px solid ${levelBd[level]};
-                      padding:2px 8px;font-weight:bold;font-size:9pt">
-           ${level} — ${levelLabel[level]}
-         </span>`
-      : `<span style="color:#AAB7B8;font-size:9pt">Non traite</span>`;
-    return `
-      <tr style="background:${bg}">
-        <td style="${TD};font-family:'Courier New',monospace;font-weight:bold;
-                   color:#1B2631;font-size:9pt">${cc.code}</td>
-        <td style="${TD};font-size:10pt;color:#2C3E50">${cc.name}</td>
-        <td style="${TD};text-align:center">${badge}</td>
-      </tr>`;
-  }).join('');
+  const synthRows = prog.ccList.map(cc => `
+    <tr>
+      <td style="padding:6px 10px; border:1px solid #e2e8f0;
+                 font-family:monospace; font-weight:bold; color:#1e293b">${cc.code}</td>
+      <td style="padding:6px 10px; border:1px solid #e2e8f0; font-size:10pt; color:#374151">${cc.name}</td>
+      <td style="padding:6px 10px; border:1px solid #e2e8f0; text-align:center">
+        ${best[cc.code]
+          ? `<span style="background:${levelBg[best[cc.code]]};
+                          color:${levelColor[best[cc.code]]};
+                          border:1px solid ${levelColor[best[cc.code]]};
+                          border-radius:4px; padding:2px 12px;
+                          font-weight:bold; font-size:9pt">
+               ${best[cc.code]} — ${levelLabel[best[cc.code]]}
+             </span>`
+          : '<span style="color:#94a3b8; font-size:9pt">Non traité</span>'
+        }
+      </td>
+    </tr>`).join('');
 
-  /* ── Document HTML-Word final ──────────────────────────────── */
+  /* ── Assemblage du document HTML-Word ── */
   const html = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office'
       xmlns:w='urn:schemas-microsoft-com:office:word'
@@ -2559,139 +2547,105 @@ function downloadRapport() {
 <head>
   <meta charset='utf-8'>
   <title>Rapport de Suivi — ${className}</title>
-  <!--[if gte mso 9]>
-  <xml><w:WordDocument><w:View>Normal</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml>
-  <![endif]-->
   <style>
-    body  { font-family:Calibri,sans-serif; font-size:11pt; margin:2cm 2.5cm; color:#17202A; }
-    p     { margin:0 0 5pt 0; }
-    h1    { font-size:20pt; font-weight:bold; color:#1B2631;
-            padding-bottom:4pt; border-bottom:2pt solid #2E4057;
-            margin:0 0 10pt 0; }
-    h2    { font-size:13pt; font-weight:bold; color:#1B2631;
-            padding-bottom:3pt; border-bottom:1pt solid #D5D8DC;
-            margin:16pt 0 8pt 0; }
-    table { border-collapse:collapse; width:100%; }
-    td,th { vertical-align:top; word-break:break-word;
-            overflow-wrap:break-word; padding:5px 7px; }
-    .muted{ color:#7F8C8D; font-size:9pt; }
+    body { font-family: Calibri, sans-serif; font-size: 11pt; margin: 1.5cm 2cm; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { vertical-align: top; }
   </style>
 </head>
 <body>
 
-<!-- EN-TETE -->
-<table style="width:100%;margin-bottom:14px">
-  <colgroup><col style="width:70%"><col style="width:30%"></colgroup>
+<!-- En-tête du rapport -->
+<table style="width:100%; margin-bottom:16px; border-bottom:3px solid #1e293b; padding-bottom:12px">
   <tr>
-    <td style="vertical-align:middle;padding-right:12px;border:none">
-      <h1>Rapport de Suivi Pedagogique</h1>
-      <p style="font-size:10.5pt;color:#2C3E50">
+    <td>
+      <div style="font-size:22pt; font-weight:bold; color:#0f172a">
+        📊 Rapport de Suivi Pédagogique
+      </div>
+      <div style="font-size:11pt; color:#475569; margin-top:4px">
         Classe : <b>${className}</b> &nbsp;|&nbsp;
         Enseignant : Yahia Isddiken &nbsp;|&nbsp; 2024-2025
-      </p>
-      <p class="muted">Genere le ${now}</p>
+      </div>
+      <div style="font-size:9pt; color:#94a3b8; margin-top:2px">
+        Généré le ${now}
+      </div>
     </td>
-    <td style="text-align:center;vertical-align:middle;border:none">
-      <table style="width:80%;border:2px solid #2E86C1;background:#D6EAF8;margin:0 auto">
-        <tr><td style="padding:8px;text-align:center;border:none">
-          <p style="font-size:24pt;font-weight:bold;color:#1A5276;margin:0">${pct}%</p>
-          <p style="font-size:8.5pt;color:#1A5276;margin:0">${done} / ${total} modules</p>
-        </td></tr>
-      </table>
+    <td style="text-align:right; vertical-align:middle">
+      <div style="display:inline-block; background:#dbeafe; border:2px solid #3b82f6;
+                  border-radius:8px; padding:10px 18px; text-align:center">
+        <div style="font-size:26pt; font-weight:bold; color:#1d4ed8">${pct}%</div>
+        <div style="font-size:9pt; color:#1e40af">${done} / ${total} modules terminés</div>
+      </div>
     </td>
   </tr>
 </table>
 
-<!-- Barre de progression (2 cellules colorées) -->
-<p class="muted" style="margin:0 0 3pt 0">Progression globale — ${pct}%</p>
-<table style="width:100%;border:1px solid #AAB7B8;margin-bottom:18px">
-  <colgroup>
-    <col style="width:${pct}%">
-    <col style="width:${100 - pct}%">
-  </colgroup>
-  <tr>
-    ${pct > 0
-      ? `<td style="background:#2E86C1;height:12px;border:none;padding:0;font-size:1pt"> </td>`
-      : ''}
-    ${pct < 100
-      ? `<td style="background:#EBF5FB;height:12px;border:none;padding:0;font-size:1pt"> </td>`
-      : ''}
-  </tr>
-</table>
+<!-- Barre de progression visuelle -->
+<div style="margin-bottom:18px">
+  <div style="font-size:9pt; color:#64748b; margin-bottom:4px">Progression globale</div>
+  <div style="background:#e2e8f0; border-radius:6px; height:14px; width:100%; overflow:hidden">
+    <div style="background:linear-gradient(90deg,#3b82f6,#06b6d4);
+                height:14px; width:${pct}%; border-radius:6px"></div>
+  </div>
+</div>
 
-
-<!-- SECTION 1 : RECAPITULATIF -->
-<h2>Recapitulatif des Modules</h2>
-<table style="width:100%;margin-bottom:16px">
-  <colgroup>
-    <col style="width:40%">
-    <col style="width:7%">
-    <col style="width:20%">
-    <col style="width:33%">
-  </colgroup>
-  <tr style="background:#1B2631;color:#F8F9FA">
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:left;color:#F8F9FA">Module</th>
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:center;color:#F8F9FA">Duree</th>
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:center;color:#F8F9FA">Statut</th>
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:left;color:#F8F9FA">Notes / Observations</th>
+<!-- Section 1 : Récapitulatif -->
+<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
+           padding-bottom:5px; margin-top:20px">
+  📋 Récapitulatif des Modules
+</h2>
+<table style="border-collapse:collapse; width:100%; margin-bottom:20px">
+  <tr style="background:#334155; color:#f8fafc">
+    <th style="padding:8px 10px; text-align:left;   font-size:10pt; width:42%">Module</th>
+    <th style="padding:8px 10px; text-align:center; font-size:10pt; width:12%">Durée</th>
+    <th style="padding:8px 10px; text-align:center; font-size:10pt; width:16%">Statut</th>
+    <th style="padding:8px 10px; text-align:left;   font-size:10pt; width:30%">Notes / Observations</th>
   </tr>
   ${recapRows}
 </table>
 
+<!-- Section 2 : Détail par module -->
+<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
+           padding-bottom:5px; margin-top:24px">
+  🎯 Détail par Module — Compétences & Niveaux
+</h2>
+${detailBlocks}
 
-<!-- SECTION 2 : DETAIL PAR MODULE -->
-<h2>Detail par Module — Competences et Niveaux CC</h2>
-<table style="width:100%;margin-bottom:16px">
-  <colgroup>
-    <col style="width:52%">
-    <col style="width:48%">
-  </colgroup>
-  <tr style="background:#1B2631;color:#F8F9FA">
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:left;color:#F8F9FA">Module / Statut / Notes</th>
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:left;color:#F8F9FA">Niveaux de Competences (CC)</th>
-  </tr>
-  ${detailRows}
-</table>
-
-
-<!-- SECTION 3 : SYNTHESE CC -->
-<h2>Synthese Globale des Competences</h2>
-<table style="width:80%;margin-bottom:16px">
-  <colgroup>
-    <col style="width:15%">
-    <col style="width:52%">
-    <col style="width:33%">
-  </colgroup>
-  <tr style="background:#1B2631;color:#F8F9FA">
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:left;color:#F8F9FA">Code</th>
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:left;color:#F8F9FA">Competence</th>
-    <th style="padding:6px 7px;border:1px solid #34495E;font-size:9.5pt;
-               text-align:center;color:#F8F9FA">Niveau atteint</th>
+<!-- Section 3 : Synthèse CC -->
+<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
+           padding-bottom:5px; margin-top:24px">
+  📈 Synthèse Globale des Compétences
+</h2>
+<table style="border-collapse:collapse; width:60%; margin-bottom:20px">
+  <tr style="background:#334155; color:#f8fafc">
+    <th style="padding:7px 10px; text-align:left;   font-size:10pt; width:15%">Code</th>
+    <th style="padding:7px 10px; text-align:left;   font-size:10pt; width:50%">Compétence</th>
+    <th style="padding:7px 10px; text-align:center; font-size:10pt; width:35%">Niveau atteint</th>
   </tr>
   ${synthRows}
 </table>
 
-
-<!-- LEGENDE -->
-<p class="muted" style="margin:12pt 0 4pt 0"><b>Legende des niveaux CC :</b></p>
-<p style="font-size:9pt">
-  <span style="background:#FFFACD;color:#7D6608;border:1px solid #B7950B;
-               padding:1px 7px;font-weight:bold">I — Initiation</span>&nbsp;
-  <span style="background:#FFE4C4;color:#7B3100;border:1px solid #A04000;
-               padding:1px 7px;font-weight:bold">A — Approfondissement</span>&nbsp;
-  <span style="background:#D5F5E3;color:#145A32;border:1px solid #1E8449;
-               padding:1px 7px;font-weight:bold">M — Maitrise</span>&nbsp;
-  <span style="background:#E8DAEF;color:#4A235A;border:1px solid #7D3C98;
-               padding:1px 7px;font-weight:bold">E — Evaluation</span>
-</p>
+<!-- Légende -->
+<div style="margin-top:24px; padding:10px 14px; background:#f8fafc;
+            border:1px solid #e2e8f0; border-radius:6px; font-size:9pt; color:#64748b">
+  Légende :
+  <span style="background:#fff9c4; color:#7a5c00; padding:1px 7px;
+               border-radius:4px; border:1px solid #7a5c00; margin:0 2px">
+    I — Initiation
+  </span>
+  <span style="background:#ffe8cc; color:#7a3000; padding:1px 7px;
+               border-radius:4px; border:1px solid #7a3000; margin:0 2px">
+    A — Approfondissement
+  </span>
+  <span style="background:#d4f7e7; color:#145a30; padding:1px 7px;
+               border-radius:4px; border:1px solid #145a30; margin:0 2px">
+    M — Maîtrise
+  </span>
+  <span style="background:#ede9fe; color:#4a1b8c; padding:1px 7px;
+               border-radius:4px; border:1px solid #4a1b8c; margin:0 2px">
+    E — Évaluation
+  </span>
+</div>
 
 </body>
 </html>`;
@@ -2701,7 +2655,7 @@ function downloadRapport() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = `Rapport_Suivi_${className.replace(/ /g,'_')}_${dateFile}.doc`;
+  a.download = `Rapport_Suivi_${className.replace(/ /g, '_')}_${dateFile}.doc`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 
@@ -2709,7 +2663,7 @@ function downloadRapport() {
   const btn  = document.getElementById('dl-rapport-btn');
   const orig = btn.innerHTML;
   btn.classList.add('dl-flash');
-  btn.textContent = '✅ Telecharge !';
+  btn.textContent = '✅ Téléchargé !';
   setTimeout(() => { btn.classList.remove('dl-flash'); btn.innerHTML = orig; }, 1800);
 }
 
