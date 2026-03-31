@@ -98,9 +98,10 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e0e3ef;min-height:10
 .btn{padding:13px 14px;border-radius:10px;border:none;font-size:13px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s,transform .1s;font-family:Arial,sans-serif}
 .btn:active{transform:scale(.97);opacity:.85}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.brst{background:#1a1d27;color:#888;border:1px solid #2a2d3e;flex:0 0 auto;padding:13px 16px}
+.brst{background:#1a1d27;color:#888;border:1px solid #2a2d3e;flex:0 0 auto;padding:13px 14px}
 .bdl{background:#4d8ff5;color:#fff;flex:1}
-.blog{background:#1a1d27;color:#888;border:1px solid #2a2d3e;flex:0 0 auto;padding:13px 14px;font-size:11px}
+.bml{background:#1a5276;color:#fff;flex:1}
+.blog{background:#1a1d27;color:#888;border:1px solid #2a2d3e;flex:0 0 auto;padding:13px 12px;font-size:11px}
 
 /* TOAST */
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);background:#3fcf8e;color:#0f1117;font-weight:bold;font-size:13px;padding:9px 20px;border-radius:20px;opacity:0;transition:all .3s;z-index:300;pointer-events:none;white-space:nowrap}
@@ -132,7 +133,8 @@ body{font-family:Arial,sans-serif;background:#0f1117;color:#e0e3ef;min-height:10
   <div id="main"></div>
   <div id="bot">
     <button class="btn brst" onclick="resetBinome()" title="Réinitialiser ce binôme">↺</button>
-    <button class="btn bdl" id="dlbtn" onclick="genererRapport()">⬇ Générer le rapport</button>
+    <button class="btn bdl" id="dlbtn" onclick="genererRapport()">⬇ Rapport</button>
+    <button class="btn bml" onclick="envoyerMail()">✉ Mail</button>
     <button class="btn blog" onclick="deconnect()">⎋</button>
   </div>
 </div>
@@ -413,6 +415,124 @@ function genererRapport(){
     toast('✓ Rapport ouvert — imprimez ou enregistrez en PDF');
   } else {
     toast('⚠ Autorisez les popups pour générer le rapport');
+  }
+}
+
+
+/* ════════════════════════════════════════
+   ENVOYER PAR MAIL
+════════════════════════════════════════ */
+function buildHtmlReport(){
+  var now=new Date();
+  var ds=('0'+now.getDate()).slice(-2)+'/'+('0'+(now.getMonth()+1)).slice(-2)+'/'+now.getFullYear()
+      +' '+('0'+now.getHours()).slice(-2)+'h'+('0'+now.getMinutes()).slice(-2);
+
+  var html='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Suivi TP</title>'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:11pt;color:#111;padding:15mm}'
+    +'h1{font-size:16pt;color:#1F4E79;margin-bottom:4px}h2{font-size:12pt;margin:16px 0 5px;padding:6px 10px;border-radius:4px}'
+    +'.sub{font-size:9pt;color:#666;margin-bottom:14px}'
+    +'table{width:100%;border-collapse:collapse;margin-bottom:12px}'
+    +'th{background:#1F4E79;color:#fff;padding:6px 8px;font-size:10pt;text-align:left}'
+    +'td{padding:5px 8px;font-size:10pt;border:1px solid #ddd;vertical-align:top}'
+    +'.ok{color:#375623}.ko{color:#aaa}'
+    +'.sf{background:#E2EFDA;color:#375623;font-weight:bold}'
+    +'.sm{background:#FFF2CC;color:#7B5E00}'
+    +'.sl{background:#FDECEA;color:#7B1F1F}'
+    +'</style></head><body>';
+
+  html+='<h1>Suivi TP Électricité — NF C15-100</h1>'
+    +'<div class="sub">M. ISDDIKEN · Lycée Champollion, Lattes · 2nde PRO MTNE · '+ds+'</div>';
+
+  html+='<h2 style="background:#e8eef6;color:#1F4E79">Synthèse</h2>';
+  html+='<table><tr><th>Binôme</th><th>Tâche</th><th style="width:100px;text-align:center">Avancement</th><th style="width:60px;text-align:center">Note</th><th>Observations</th></tr>';
+  BIN.forEach(function(b,i){
+    var d=done(i),p=pct(i),s=S[i];
+    var cl=p===100?'sf':(p>=50?'sm':'sl');
+    html+='<tr><td style="font-weight:bold;color:#'+b.hex+'">B'+b.id+' — '+b.room+'</td>'
+      +'<td>'+b.task+'</td>'
+      +'<td class="'+cl+'" style="text-align:center">'+d+'/'+TOTAL+' ('+p+'%)</td>'
+      +'<td style="text-align:center;font-weight:bold">'+(s.note||'—')+'</td>'
+      +'<td style="font-size:9pt;font-style:italic">'+(s.obs||'—')+'</td></tr>';
+  });
+  html+='</table>';
+
+  BIN.forEach(function(b,i){
+    var s=S[i],d=done(i),p=pct(i);
+    html+='<h2 style="background:#'+b.hbg+';color:#'+b.hex+';border-left:5px solid #'+b.hex+'">'
+      +'B'+b.id+' — '+b.room+' · '+b.task
+      +' <span style=\'float:right;font-size:10pt\'>'+d+'/'+TOTAL+' ('+p+'%)'+(s.note?' | Note : '+s.note+'/20':'')+'</span></h2>';
+    if(s.obs) html+='<p style="font-size:9pt;color:#444;margin-bottom:8px;padding:5px 10px;background:#f9f9f9;border-left:3px solid #'+b.hex+'">'+s.obs+'</p>';
+    html+='<table><tr><th>Point de vérification</th><th style="width:55px;text-align:center">CC</th><th style="width:35px;text-align:center">✓</th></tr>';
+    PH.forEach(function(ph,pi){
+      html+='<tr><td colspan="3" style="background:#f0f0f0;font-weight:bold;padding:4px 8px;font-size:10pt">'+ph.ic+' '+ph.nm+' <span style="font-weight:normal;color:#888;font-size:9pt">'+ph.tm+'</span></td></tr>';
+      ph.it.forEach(function(it,ii){
+        var ok=s.ck[pi][ii];
+        html+='<tr style="'+(ok?'background:#f6fbf8;':'')+'">'
+          +'<td>'+(ok?'<span class=\'ok\'>✓ ':'<span class=\'ko\'>○ ')+it.l+'</span>'
+          +'<br><span style="font-size:8pt;color:#999;font-style:italic">'+it.s+'</span></td>'
+          +'<td style="text-align:center;font-size:9pt;color:#4d8ff5;font-weight:bold">'+it.cc+'</td>'
+          +'<td style="text-align:center;font-size:14pt">'+(ok?'<span class=\'ok\'>☑</span>':'<span class=\'ko\'>☐</span>')+'</td></tr>';
+      });
+    });
+    html+='</table>';
+  });
+  html+='</body></html>';
+  return html;
+}
+
+function envoyerMail(){
+  var now=new Date();
+  var ds=('0'+now.getDate()).slice(-2)+'/'+('0'+(now.getMonth()+1)).slice(-2)+'/'+now.getFullYear();
+
+  /* Texte résumé pour le corps du mail */
+  var lignes=['Suivi TP Électricité — NF C15-100','M. ISDDIKEN · Lycée Champollion, Lattes · 2nde PRO MTNE','Date : '+ds,'','=== SYNTHÈSE ===',''];
+  BIN.forEach(function(b,i){
+    var d=done(i),p=pct(i),s=S[i];
+    var bar='';
+    for(var x=0;x<10;x++) bar+=(x<Math.round(p/10)?'█':'░');
+    lignes.push('B'+b.id+' '+b.room+' ('+b.task+')');
+    lignes.push('  Avancement : '+bar+' '+d+'/'+TOTAL+' ('+p+'%)');
+    if(s.note) lignes.push('  Note : '+s.note+'/20');
+    if(s.obs)  lignes.push('  Obs : '+s.obs);
+    lignes.push('');
+  });
+  lignes.push('─────────────────────────────────');
+  lignes.push('DÉTAIL PAR BINÔME');
+  lignes.push('');
+  BIN.forEach(function(b,i){
+    var s=S[i];
+    lignes.push('── B'+b.id+' '+b.room.toUpperCase()+' ──');
+    PH.forEach(function(ph,pi){
+      ph.it.forEach(function(it,ii){
+        lignes.push((s.ck[pi][ii]?'[✓] ':'[ ] ')+it.l);
+      });
+    });
+    lignes.push('');
+  });
+
+  var sujet='Suivi TP Électricité NF C15-100 — '+ds;
+  var corps=lignes.join('%0D%0A');
+  var mailto='mailto:?subject='+encodeURIComponent(sujet)+'&body='+corps;
+
+  /* ── Essai 1 : Web Share API avec fichier HTML joint (mobile Chrome/Safari) ── */
+  var htmlContent = buildHtmlReport();
+  var blob = new Blob([htmlContent],{type:'text/html'});
+  var file = new File([blob],'Suivi_TP_'+ds.replace(/\//g,'')+'.html',{type:'text/html'});
+
+  if(navigator.canShare && navigator.canShare({files:[file]})){
+    navigator.share({
+      title: 'Suivi TP Électricité — '+ds,
+      text: 'Rapport de suivi TP électricité — M. ISDDIKEN',
+      files: [file]
+    }).then(function(){
+      toast('✓ Rapport partagé !');
+    }).catch(function(e){
+      if(e.name!=='AbortError') window.location.href=mailto;
+    });
+  } else {
+    /* ── Essai 2 : mailto (ouvre l'appli mail avec le résumé texte) ── */
+    window.location.href = mailto;
+    toast('📧 Application mail ouverte');
   }
 }
 
