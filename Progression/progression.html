@@ -787,6 +787,10 @@ main {
 .lock-hidden { display: none !important; }
 
 </style>
+
+<!-- ── Bibliothèque docx (génération de vrais .docx dans le navigateur) ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/build/index.js"></script>
+
 </head>
 <body>
 
@@ -2350,17 +2354,17 @@ function downloadProgression() {
 }
 
 
+
+
 /* ══════════════════════════════════════════════════════════════════
-   7c. TÉLÉCHARGEMENT — Rapport de Suivi Word (généré depuis l'état)
+   7c. TÉLÉCHARGEMENT — Rapport de Suivi Word (vrai .docx natif)
    ──────────────────────────────────────────────────────────────────
-   Produit un document Word (.doc compatible) qui reflète exactement
-   ce que vous avez saisi dans la page :
-     • Module coché ✅ / en cours ⏳
-     • Niveaux CC modifiés par vos sélecteurs
-     • Notes / observations saisies dans l'onglet 📝
+   Utilise la bibliothèque docx.js (chargée via CDN dans <head>)
+   pour générer un vrai .docx : tableaux colorés, badges CC stylés,
+   barre de progression, titres formatés — rendu Word professionnel.
    ══════════════════════════════════════════════════════════════════ */
 
-function downloadRapport() {
+async function downloadRapport() {
   const key       = getCurrentKey();
   const prog      = PROGRAMS[key];
   const className = getClassName(key);
@@ -2368,304 +2372,474 @@ function downloadRapport() {
   const total     = mods.length;
   const done      = mods.filter(m => getModuleState(m.id).done).length;
   const pct       = total ? Math.round(done / total * 100) : 0;
-  const now       = new Date().toLocaleDateString('fr-FR', {
-                      weekday: 'long', day: '2-digit',
-                      month: 'long',   year: 'numeric'
-                    });
+  const now       = new Date().toLocaleDateString('fr-FR',
+                      { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
   const dateFile  = new Date().toISOString().slice(0, 10);
 
-  /* Couleurs niveaux CC */
-  const levelBg    = { I:'#fff9c4', A:'#ffe8cc', M:'#d4f7e7', E:'#ede9fe' };
-  const levelColor = { I:'#7a5c00', A:'#7a3000', M:'#145a30', E:'#4a1b8c' };
-  const levelLabel = { I:'Initiation', A:'Approfond.', M:'Maîtrise', E:'Évaluation' };
+  /* Bouton en état "chargement" */
+  const btnEl   = document.getElementById('dl-rapport-btn');
+  const origBtn = btnEl.innerHTML;
+  btnEl.textContent = '⏳ Génération…';
+  btnEl.disabled    = true;
 
-  /* ── Section 1 : Récapitulatif des modules ── */
-  let recapRows = '';
-  for (const period of prog.periods) {
-    if (period.pfmp) {
-      recapRows += `
-        <tr>
-          <td colspan="4"
-              style="background:#fff7ed; border:1px dashed #fb923c; padding:7px 12px;
-                     color:#9a3412; font-weight:bold; text-align:center">
-            ${period.pfmp}
-          </td>
-        </tr>`;
-      continue;
-    }
-    recapRows += `
-      <tr>
-        <td colspan="4"
-            style="background:#1e293b; color:#f8fafc; padding:6px 12px;
-                   font-weight:bold; font-size:10pt">
-          ${period.label}
-        </td>
-      </tr>`;
-
-    for (const mod of period.modules) {
-      const ms     = getModuleState(mod.id);
-      const isDone = ms.done;
-      const statusCell = isDone
-        ? `<span style="background:#dcfce7; color:#166534; border:1px solid #16a34a;
-                        border-radius:4px; padding:2px 10px; font-weight:bold; font-size:9pt">
-             ✅ Terminé
-           </span>`
-        : `<span style="background:#fef9c3; color:#854d0e; border:1px solid #ca8a04;
-                        border-radius:4px; padding:2px 10px; font-weight:bold; font-size:9pt">
-             ⏳ En cours
-           </span>`;
-
-      recapRows += `
-        <tr style="background:${isDone ? '#f0fdf4' : '#fffbeb'}">
-          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:10pt">${mod.title}</td>
-          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:9pt;
-                     color:#475569; text-align:center">${mod.duree}</td>
-          <td style="padding:7px 10px; border:1px solid #e2e8f0; text-align:center">
-            ${statusCell}
-          </td>
-          <td style="padding:7px 10px; border:1px solid #e2e8f0; font-size:9pt;
-                     color:${ms.notes ? '#0f172a' : '#9ca3af'};
-                     font-style:${ms.notes ? 'normal' : 'italic'}">
-            ${ms.notes || 'Aucune note'}
-          </td>
-        </tr>`;
-    }
+  /* Vérifie que la lib est disponible */
+  if (!window.docx) {
+    alert('La bibliothèque docx.js n\'est pas encore chargée. Réessayez dans quelques secondes.');
+    btnEl.innerHTML = origBtn; btnEl.disabled = false; return;
   }
 
-  /* ── Section 2 : Détail par module (CC + notes) ── */
-  let detailBlocks = '';
-  for (const period of prog.periods) {
-    if (period.pfmp) {
-      detailBlocks += `
-        <div style="background:#fff7ed; border:2px dashed #fb923c; padding:8px 14px;
-                    color:#9a3412; font-weight:bold; text-align:center;
-                    margin:10px 0; border-radius:4px">
-          ${period.pfmp}
-        </div>`;
-      continue;
-    }
-    detailBlocks += `
-      <div style="background:#1e293b; color:#f8fafc; padding:7px 14px; font-weight:bold;
-                  font-size:11pt; margin:14px 0 6px 0; border-radius:4px">
-        ${period.label}
-      </div>`;
+  /* ── Déstructuration docx.js ── */
+  const {
+    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+    AlignmentType, BorderStyle, WidthType, ShadingType, VerticalAlign,
+    HeadingLevel,
+  } = window.docx;
 
-    for (const mod of period.modules) {
-      const ms     = getModuleState(mod.id);
-      const isDone = ms.done;
-      /* Fusionne les niveaux CC par défaut + ceux saisis par l'enseignant */
-      const ccMerged = Object.assign({}, mod.cc, ms.cc || {});
+  /* ── Constantes de mise en page A4 ── */
+  const PAGE_W  = 11906;
+  const MARGIN  = 1020;
+  const CONTENT = PAGE_W - 2 * MARGIN;
 
-      const ccChips = Object.entries(ccMerged)
-        .filter(([, v]) => v)
-        .map(([code, level]) =>
-          `<span style="display:inline-block;
-                        background:${levelBg[level] || '#f1f5f9'};
-                        color:${levelColor[level] || '#374151'};
-                        border:1px solid ${levelColor[level] || '#9ca3af'};
-                        border-radius:4px; padding:1px 8px;
-                        font-size:9pt; font-weight:bold; margin:2px">
-             ${code} — ${levelLabel[level] || level}
-           </span>`
-        ).join(' ') || '<span style="color:#94a3b8; font-size:9pt">Aucun niveau renseigné</span>';
+  /* ── Palettes ── */
+  const C = {
+    darkBg:'1B2631', darkTxt:'F8F9FA',
+    doneBg:'D5F5E3', doneFg:'145A32', doneBd:'1E8449',
+    pendBg:'FEF9E7', pendFg:'7D6608', pendBd:'B7950B',
+    I:{ bg:'FFFACD', fg:'7D6608', bd:'B7950B', lbl:'Initiation'      },
+    A:{ bg:'FFE4C4', fg:'7B3100', bd:'A04000', lbl:'Approfond.'      },
+    M:{ bg:'D5F5E3', fg:'145A32', bd:'1E8449', lbl:'Maîtrise'        },
+    E:{ bg:'E8DAEF', fg:'4A235A', bd:'7D3C98', lbl:'Évaluation'      },
+    pfmpBg:'FEF5E7', pfmpFg:'784212', pfmpBd:'F0B27A',
+    notesBg:'F4ECF7', notesFg:'3B0764', notesBd:'7D3C98',
+    rowEven:'F2F3F4', rowOdd:'FFFFFF', rowDone:'EAFAF1',
+    border:'D5D8DC', muted:'7F8C8D', accent:'2E86C1', accentBg:'D6EAF8',
+  };
 
-      const statusBadge = isDone
-        ? `<span style="background:#dcfce7; color:#166534; border:1px solid #16a34a;
-                        border-radius:4px; padding:1px 10px; font-size:9pt; font-weight:bold">
-             ✅ Terminé
-           </span>`
-        : `<span style="background:#fef9c3; color:#854d0e; border:1px solid #ca8a04;
-                        border-radius:4px; padding:1px 10px; font-size:9pt; font-weight:bold">
-             ⏳ En cours
-           </span>`;
+  /* ── Helpers ── */
+  const brd = (color = C.border) => ({
+    top:    { style:BorderStyle.SINGLE, size:4, color },
+    bottom: { style:BorderStyle.SINGLE, size:4, color },
+    left:   { style:BorderStyle.SINGLE, size:4, color },
+    right:  { style:BorderStyle.SINGLE, size:4, color },
+  });
+  const noBrd = {
+    top:{ style:BorderStyle.NONE,size:0,color:'FFFFFF' },
+    bottom:{ style:BorderStyle.NONE,size:0,color:'FFFFFF' },
+    left:{ style:BorderStyle.NONE,size:0,color:'FFFFFF' },
+    right:{ style:BorderStyle.NONE,size:0,color:'FFFFFF' },
+  };
+  const shd = (fill) => ({ fill, type:ShadingType.CLEAR, color:'auto' });
+  const sp  = (b=0, a=60) => ({ before:b, after:a });
 
-      detailBlocks += `
-        <div style="background:${isDone ? '#f0fdf4' : '#fafafa'};
-                    border:1px solid ${isDone ? '#bbf7d0' : '#e2e8f0'};
-                    border-radius:6px; padding:10px 14px; margin:5px 0">
-          <div style="display:flex; justify-content:space-between;
-                      align-items:flex-start; margin-bottom:6px">
-            <span style="font-size:11pt; font-weight:bold; color:#0f172a">
-              ${mod.title}
-            </span>
-            ${statusBadge}
-          </div>
-          <div style="font-size:9pt; color:#64748b; margin-bottom:7px">
-            ⏱ ${mod.duree} &nbsp;·&nbsp; Compétences visées : ${mod.comp.join(', ')}
-          </div>
-          <div style="margin-bottom:6px">
-            <b style="font-size:9pt; color:#475569">Niveaux CC :</b><br>
-            ${ccChips}
-          </div>
-          ${ms.notes
-            ? `<div style="background:#f5f3ff; border-left:3px solid #8b5cf6;
-                           padding:5px 9px; border-radius:3px;
-                           font-size:9pt; color:#3b0764; margin-top:5px">
-                 📝 <b>Notes :</b> ${ms.notes}
-               </div>`
-            : ''}
-        </div>`;
-    }
+  function mkCell(kids, opts={}) {
+    return new TableCell({
+      children: Array.isArray(kids) ? kids : [kids],
+      borders:  opts.brd || brd(opts.brdColor),
+      shading:  opts.fill ? shd(opts.fill) : undefined,
+      width:    opts.w ? { size:opts.w, type:WidthType.DXA } : undefined,
+      verticalAlign: opts.va || VerticalAlign.TOP,
+      margins:  { top:80, bottom:80, left:120, right:120 },
+      columnSpan: opts.span,
+    });
   }
 
-  /* ── Section 3 : Synthèse CC globale ── */
-  const best        = {};
-  const levelOrder  = { I:1, A:2, M:3, E:4 };
+  function mkPara(runs, opts={}) {
+    return new Paragraph({
+      children:  Array.isArray(runs) ? runs : [runs],
+      alignment: opts.align || AlignmentType.LEFT,
+      spacing:   opts.sp    || sp(),
+      shading:   opts.fill  ? shd(opts.fill) : undefined,
+      border:    opts.border || undefined,
+      indent:    opts.indent || undefined,
+    });
+  }
+
+  function mkRun(text, opts={}) {
+    return new TextRun({
+      text:    String(text),
+      bold:    opts.bold,
+      italics: opts.italic,
+      size:    opts.size  || 20,
+      color:   opts.color || '000000',
+      font:    opts.font  || 'Calibri',
+    });
+  }
+
+  function lvl(level) {
+    return C[level] || { bg:'F2F3F4', fg:'7F8C8D', bd:'AAAAAA', lbl:level };
+  }
+
+  /* Supprime les emojis (rendu cassé dans Word) */
+  function noEmoji(str) {
+    return (str||'').replace(
+      /[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|\uD83C[\uDDE0-\uDDFF]/gu,''
+    ).replace(/\s+/g,' ').trim();
+  }
+
+  /* ────────────────────────────────────────────────────────────────
+     Construction du document
+  ──────────────────────────────────────────────────────────────── */
+  const children = [];
+
+  /* ── En-tête ── */
+  children.push(new Table({
+    width:{ size:CONTENT, type:WidthType.DXA },
+    columnWidths:[ Math.round(CONTENT*.72), Math.round(CONTENT*.28) ],
+    borders:{ top:noBrd.top, bottom:noBrd.bottom,
+              left:noBrd.left, right:noBrd.right,
+              insideH:noBrd.top, insideV:noBrd.top },
+    rows:[ new TableRow({ children:[
+      mkCell([
+        mkPara([ mkRun('Rapport de Suivi Pédagogique',{bold:true,size:40,color:'1B2631'}) ],
+               { sp:sp(0,80) }),
+        mkPara([
+          mkRun('Classe : ',{size:22,color:'2C3E50'}),
+          mkRun(className,  {bold:true,size:22,color:'2C3E50'}),
+          mkRun('   |   ',  {size:22,color:C.muted}),
+          mkRun('Yahia Isddiken',{size:22,color:'2C3E50'}),
+          mkRun('   |   ',  {size:22,color:C.muted}),
+          mkRun('2024-2025',{size:22,color:'2C3E50'}),
+        ], { sp:sp(40,40) }),
+        mkPara([ mkRun('Généré le '+now,{size:18,color:C.muted,italic:true}) ], { sp:sp(0,0) }),
+      ], { brd:noBrd, w:Math.round(CONTENT*.72) }),
+
+      mkCell([
+        mkPara([ mkRun(pct+'%',{bold:true,size:56,color:'1A5276'}) ],
+               { align:AlignmentType.CENTER, sp:sp(60,40) }),
+        mkPara([ mkRun(done+' / '+total+' modules terminés',{size:18,color:'1A5276'}) ],
+               { align:AlignmentType.CENTER, sp:sp(0,60) }),
+      ], { brd:brd(C.accent), fill:C.accentBg, w:Math.round(CONTENT*.28), va:VerticalAlign.CENTER }),
+    ]})]
+  }));
+
+  /* ── Barre de progression ── */
+  children.push(mkPara([], { sp:sp(60,0) }));
+  children.push(mkPara([ mkRun('Progression globale — '+pct+'%',
+    { size:18, color:C.muted, italic:true }) ], { sp:sp(60,40) }));
+
+  const barFill  = Math.round(CONTENT * pct / 100);
+  const barEmpty = CONTENT - barFill;
+  const barCols  = [ ...(barFill>0?[barFill]:[]), ...(barEmpty>0?[barEmpty]:[]) ];
+  children.push(new Table({
+    width:{ size:CONTENT, type:WidthType.DXA },
+    columnWidths: barCols,
+    borders:{ top:brd().top, bottom:brd().bottom,
+              left:brd().left, right:brd().right,
+              insideH:noBrd.top, insideV:noBrd.top },
+    rows:[ new TableRow({
+      height:{ value:220, rule:'exact' },
+      children:[
+        ...(barFill>0 ?[mkCell([mkPara([mkRun(' ')],{sp:sp(0,0)})],
+            { fill:C.accent, brd:noBrd, w:barFill })]:[] ),
+        ...(barEmpty>0?[mkCell([mkPara([mkRun(' ')],{sp:sp(0,0)})],
+            { fill:'EBF5FB', brd:noBrd, w:barEmpty })]:[] ),
+      ],
+    })],
+  }));
+  children.push(mkPara([], { sp:sp(120,0) }));
+
+  /* ─────────────────────────────────────────────────────────────
+     SECTION 1 — Récapitulatif des Modules
+  ───────────────────────────────────────────────────────────── */
+  children.push(new Paragraph({
+    children:[ mkRun('Récapitulatif des Modules',{bold:true,size:28,color:'1B2631'}) ],
+    spacing:{ before:280, after:120 },
+    border:{ bottom:{ style:BorderStyle.SINGLE, size:6, color:'D5D8DC', space:4 } },
+  }));
+
+  const RW = {
+    mod : Math.round(CONTENT*.42),
+    dur : Math.round(CONTENT*.08),
+    stat: Math.round(CONTENT*.18),
+    note: CONTENT - Math.round(CONTENT*.42) - Math.round(CONTENT*.08) - Math.round(CONTENT*.18),
+  };
+  const recapHdr = (txt, align=AlignmentType.LEFT) =>
+    mkCell([ mkPara([ mkRun(txt,{bold:true,size:18,color:C.darkTxt}) ],
+                    { align, sp:sp(60,60) }) ],
+           { fill:C.darkBg, brd:brd('34495E') });
+
+  const recapRows = [
+    new TableRow({ tableHeader:true, children:[
+      recapHdr('Module'),
+      recapHdr('Durée', AlignmentType.CENTER),
+      recapHdr('Statut', AlignmentType.CENTER),
+      recapHdr('Notes / Observations'),
+    ]}),
+  ];
+
+  for (const period of prog.periods) {
+    /* Bannière PFMP */
+    if (period.pfmp) {
+      recapRows.push(new TableRow({ children:[ mkCell(
+        [ mkPara([ mkRun('Stage en entreprise — '+noEmoji(period.pfmp),
+                         {bold:true,size:18,color:C.pfmpFg}) ],
+                 { align:AlignmentType.CENTER, sp:sp(60,60) }) ],
+        { fill:C.pfmpBg, brd:brd(C.pfmpBd), span:4, w:CONTENT }
+      )]}));
+      continue;
+    }
+    /* En-tête de période */
+    recapRows.push(new TableRow({ children:[ mkCell(
+      [ mkPara([ mkRun(noEmoji(period.label),{bold:true,size:18,color:C.darkTxt}) ],
+               { sp:sp(60,60) }) ],
+      { fill:C.darkBg, brd:brd('34495E'), span:4, w:CONTENT }
+    )]}));
+
+    /* Lignes modules */
+    for (let i=0; i<period.modules.length; i++) {
+      const mod  = period.modules[i];
+      const ms   = getModuleState(mod.id);
+      const bg   = ms.done ? C.rowDone : (i%2===0 ? C.rowEven : C.rowOdd);
+      const sTxt = ms.done ? '✔  Terminé' : '▶  En cours';
+      const sFg  = ms.done ? C.doneFg : C.pendFg;
+      const sBg  = ms.done ? C.doneBg : C.pendBg;
+      const sBd  = ms.done ? C.doneBd : C.pendBd;
+      const ccMerged = Object.assign({}, mod.cc, ms.cc||{});
+      recapRows.push(new TableRow({ children:[
+        mkCell([ mkPara([ mkRun(noEmoji(mod.title),{size:20,color:'17202A'}) ],{sp:sp(60,60)}) ],
+               { fill:bg, brd:brd(C.border), w:RW.mod }),
+        mkCell([ mkPara([ mkRun(mod.duree,{size:18,color:'5D6D7E'}) ],
+                         {align:AlignmentType.CENTER,sp:sp(60,60)}) ],
+               { fill:bg, brd:brd(C.border), w:RW.dur }),
+        mkCell([ mkPara([ mkRun(sTxt,{bold:true,size:18,color:sFg}) ],
+                         {align:AlignmentType.CENTER,sp:sp(60,60)}) ],
+               { fill:sBg, brd:brd(sBd), w:RW.stat }),
+        mkCell([ mkPara([ mkRun(ms.notes||'Aucune note',
+                               {size:18,italic:!ms.notes,color:ms.notes?'17202A':'AAB7B8'}) ],
+                         {sp:sp(60,60)}) ],
+               { fill:bg, brd:brd(C.border), w:RW.note }),
+      ]}));
+    }
+  }
+  children.push(new Table({
+    width:{ size:CONTENT, type:WidthType.DXA },
+    columnWidths:[ RW.mod, RW.dur, RW.stat, RW.note ],
+    rows: recapRows,
+  }));
+
+  /* ─────────────────────────────────────────────────────────────
+     SECTION 2 — Détail par module
+  ───────────────────────────────────────────────────────────── */
+  children.push(new Paragraph({
+    children:[ mkRun('Détail par Module — Compétences & Niveaux',{bold:true,size:28,color:'1B2631'}) ],
+    spacing:{ before:360, after:120 },
+    border:{ bottom:{ style:BorderStyle.SINGLE, size:6, color:'D5D8DC', space:4 } },
+  }));
+
+  const DW = { left:Math.round(CONTENT*.52), right:CONTENT-Math.round(CONTENT*.52) };
+  const detailRows = [
+    new TableRow({ tableHeader:true, children:[
+      mkCell([ mkPara([ mkRun('Module / Statut / Notes',       {bold:true,size:18,color:C.darkTxt}) ],{sp:sp(60,60)}) ],
+             { fill:C.darkBg, brd:brd('34495E'), w:DW.left }),
+      mkCell([ mkPara([ mkRun('Niveaux de Compétences (CC)',{bold:true,size:18,color:C.darkTxt}) ],{sp:sp(60,60)}) ],
+             { fill:C.darkBg, brd:brd('34495E'), w:DW.right }),
+    ]}),
+  ];
+
+  for (const period of prog.periods) {
+    if (period.pfmp) {
+      detailRows.push(new TableRow({ children:[ mkCell(
+        [ mkPara([ mkRun('Stage en entreprise — '+noEmoji(period.pfmp),
+                         {bold:true,size:18,color:C.pfmpFg}) ],
+                 {align:AlignmentType.CENTER,sp:sp(60,60)}) ],
+        { fill:C.pfmpBg, brd:brd(C.pfmpBd), span:2, w:CONTENT }
+      )]}));
+      continue;
+    }
+    detailRows.push(new TableRow({ children:[ mkCell(
+      [ mkPara([ mkRun(noEmoji(period.label),{bold:true,size:18,color:C.darkTxt}) ],{sp:sp(60,60)}) ],
+      { fill:C.darkBg, brd:brd('34495E'), span:2, w:CONTENT }
+    )]}));
+
+    for (const mod of period.modules) {
+      const ms       = getModuleState(mod.id);
+      const ccMerged = Object.assign({}, mod.cc, ms.cc||{});
+      const sTxt     = ms.done ? '✔  Terminé' : '▶  En cours';
+      const sFg      = ms.done ? C.doneFg : C.pendFg;
+      const leftBd   = ms.done ? C.doneBd : 'AAB7B8';
+      const bg       = ms.done ? C.rowDone : C.rowOdd;
+
+      /* Cellule gauche */
+      const leftKids = [
+        mkPara([ mkRun(noEmoji(mod.title),{bold:true,size:22,color:'17202A'}) ],{sp:sp(40,40)}),
+        mkPara([
+          mkRun('Durée : ',{size:17,color:C.muted}),
+          mkRun(mod.duree, {bold:true,size:17,color:C.muted}),
+          mkRun('   |   Compétences : ',{size:17,color:C.muted}),
+          mkRun(mod.comp.join(', '),    {bold:true,size:17,color:C.muted}),
+        ],{sp:sp(0,40)}),
+        mkPara([ mkRun(sTxt,{bold:true,size:18,color:sFg}) ],
+               {sp:sp(0, ms.notes?40:0)}),
+      ];
+      if (ms.notes) {
+        leftKids.push(new Paragraph({
+          children:[ mkRun('Notes : ',{bold:true,size:18,color:C.notesFg}),
+                     mkRun(ms.notes,  {size:18,color:C.notesFg}) ],
+          spacing:{ before:0, after:0 },
+          indent:{ left:120 },
+          shading:{ fill:C.notesBg, type:ShadingType.CLEAR, color:'auto' },
+          border:{ left:{ style:BorderStyle.SINGLE, size:12, color:C.notesBd } },
+        }));
+      }
+
+      /* Cellule droite — niveaux CC */
+      const rightKids = [
+        mkPara([ mkRun('Niveaux CC atteints :',{bold:true,size:17,color:C.muted}) ],
+               {sp:sp(40,60)}),
+      ];
+      const ccEntries = Object.entries(ccMerged).filter(([,v])=>v);
+      if (!ccEntries.length) {
+        rightKids.push(mkPara([ mkRun('Aucun niveau renseigné',{size:18,italic:true,color:'AAB7B8'}) ]));
+      } else {
+        for (const [code, level] of ccEntries) {
+          const lc = lvl(level);
+          rightKids.push(new Paragraph({
+            children:[ mkRun('  '+code+'  —  '+lc.lbl+'  ',{bold:true,size:18,color:lc.fg}) ],
+            spacing:{ before:20, after:40 },
+            indent:{ left:60 },
+            shading:{ fill:lc.bg, type:ShadingType.CLEAR, color:'auto' },
+            border:{ left:{ style:BorderStyle.SINGLE, size:12, color:lc.bd } },
+          }));
+        }
+      }
+
+      detailRows.push(new TableRow({ children:[
+        new TableCell({
+          children: leftKids,
+          borders:{
+            top:   { style:BorderStyle.SINGLE, size:4,  color:C.border },
+            bottom:{ style:BorderStyle.SINGLE, size:4,  color:C.border },
+            left:  { style:BorderStyle.SINGLE, size:16, color:leftBd   },
+            right: { style:BorderStyle.SINGLE, size:4,  color:C.border },
+          },
+          shading: shd(bg),
+          width:{ size:DW.left, type:WidthType.DXA },
+          margins:{ top:100, bottom:100, left:140, right:120 },
+        }),
+        mkCell(rightKids,{ fill:C.rowOdd, brd:brd(C.border), w:DW.right }),
+      ]}));
+      /* Séparateur */
+      detailRows.push(new TableRow({
+        height:{ value:40, rule:'exact' },
+        children:[ mkCell([ mkPara([ mkRun(' ') ],{sp:sp(0,0)}) ],
+                           {fill:'FAFAFA',brd:noBrd,span:2,w:CONTENT}) ],
+      }));
+    }
+  }
+  children.push(new Table({
+    width:{ size:CONTENT, type:WidthType.DXA },
+    columnWidths:[ DW.left, DW.right ],
+    rows: detailRows,
+  }));
+
+  /* ─────────────────────────────────────────────────────────────
+     SECTION 3 — Synthèse globale des CC
+  ───────────────────────────────────────────────────────────── */
+  children.push(new Paragraph({
+    children:[ mkRun('Synthèse Globale des Compétences',{bold:true,size:28,color:'1B2631'}) ],
+    spacing:{ before:360, after:120 },
+    border:{ bottom:{ style:BorderStyle.SINGLE, size:6, color:'D5D8DC', space:4 } },
+  }));
+
+  /* Calcul meilleur niveau par CC */
+  const bestCC     = {};
+  const lvlOrder   = { I:1, A:2, M:3, E:4 };
   for (const mod of mods) {
     const ms     = getModuleState(mod.id);
-    const merged = Object.assign({}, mod.cc, ms.cc || {});
+    const merged = Object.assign({}, mod.cc, ms.cc||{});
     for (const [code, level] of Object.entries(merged)) {
       if (!level) continue;
-      if (!best[code] || levelOrder[level] > levelOrder[best[code]]) best[code] = level;
+      if (!bestCC[code] || lvlOrder[level] > lvlOrder[bestCC[code]]) bestCC[code] = level;
     }
   }
 
-  const synthRows = prog.ccList.map(cc => `
-    <tr>
-      <td style="padding:6px 10px; border:1px solid #e2e8f0;
-                 font-family:monospace; font-weight:bold; color:#1e293b">${cc.code}</td>
-      <td style="padding:6px 10px; border:1px solid #e2e8f0; font-size:10pt; color:#374151">${cc.name}</td>
-      <td style="padding:6px 10px; border:1px solid #e2e8f0; text-align:center">
-        ${best[cc.code]
-          ? `<span style="background:${levelBg[best[cc.code]]};
-                          color:${levelColor[best[cc.code]]};
-                          border:1px solid ${levelColor[best[cc.code]]};
-                          border-radius:4px; padding:2px 12px;
-                          font-weight:bold; font-size:9pt">
-               ${best[cc.code]} — ${levelLabel[best[cc.code]]}
-             </span>`
-          : '<span style="color:#94a3b8; font-size:9pt">Non traité</span>'
-        }
-      </td>
-    </tr>`).join('');
+  const SW = {
+    code: Math.round(CONTENT*.13),
+    name: Math.round(CONTENT*.47),
+    lvl:  CONTENT - Math.round(CONTENT*.13) - Math.round(CONTENT*.47),
+  };
+  const synthRows = [
+    new TableRow({ tableHeader:true, children:[
+      mkCell([ mkPara([ mkRun('Code',          {bold:true,size:18,color:C.darkTxt}) ],{sp:sp(60,60)}) ],
+             { fill:C.darkBg, brd:brd('34495E'), w:SW.code }),
+      mkCell([ mkPara([ mkRun('Compétence',    {bold:true,size:18,color:C.darkTxt}) ],{sp:sp(60,60)}) ],
+             { fill:C.darkBg, brd:brd('34495E'), w:SW.name }),
+      mkCell([ mkPara([ mkRun('Niveau atteint',{bold:true,size:18,color:C.darkTxt}) ],
+                       {align:AlignmentType.CENTER,sp:sp(60,60)}) ],
+             { fill:C.darkBg, brd:brd('34495E'), w:SW.lvl }),
+    ]}),
+  ];
+  prog.ccList.forEach((cc, i) => {
+    const level = bestCC[cc.code];
+    const bg    = i%2===0 ? C.rowEven : C.rowOdd;
+    const lc    = level ? lvl(level) : null;
+    synthRows.push(new TableRow({ children:[
+      mkCell([ mkPara([ mkRun(cc.code,{bold:true,size:20,color:'1B2631',font:'Courier New'}) ],{sp:sp(60,60)}) ],
+             { fill:bg, brd:brd(C.border), w:SW.code }),
+      mkCell([ mkPara([ mkRun(cc.name,{size:20,color:'2C3E50'}) ],{sp:sp(60,60)}) ],
+             { fill:bg, brd:brd(C.border), w:SW.name }),
+      mkCell([ mkPara( lc
+               ? [ mkRun(level+' — '+lc.lbl,{bold:true,size:18,color:lc.fg}) ]
+               : [ mkRun('Non traité',{size:18,italic:true,color:'AAB7B8'}) ],
+               {align:AlignmentType.CENTER,sp:sp(60,60)}) ],
+             { fill:lc?lc.bg:bg, brd:brd(lc?lc.bd:C.border), w:SW.lvl }),
+    ]}));
+  });
+  children.push(new Table({
+    width:{ size:Math.round(CONTENT*.70), type:WidthType.DXA },
+    columnWidths:[ SW.code, SW.name, SW.lvl ],
+    rows: synthRows,
+  }));
 
-  /* ── Assemblage du document HTML-Word ── */
-  const html = `
-<html xmlns:o='urn:schemas-microsoft-com:office:office'
-      xmlns:w='urn:schemas-microsoft-com:office:word'
-      xmlns='http://www.w3.org/TR/REC-html40'>
-<head>
-  <meta charset='utf-8'>
-  <title>Rapport de Suivi — ${className}</title>
-  <style>
-    body { font-family: Calibri, sans-serif; font-size: 11pt; margin: 1.5cm 2cm; }
-    table { border-collapse: collapse; width: 100%; }
-    td, th { vertical-align: top; }
-  </style>
-</head>
-<body>
+  /* ── Légende ── */
+  children.push(mkPara([], { sp:sp(200,0) }));
+  children.push(mkPara([ mkRun('Légende des niveaux de compétences :',
+                                {bold:true,size:18,color:C.muted}) ], {sp:sp(0,80)}));
+  const lgW = Math.round(CONTENT*.70/4);
+  children.push(new Table({
+    width:{ size:Math.round(CONTENT*.70), type:WidthType.DXA },
+    columnWidths:[ lgW, lgW, lgW, lgW ],
+    rows:[ new TableRow({ children:['I','A','M','E'].map(l => {
+      const lc = lvl(l);
+      return mkCell(
+        [ mkPara([ mkRun(l+' — '+lc.lbl,{bold:true,size:18,color:lc.fg}) ],
+                 {align:AlignmentType.CENTER,sp:sp(60,60)}) ],
+        { fill:lc.bg, brd:brd(lc.bd) }
+      );
+    })})],
+  }));
 
-<!-- En-tête du rapport -->
-<table style="width:100%; margin-bottom:16px; border-bottom:3px solid #1e293b; padding-bottom:12px">
-  <tr>
-    <td>
-      <div style="font-size:22pt; font-weight:bold; color:#0f172a">
-        📊 Rapport de Suivi Pédagogique
-      </div>
-      <div style="font-size:11pt; color:#475569; margin-top:4px">
-        Classe : <b>${className}</b> &nbsp;|&nbsp;
-        Enseignant : Yahia Isddiken &nbsp;|&nbsp; 2024-2025
-      </div>
-      <div style="font-size:9pt; color:#94a3b8; margin-top:2px">
-        Généré le ${now}
-      </div>
-    </td>
-    <td style="text-align:right; vertical-align:middle">
-      <div style="display:inline-block; background:#dbeafe; border:2px solid #3b82f6;
-                  border-radius:8px; padding:10px 18px; text-align:center">
-        <div style="font-size:26pt; font-weight:bold; color:#1d4ed8">${pct}%</div>
-        <div style="font-size:9pt; color:#1e40af">${done} / ${total} modules terminés</div>
-      </div>
-    </td>
-  </tr>
-</table>
+  /* ─────────────────────────────────────────────────────────────
+     Assemblage & export
+  ───────────────────────────────────────────────────────────── */
+  const doc = new Document({
+    styles:{
+      default:{ document:{ run:{ font:'Calibri', size:20 } } },
+    },
+    sections:[{
+      properties:{ page:{
+        size:{ width:PAGE_W, height:16838 },
+        margin:{ top:MARGIN, right:MARGIN, bottom:MARGIN, left:MARGIN },
+      }},
+      children,
+    }],
+  });
 
-<!-- Barre de progression visuelle -->
-<div style="margin-bottom:18px">
-  <div style="font-size:9pt; color:#64748b; margin-bottom:4px">Progression globale</div>
-  <div style="background:#e2e8f0; border-radius:6px; height:14px; width:100%; overflow:hidden">
-    <div style="background:linear-gradient(90deg,#3b82f6,#06b6d4);
-                height:14px; width:${pct}%; border-radius:6px"></div>
-  </div>
-</div>
-
-<!-- Section 1 : Récapitulatif -->
-<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
-           padding-bottom:5px; margin-top:20px">
-  📋 Récapitulatif des Modules
-</h2>
-<table style="border-collapse:collapse; width:100%; margin-bottom:20px">
-  <tr style="background:#334155; color:#f8fafc">
-    <th style="padding:8px 10px; text-align:left;   font-size:10pt; width:42%">Module</th>
-    <th style="padding:8px 10px; text-align:center; font-size:10pt; width:12%">Durée</th>
-    <th style="padding:8px 10px; text-align:center; font-size:10pt; width:16%">Statut</th>
-    <th style="padding:8px 10px; text-align:left;   font-size:10pt; width:30%">Notes / Observations</th>
-  </tr>
-  ${recapRows}
-</table>
-
-<!-- Section 2 : Détail par module -->
-<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
-           padding-bottom:5px; margin-top:24px">
-  🎯 Détail par Module — Compétences & Niveaux
-</h2>
-${detailBlocks}
-
-<!-- Section 3 : Synthèse CC -->
-<h2 style="font-size:14pt; color:#1e293b; border-bottom:2px solid #e2e8f0;
-           padding-bottom:5px; margin-top:24px">
-  📈 Synthèse Globale des Compétences
-</h2>
-<table style="border-collapse:collapse; width:60%; margin-bottom:20px">
-  <tr style="background:#334155; color:#f8fafc">
-    <th style="padding:7px 10px; text-align:left;   font-size:10pt; width:15%">Code</th>
-    <th style="padding:7px 10px; text-align:left;   font-size:10pt; width:50%">Compétence</th>
-    <th style="padding:7px 10px; text-align:center; font-size:10pt; width:35%">Niveau atteint</th>
-  </tr>
-  ${synthRows}
-</table>
-
-<!-- Légende -->
-<div style="margin-top:24px; padding:10px 14px; background:#f8fafc;
-            border:1px solid #e2e8f0; border-radius:6px; font-size:9pt; color:#64748b">
-  Légende :
-  <span style="background:#fff9c4; color:#7a5c00; padding:1px 7px;
-               border-radius:4px; border:1px solid #7a5c00; margin:0 2px">
-    I — Initiation
-  </span>
-  <span style="background:#ffe8cc; color:#7a3000; padding:1px 7px;
-               border-radius:4px; border:1px solid #7a3000; margin:0 2px">
-    A — Approfondissement
-  </span>
-  <span style="background:#d4f7e7; color:#145a30; padding:1px 7px;
-               border-radius:4px; border:1px solid #145a30; margin:0 2px">
-    M — Maîtrise
-  </span>
-  <span style="background:#ede9fe; color:#4a1b8c; padding:1px 7px;
-               border-radius:4px; border:1px solid #4a1b8c; margin:0 2px">
-    E — Évaluation
-  </span>
-</div>
-
-</body>
-</html>`;
-
-  /* Déclenche le téléchargement */
-  const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `Rapport_Suivi_${className.replace(/ /g, '_')}_${dateFile}.doc`;
+  const buffer = await window.docx.Packer.toBlob(doc);
+  const url    = URL.createObjectURL(buffer);
+  const a      = document.createElement('a');
+  a.href       = url;
+  a.download   = `Rapport_Suivi_${className.replace(/ /g,'_')}_${dateFile}.docx`;
   a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
 
   /* Feedback visuel */
-  const btn  = document.getElementById('dl-rapport-btn');
-  const orig = btn.innerHTML;
-  btn.classList.add('dl-flash');
-  btn.textContent = '✅ Téléchargé !';
-  setTimeout(() => { btn.classList.remove('dl-flash'); btn.innerHTML = orig; }, 1800);
+  btnEl.disabled    = false;
+  btnEl.classList.add('dl-flash');
+  btnEl.textContent = '✅ Téléchargé !';
+  setTimeout(() => { btnEl.classList.remove('dl-flash'); btnEl.innerHTML = origBtn; }, 2000);
 }
+
 
 
 /* ══════════════════════════════════════════════════════════════════
