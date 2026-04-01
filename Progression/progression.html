@@ -788,9 +788,6 @@ main {
 
 </style>
 
-<!-- ── Bibliothèque docx (génération de vrais .docx dans le navigateur) ── -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/build/index.js"></script>
-
 </head>
 <body>
 
@@ -2379,13 +2376,51 @@ async function downloadRapport() {
   /* Bouton en état "chargement" */
   const btnEl   = document.getElementById('dl-rapport-btn');
   const origBtn = btnEl.innerHTML;
-  btnEl.textContent = '⏳ Génération…';
+  btnEl.textContent = '⏳ Chargement…';
   btnEl.disabled    = true;
+
+  /* ── Chargement dynamique de docx.js avec 3 CDN de secours ── */
+  async function loadDocx() {
+    if (window.docx) return window.docx;
+
+    const URLS = [
+      'https://unpkg.com/docx@8.5.0/build/index.js',
+      'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/build/index.js',
+    ];
+
+    for (const url of URLS) {
+      try {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src     = url;
+          s.onload  = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+        if (window.docx) return window.docx;
+      } catch (_) { /* essaye le suivant */ }
+    }
+    throw new Error('Impossible de charger docx.js depuis tous les CDN.');
+  }
+
+  /* Charge la lib */
+  try {
+    await loadDocx();
+  } catch (err) {
+    btnEl.innerHTML = origBtn;
+    btnEl.disabled  = false;
+    alert('Erreur de chargement de la bibliothèque Word.\nVérifiez votre connexion internet et réessayez.');
+    return;
+  }
+
+  btnEl.textContent = '⏳ Génération…';
 
   /* Vérifie que la lib est disponible */
   if (!window.docx) {
-    alert('La bibliothèque docx.js n\'est pas encore chargée. Réessayez dans quelques secondes.');
-    btnEl.innerHTML = origBtn; btnEl.disabled = false; return;
+    btnEl.innerHTML = origBtn; btnEl.disabled = false;
+    alert('Bibliothèque non disponible. Réessayez.');
+    return;
   }
 
   /* ── Déstructuration docx.js ── */
