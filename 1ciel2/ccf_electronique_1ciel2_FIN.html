@@ -1749,6 +1749,40 @@ let timeLeft = EXAM_DURATION;
 
 // ─── Vérification anti-doublon au chargement
 window.addEventListener('DOMContentLoaded', () => {
+
+  // ─── MODE RESET PROFESSEUR ───────────────────────────
+  // Accès : ouvrir le fichier avec ?reset=prof2024 dans l'URL
+  // Ex: file:///chemin/ccf.html?reset=prof2024
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reset') === 'prof2024') {
+    localStorage.removeItem('ccf_1ciel2_submitted');
+    document.body.innerHTML = `
+      <div style="
+        min-height:100vh; display:flex; align-items:center; justify-content:center;
+        background:linear-gradient(135deg,#1a2e4a,#0f1e32); font-family:sans-serif;
+      ">
+        <div style="
+          background:#fff; border-radius:16px; padding:48px 52px;
+          max-width:420px; width:100%; text-align:center;
+          box-shadow:0 32px 64px rgba(0,0,0,0.4);
+        ">
+          <div style="font-size:56px; margin-bottom:16px;">🔓</div>
+          <h2 style="color:#1a2e4a; font-size:1.6rem; margin-bottom:12px;">Devoir débloqué !</h2>
+          <p style="color:#6b7d8e; margin-bottom:24px;">
+            L'accès a été réinitialisé sur cet appareil.<br>
+            L'élève peut maintenant repasser le CCF.
+          </p>
+          <a href="${window.location.pathname}" style="
+            display:inline-block; padding:14px 32px;
+            background:#1a2e4a; color:#fff; border-radius:8px;
+            text-decoration:none; font-weight:600; font-size:1rem;
+          ">▶ Lancer le CCF</a>
+        </div>
+      </div>`;
+    return;
+  }
+  // ─────────────────────────────────────────────────────
+
   const done = localStorage.getItem('ccf_1ciel2_submitted');
   if (done) {
     const data = JSON.parse(done);
