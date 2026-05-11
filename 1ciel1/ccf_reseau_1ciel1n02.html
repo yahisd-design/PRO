@@ -1580,30 +1580,42 @@ async function submitExam() {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' à ' + now.toLocaleTimeString('fr-FR');
 
-  try {
-    await fetch(CONFIG.formspree_url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        _subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
-        Élève:                 studentName,
-        Date:                  dateStr,
-        Note_automatique:      `${score20}/20 (auto: ${earnedAuto.toFixed(1)}/${TOTAL_AUTO_PTS} pts)`,
-        Réalisation_pratique:  pratique.rapport,
-        Tâches_réalisées:      pratique.score,
-        Observations_élève:    pratique.observations,
-        Réponses_calculées:    numDetails.join('\n\n'),
-        Réponses_textuelles:   textDetails.join('\n\n'),
-      })
-    });
-  } catch(e) {
-    console.warn('Formspree error:', e);
-  }
-
+  // Bloquer AVANT l'envoi pour éviter double soumission même si ça plante
   localStorage.setItem('ccf_1ciel1_submitted', JSON.stringify({
     nom: studentName, date: dateStr, score: score20
   }));
 
+  // Envoi avec timeout 8 secondes
+  const payload = JSON.stringify({
+    _subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
+    Élève:                 studentName,
+    Date:                  dateStr,
+    Note_automatique:      `${score20}/20 (auto: ${earnedAuto.toFixed(1)}/${TOTAL_AUTO_PTS} pts)`,
+    Réalisation_pratique:  pratique.rapport,
+    Tâches_réalisées:      pratique.score,
+    Observations_élève:    pratique.observations,
+    Réponses_calculées:    numDetails.join('\n\n'),
+    Réponses_textuelles:   textDetails.join('\n\n'),
+  });
+
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('timeout')), 8000)
+  );
+
+  try {
+    await Promise.race([
+      fetch(CONFIG.formspree_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: payload,
+      }),
+      timeout
+    ]);
+  } catch(e) {
+    console.warn('Envoi Formspree:', e.message);
+  }
+
+  // Afficher confirmation dans tous les cas
   document.getElementById('exam-container').style.display = 'none';
   document.getElementById('confirm-name').textContent = studentName;
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
