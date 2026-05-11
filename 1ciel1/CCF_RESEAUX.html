@@ -345,71 +345,6 @@
     .binary-val { color: var(--navy); font-weight: 700; letter-spacing: 0.15em; }
     .binary-sep { width: 100%; height: 1px; background: var(--border); margin: 6px 0; }
 
-    /* ─── RÉALISATION PRATIQUE ─── */
-    .pratique-section {
-      background: var(--card);
-      border-radius: 14px;
-      padding: 28px 32px;
-      margin-bottom: 28px;
-      box-shadow: 0 2px 12px rgba(13,33,55,0.08);
-      border-top: 4px solid #1a7a4a;
-    }
-    .pratique-header {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
-    }
-    .pratique-icon {
-      width: 46px; height: 46px; border-radius: 12px;
-      background: #1a7a4a;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-    }
-    .pratique-header h2 {
-      font-family: 'Crimson Pro', serif;
-      font-size: 1.25rem; font-weight: 700; color: var(--navy);
-    }
-    .pratique-header p { font-size: 0.83rem; color: var(--muted); margin-top: 3px; }
-    .pratique-info {
-      background: #e8f5ee; border-left: 3px solid #1a7a4a;
-      border-radius: 0 8px 8px 0; padding: 10px 14px;
-      font-size: 0.85rem; color: #155a35; margin-bottom: 20px;
-    }
-    .checklist {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px; margin-bottom: 18px;
-    }
-    @media (max-width: 600px) { .checklist { grid-template-columns: 1fr; } }
-    .check-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 12px 14px;
-      border: 2px solid var(--border); border-radius: 10px;
-      cursor: pointer; transition: all 0.15s;
-      background: #fafbfd;
-    }
-    .check-item:hover { border-color: #1a7a4a; background: #f0faf4; }
-    .check-item input[type="checkbox"] {
-      width: 18px; height: 18px; margin-top: 1px; flex-shrink: 0;
-      accent-color: #1a7a4a; cursor: pointer;
-    }
-    .check-item:has(input:checked) {
-      border-color: #1a7a4a; background: #e8f5ee;
-    }
-    .check-label { font-size: 0.88rem; line-height: 1.4; color: var(--text); }
-    .check-label strong { display: block; font-size: 0.82rem; color: var(--muted); font-weight: 400; margin-top: 2px; }
-    .pratique-obs label {
-      display: block; font-size: 0.82rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      color: var(--navy); margin-bottom: 6px;
-    }
-    .pratique-score-preview {
-      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px;
-    }
-    .pratique-count {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; padding: 8px 14px;
-      font-size: 0.85rem; color: var(--muted);
-    }
-    .pratique-count span { font-weight: 700; color: #1a7a4a; font-size: 1rem; }
-
     /* ─── SUBMIT ─── */
     .submit-section {
       background: var(--card); border-radius: 14px; padding: 32px 36px;
@@ -512,7 +447,7 @@
     <div class="header-inner">
       <div class="header-title">
         <h1>CCF — Réseaux Informatiques</h1>
-        <p>Classe : 1CIEL1 &nbsp;·&nbsp; Durée : 4h &nbsp;·&nbsp; Total : 20 pts</p>
+        <p>Classe : 1CIEL1 &nbsp;·&nbsp; Durée : 2h &nbsp;·&nbsp; Total : 20 pts</p>
       </div>
       <div class="student-badge">
         <div class="badge-name" id="student-name-display"></div>
@@ -522,7 +457,7 @@
     <div class="timer-bar">
       <div class="timer-inner">
         <span class="timer-label">Temps restant :</span>
-        <span id="timer-display">4:00:00</span>
+        <span id="timer-display">2:00:00</span>
         <div class="progress-bar-outer">
           <div class="progress-bar-inner" id="progress-bar"></div>
         </div>
@@ -1212,99 +1147,6 @@
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════ -->
-    <!--  RÉALISATION PRATIQUE                 -->
-    <!-- ═══════════════════════════════════════ -->
-    <div class="pratique-section">
-      <div class="pratique-header">
-        <div class="pratique-icon">🔧</div>
-        <div>
-          <h2>Compte-rendu de réalisation pratique</h2>
-          <p>À remplir par l'élève · Validé par le professeur en séance</p>
-        </div>
-      </div>
-      <div class="pratique-info">
-        ℹ️ Cochez les tâches que vous avez <strong>réellement réalisées</strong> sur le poste. Ce compte-rendu sera envoyé avec vos réponses et servira de base à l'évaluation pratique par votre professeur.
-      </div>
-
-      <div class="checklist">
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_1">
-          <div class="check-label">
-            🖥️ Installation de Windows Server
-            <strong>Rôle serveur installé et configuré</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_2">
-          <div class="check-label">
-            📡 Configuration du service DHCP
-            <strong>Étendue créée · Plage 192.168.20.100–101</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_3">
-          <div class="check-label">
-            🌐 Configuration du service DNS
-            <strong>Zone directe loradi.fr créée</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_4">
-          <div class="check-label">
-            🏢 Installation Active Directory (AD DS)
-            <strong>Domaine loradi.fr promu</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_5">
-          <div class="check-label">
-            💻 Jonction du client au domaine
-            <strong>Poste Windows joint à loradi.fr</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_6">
-          <div class="check-label">
-            👤 Création d'un compte utilisateur AD
-            <strong>Utilisateur créé dans une OU</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_7">
-          <div class="check-label">
-            🔒 Application d'une GPO
-            <strong>Ex : désactivation de la corbeille</strong>
-          </div>
-        </label>
-
-        <label class="check-item">
-          <input type="checkbox" id="pr_8">
-          <div class="check-label">
-            ✅ Vérification de la connectivité
-            <strong>Ping serveur ↔ client réussi</strong>
-          </div>
-        </label>
-
-      </div>
-
-      <div class="pratique-obs">
-        <label>📝 Observations / difficultés rencontrées</label>
-        <textarea class="answer-text" id="pr_obs" rows="2" placeholder="Notez ici vos difficultés, ce qui n'a pas fonctionné, ou tout commentaire utile pour votre professeur…"></textarea>
-      </div>
-
-      <div class="pratique-score-preview">
-        <div class="pratique-count">Tâches réalisées : <span id="pr-count">0</span> / 8</div>
-      </div>
-    </div>
-
     <!-- ═══ SOUMISSION ═══ -->
     <div class="submit-section">
       <h3>📨 Soumettre votre devoir</h3>
@@ -1336,7 +1178,7 @@
 //  CONFIGURATION
 // ══════════════════════════════════════════════════
 const CONFIG = {
-  formspree_url: "https://formspree.io/f/mojrykaz",
+  formspree_url: "https://formspree.io/f/mojrpolw",
   teacher_email: "isddiken05@gmail.com",
 };
 
@@ -1391,53 +1233,11 @@ const TEXT_QUESTIONS = [
   { id:'q5_4',  label:'Ex5 Q4  — GPO machine vs utilisateur' },
 ];
 
-const PRATIQUE_ITEMS = [
-  { id:'pr_1', label:'Installation Windows Server' },
-  { id:'pr_2', label:'Configuration DHCP (étendue 192.168.20.100–101)' },
-  { id:'pr_3', label:'Configuration DNS (zone loradi.fr)' },
-  { id:'pr_4', label:'Installation AD DS (domaine loradi.fr)' },
-  { id:'pr_5', label:'Jonction client au domaine' },
-  { id:'pr_6', label:'Création compte utilisateur AD' },
-  { id:'pr_7', label:'Application GPO' },
-  { id:'pr_8', label:'Vérification connectivité (ping)' },
-];
-
-// Compteur en temps réel
-document.addEventListener('DOMContentLoaded', () => {
-  PRATIQUE_ITEMS.forEach(item => {
-    const el = document.getElementById(item.id);
-    if (el) el.addEventListener('change', updatePratiqueCount);
-  });
-});
-
-function updatePratiqueCount() {
-  const count = PRATIQUE_ITEMS.filter(item => {
-    const el = document.getElementById(item.id);
-    return el && el.checked;
-  }).length;
-  const el = document.getElementById('pr-count');
-  if (el) el.textContent = count;
-}
-
-function getPratiqueReport() {
-  const lines = PRATIQUE_ITEMS.map(item => {
-    const el = document.getElementById(item.id);
-    const checked = el && el.checked;
-    return `${checked ? '☑' : '☐'} ${item.label}`;
-  });
-  const obs = document.getElementById('pr_obs');
-  const obsVal = obs ? obs.value.trim() : '';
-  const count = PRATIQUE_ITEMS.filter(item => document.getElementById(item.id)?.checked).length;
-  return {
-    rapport: lines.join('\n'),
-    observations: obsVal || '(aucune)',
-    score: `${count}/8 tâches déclarées réalisées`,
-  };
-}
+const TOTAL_AUTO_PTS = ANSWERS.reduce((s, a) => s + a.pts, 0);
 
 let studentName = '';
 let timerInterval = null;
-const EXAM_DURATION = 4 * 60 * 60;
+const EXAM_DURATION = 2 * 60 * 60;
 let timeLeft = EXAM_DURATION;
 
 // ── Activer bouton ──
@@ -1576,46 +1376,30 @@ async function submitExam() {
   clearInterval(timerInterval);
 
   const { earnedAuto, score20, numDetails, textDetails } = gradeExam();
-  const pratique = getPratiqueReport();
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' à ' + now.toLocaleTimeString('fr-FR');
 
-  // Bloquer AVANT l'envoi pour éviter double soumission même si ça plante
+  try {
+    await fetch(CONFIG.formspree_url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject:            `CCF Réseau 1CIEL1 — ${studentName}`,
+        Élève:               studentName,
+        Date:                dateStr,
+        Note_automatique:    `${score20}/20 (auto: ${earnedAuto.toFixed(1)}/${TOTAL_AUTO_PTS} pts)`,
+        Réponses_calculées:  numDetails.join('\n\n'),
+        Réponses_textuelles: textDetails.join('\n\n'),
+      })
+    });
+  } catch(e) {
+    console.warn('Formspree error:', e);
+  }
+
   localStorage.setItem('ccf_1ciel1_submitted', JSON.stringify({
     nom: studentName, date: dateStr, score: score20
   }));
 
-  // Envoi avec timeout 8 secondes
-  const payload = JSON.stringify({
-    _subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
-    Élève:                 studentName,
-    Date:                  dateStr,
-    Note_automatique:      `${score20}/20 (auto: ${earnedAuto.toFixed(1)}/${TOTAL_AUTO_PTS} pts)`,
-    Réalisation_pratique:  pratique.rapport,
-    Tâches_réalisées:      pratique.score,
-    Observations_élève:    pratique.observations,
-    Réponses_calculées:    numDetails.join('\n\n'),
-    Réponses_textuelles:   textDetails.join('\n\n'),
-  });
-
-  const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('timeout')), 8000)
-  );
-
-  try {
-    await Promise.race([
-      fetch(CONFIG.formspree_url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: payload,
-      }),
-      timeout
-    ]);
-  } catch(e) {
-    console.warn('Envoi Formspree:', e.message);
-  }
-
-  // Afficher confirmation dans tous les cas
   document.getElementById('exam-container').style.display = 'none';
   document.getElementById('confirm-name').textContent = studentName;
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
