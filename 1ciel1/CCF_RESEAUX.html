@@ -1391,6 +1391,8 @@ const TEXT_QUESTIONS = [
   { id:'q5_4',  label:'Ex5 Q4  — GPO machine vs utilisateur' },
 ];
 
+const TOTAL_AUTO_PTS = ANSWERS.reduce((s, a) => s + a.pts, 0);
+
 const PRATIQUE_ITEMS = [
   { id:'pr_1', label:'Installation Windows Server' },
   { id:'pr_2', label:'Configuration DHCP (étendue 192.168.20.100–101)' },
@@ -1575,20 +1577,8 @@ async function submitExam() {
   msg.style.display = 'block';
   clearInterval(timerInterval);
 
-  let earnedAuto = 0, score20 = 0, numDetails = [], textDetails = [];
-  let pratique = { rapport: '', score: '0/8', observations: '' };
-
-  try {
-    const graded = gradeExam();
-    earnedAuto = graded.earnedAuto;
-    score20    = graded.score20;
-    numDetails = graded.numDetails;
-    textDetails= graded.textDetails;
-    pratique   = getPratiqueReport();
-  } catch(e) {
-    console.warn('Erreur correction:', e.message);
-  }
-
+  const { earnedAuto, score20, numDetails, textDetails } = gradeExam();
+  const pratique = getPratiqueReport();
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' à ' + now.toLocaleTimeString('fr-FR');
 
@@ -1597,7 +1587,7 @@ async function submitExam() {
     nom: studentName, date: dateStr, score: score20
   }));
 
-  // Envoi avec timeout 8 secondes via AbortController
+  // Envoi avec timeout 8 secondes
   const payload = JSON.stringify({
     _subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
     Élève:                 studentName,
@@ -1610,38 +1600,28 @@ async function submitExam() {
     Réponses_textuelles:   textDetails.join('\n\n'),
   });
 
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('timeout')), 8000)
+  );
+
   try {
-    const controller = new AbortController();
-    const tid = setTimeout(() => controller.abort(), 8000);
-    await fetch(CONFIG.formspree_url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: payload,
-      signal: controller.signal,
-    });
-    clearTimeout(tid);
+    await Promise.race([
+      fetch(CONFIG.formspree_url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: payload,
+      }),
+      timeout
+    ]);
   } catch(e) {
     console.warn('Envoi Formspree:', e.message);
   }
 
   // Afficher confirmation dans tous les cas
-  try {
-    document.getElementById('exam-container').style.display = 'none';
-    document.getElementById('confirm-name').textContent = studentName;
-    document.getElementById('confirm-score').textContent = `${score20} / 20`;
-    document.getElementById('confirmation').style.display = 'flex';
-  } catch(e) {
-    // Fallback si le DOM est inaccessible
-    document.body.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;
-      justify-content:center;background:#0d2137;font-family:sans-serif;">
-      <div style="background:#fff;border-radius:16px;padding:48px;max-width:480px;text-align:center;">
-        <div style="font-size:56px;margin-bottom:16px;">✅</div>
-        <h2 style="color:#0d2137;margin-bottom:12px;">Devoir envoyé !</h2>
-        <p style="font-weight:600;font-size:1.1rem;color:#0d2137;">${studentName}</p>
-        <p style="color:#6b7d8e;margin:16px 0;">Votre CCF a bien été soumis.</p>
-        <div style="font-size:2rem;font-weight:700;color:#1565a8;">${score20} / 20</div>
-      </div></div>`;
-  }
+  document.getElementById('exam-container').style.display = 'none';
+  document.getElementById('confirm-name').textContent = studentName;
+  document.getElementById('confirm-score').textContent = `${score20} / 20`;
+  document.getElementById('confirmation').style.display = 'flex';
 }
 </script>
 
