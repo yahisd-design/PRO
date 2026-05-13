@@ -1379,6 +1379,8 @@ const ANSWERS = [
   { id:'q5_2', label:'Ex5 Q2 — Console GPO',          type:'radio', correct:'gpmc.msc',       pts:0.5 },
 ];
 
+const TOTAL_AUTO_PTS = ANSWERS.reduce((s, a) => s + a.pts, 0);
+
 const TEXT_QUESTIONS = [
   { id:'q1_9',  label:'Ex1 Q9  — Pourquoi réseau/broadcast non attribuables' },
   { id:'q1_10', label:'Ex1 Q10 — Problème IP réseau sur hôte' },
