@@ -1336,7 +1336,8 @@
 //  CONFIGURATION
 // ══════════════════════════════════════════════════
 const CONFIG = {
-  formspree_url: "https://script.google.com/macros/s/AKfycbymYdSi20vCb-Agm3-yDDq3L7gr9AF8i-IUykqTCJUW5qsLNCbPlmqRA5bLvpJwHmIX/exec",
+  formspree_url: "https://api.web3forms.com/submit",
+  web3forms_key: "d2e5e54a-3325-41bf-9c72-fb3d086ae597",
   teacher_email: "isddiken05@gmail.com",
 };
 
@@ -1593,21 +1594,24 @@ async function submitExam() {
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
   document.getElementById('confirmation').style.display = 'flex';
 
-  // 3. Envoyer en arrière-plan
+  // 3. Envoyer en arrière-plan via Web3Forms
   try {
-    const formData = new FormData();
-    formData.append('data', JSON.stringify({
-      _subject:             `CCF Réseau 1CIEL1 — ${studentName}`,
-      Eleve:                studentName,
-      Date:                 dateStr,
-      Note_automatique:     `${score20}/20`,
-      Realisation_pratique: pratique.rapport,
-      Taches_realisees:     pratique.score,
-      Observations:         pratique.observations,
-      Reponses_calculees:   numDetails.join('\n\n'),
-      Reponses_textuelles:  textDetails.join('\n\n'),
-    }));
-    fetch(CONFIG.formspree_url, { method: 'POST', body: formData, mode: 'no-cors' });
+    fetch(CONFIG.formspree_url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        access_key:           CONFIG.web3forms_key,
+        subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
+        from_name:            'CCF Réseau 1CIEL1',
+        Eleve:                studentName,
+        Date:                 dateStr,
+        Note:                 `${score20}/20`,
+        Taches_pratiques:     pratique.score + '\n' + pratique.rapport,
+        Observations:         pratique.observations,
+        Reponses_calculees:   numDetails.join('\n\n'),
+        Reponses_textuelles:  textDetails.join('\n\n'),
+      }),
+    });
   } catch(e) { console.warn('Envoi:', e); }
 }
 </script>
