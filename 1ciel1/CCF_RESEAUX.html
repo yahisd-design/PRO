@@ -1596,20 +1596,32 @@ async function submitExam() {
 
   // 3. Envoyer en arrière-plan via Web3Forms
   try {
+    const message = [
+      `═══ ÉLÈVE : ${studentName}`,
+      `═══ DATE  : ${dateStr}`,
+      `═══ NOTE  : ${score20}/20`,
+      ``,
+      `── RÉALISATION PRATIQUE (${pratique.score}) ──`,
+      pratique.rapport,
+      `Observations : ${pratique.observations}`,
+      ``,
+      `── RÉPONSES CALCULÉES ──`,
+      numDetails.join('\n'),
+      ``,
+      `── RÉPONSES TEXTUELLES ──`,
+      textDetails.join('\n'),
+    ].join('\n');
+
     fetch(CONFIG.formspree_url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        access_key:           CONFIG.web3forms_key,
-        subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
-        from_name:            'CCF Réseau 1CIEL1',
-        Eleve:                studentName,
-        Date:                 dateStr,
-        Note:                 `${score20}/20`,
-        Taches_pratiques:     pratique.score + '\n' + pratique.rapport,
-        Observations:         pratique.observations,
-        Reponses_calculees:   numDetails.join('\n\n'),
-        Reponses_textuelles:  textDetails.join('\n\n'),
+        access_key: CONFIG.web3forms_key,
+        subject:    `CCF Réseau 1CIEL1 — ${studentName} — ${score20}/20`,
+        from_name:  'CCF Réseau 1CIEL1',
+        name:       studentName,
+        email:      'ccf@noreply.fr',
+        message:    message,
       }),
     });
   } catch(e) { console.warn('Envoi:', e); }
