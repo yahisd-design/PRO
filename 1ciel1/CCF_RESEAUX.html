@@ -542,14 +542,14 @@
         </div>
       </div>
       <p class="mes-text">
-        Vous êtes technicien réseau au sein de la société <strong>NetPro Services</strong>, PME spécialisée dans l'installation et la maintenance d'infrastructures informatiques.
+        Vous êtes technicien(ne) réseau au sein de la société <strong>NetPro Services</strong>, PME spécialisée dans l'installation et la maintenance d'infrastructures informatiques.
         Votre responsable vous confie le déploiement d'un réseau local pour un client : vous devez planifier l'adressage IP, installer un serveur Windows Server, configurer les services DHCP, DNS et Active Directory, puis mettre en place des stratégies de groupe (GPO) pour sécuriser les postes clients.
       </p>
       <div class="mes-objectif">
         <h3>🎯 Objectifs de l'évaluation</h3>
         <ul>
           <li>Calculer les adresses réseau, broadcast et l'identifiant d'hôte (HostID) à partir d'une adresse IP et d'un masque</li>
-          <li>Effectuer des calculs de sous-réseaux ( notation CIDR)</li>
+          <li>Effectuer des calculs de sous-réseaux (VLSM / notation CIDR)</li>
           <li>Identifier les rôles et services d'un serveur Windows Server (DHCP, DNS, AD DS)</li>
           <li>Configurer une étendue DHCP selon un cahier des charges donné</li>
           <li>Appliquer des stratégies de groupe (GPO) et gérer un annuaire Active Directory</li>
@@ -1336,7 +1336,7 @@
 //  CONFIGURATION
 // ══════════════════════════════════════════════════
 const CONFIG = {
-  formspree_url: "https://formspree.io/f/mojrykaz",
+  formspree_url: "https://script.google.com/macros/s/AKfycbymYdSi20vCb-Agm3-yDDq3L7gr9AF8i-IUykqTCJUW5qsLNCbPlmqRA5bLvpJwHmIX/exec",
   teacher_email: "isddiken05@gmail.com",
 };
 
@@ -1390,8 +1390,6 @@ const TEXT_QUESTIONS = [
   { id:'q5_3',  label:'Ex5 Q3  — Créer utilisateur AD + OU' },
   { id:'q5_4',  label:'Ex5 Q4  — GPO machine vs utilisateur' },
 ];
-
-const TOTAL_AUTO_PTS = ANSWERS.reduce((s, a) => s + a.pts, 0);
 
 const PRATIQUE_ITEMS = [
   { id:'pr_1', label:'Installation Windows Server' },
@@ -1572,9 +1570,7 @@ function gradeExam() {
 
 async function submitExam() {
   const btn = document.getElementById('btn-submit');
-  const msg = document.getElementById('sending-msg');
   btn.disabled = true;
-  msg.style.display = 'block';
   clearInterval(timerInterval);
 
   const { earnedAuto, score20, numDetails, textDetails } = gradeExam();
@@ -1582,13 +1578,19 @@ async function submitExam() {
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' à ' + now.toLocaleTimeString('fr-FR');
 
-  // Bloquer AVANT l'envoi pour éviter double soumission même si ça plante
+  // 1. Bloquer immédiatement (avant tout)
   localStorage.setItem('ccf_1ciel1_submitted', JSON.stringify({
     nom: studentName, date: dateStr, score: score20
   }));
 
-  // Envoi avec timeout 8 secondes
-  const payload = JSON.stringify({
+  // 2. Afficher la confirmation TOUT DE SUITE — sans attendre le réseau
+  document.getElementById('exam-container').style.display = 'none';
+  document.getElementById('confirm-name').textContent = studentName;
+  document.getElementById('confirm-score').textContent = `${score20} / 20`;
+  document.getElementById('confirmation').style.display = 'flex';
+
+  // 3. Envoyer en arrière-plan (n'impacte plus l'élève)
+  const payload = {
     _subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
     Élève:                 studentName,
     Date:                  dateStr,
@@ -1598,30 +1600,12 @@ async function submitExam() {
     Observations_élève:    pratique.observations,
     Réponses_calculées:    numDetails.join('\n\n'),
     Réponses_textuelles:   textDetails.join('\n\n'),
-  });
-
-  const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('timeout')), 8000)
-  );
-
-  try {
-    await Promise.race([
-      fetch(CONFIG.formspree_url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: payload,
-      }),
-      timeout
-    ]);
-  } catch(e) {
-    console.warn('Envoi Formspree:', e.message);
-  }
-
-  // Afficher confirmation dans tous les cas
-  document.getElementById('exam-container').style.display = 'none';
-  document.getElementById('confirm-name').textContent = studentName;
-  document.getElementById('confirm-score').textContent = `${score20} / 20`;
-  document.getElementById('confirmation').style.display = 'flex';
+  };
+  fetch(CONFIG.formspree_url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload),
+  }).catch(e => console.warn('Formspree:', e.message));
 }
 </script>
 
