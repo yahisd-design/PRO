@@ -1336,8 +1336,7 @@
 //  CONFIGURATION
 // ══════════════════════════════════════════════════
 const CONFIG = {
-  formspree_url: "https://api.web3forms.com/submit",
-  web3forms_key: "d2e5e54a-3325-41bf-9c72-fb3d086ae597",
+  formspree_url: "https://script.google.com/macros/s/AKfycbymYdSi20vCb-Agm3-yDDq3L7gr9AF8i-IUykqTCJUW5qsLNCbPlmqRA5bLvpJwHmIX/exec",
   teacher_email: "isddiken05@gmail.com",
 };
 
@@ -1596,36 +1595,18 @@ async function submitExam() {
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
   document.getElementById('confirmation').style.display = 'flex';
 
-  // 3. Envoyer en arrière-plan via Web3Forms
+  // 3. Envoyer via Google Apps Script (URL-encoded)
   try {
-    const message = [
-      `═══ ÉLÈVE : ${studentName}`,
-      `═══ DATE  : ${dateStr}`,
-      `═══ NOTE  : ${score20}/20`,
-      ``,
-      `── RÉALISATION PRATIQUE (${pratique.score}) ──`,
-      pratique.rapport,
-      `Observations : ${pratique.observations}`,
-      ``,
-      `── RÉPONSES CALCULÉES ──`,
-      numDetails.join('\n'),
-      ``,
-      `── RÉPONSES TEXTUELLES ──`,
-      textDetails.join('\n'),
-    ].join('\n');
-
-    fetch(CONFIG.formspree_url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        access_key: CONFIG.web3forms_key,
-        subject:    `CCF Réseau 1CIEL1 — ${studentName} — ${score20}/20`,
-        from_name:  'CCF Réseau 1CIEL1',
-        name:       studentName,
-        email:      'ccf@noreply.fr',
-        message:    message,
-      }),
+    const params = new URLSearchParams({
+      eleve:               studentName,
+      date:                dateStr,
+      note:                `${score20}/20`,
+      taches:              pratique.score + ' | ' + pratique.rapport.replace(/\n/g,' '),
+      observations:        pratique.observations,
+      reponses_calculees:  numDetails.join(' | '),
+      reponses_textuelles: textDetails.join(' | '),
     });
+    fetch(CONFIG.formspree_url + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
   } catch(e) { console.warn('Envoi:', e); }
 }
 </script>
