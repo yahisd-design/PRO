@@ -1595,18 +1595,35 @@ async function submitExam() {
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
   document.getElementById('confirmation').style.display = 'flex';
 
-  // 3. Envoyer via Google Apps Script (URL-encoded)
+  // 3. Envoyer via Google Apps Script (pixel technique — contourne CORS)
   try {
+    // Format compact des réponses calculées
+    const repCalc = ANSWERS.map(q => {
+      const { ok, answer } = checkAnswer(q);
+      return q.label.split('—')[1].trim() + ': ' + (answer||'?') + (ok?' ✓':' ✗');
+    }).join(' | ');
+
+    // Format compact des réponses textuelles
+    const repText = TEXT_QUESTIONS.map(q => {
+      const el = document.getElementById(q.id);
+      const val = el ? (el.value.trim().substring(0,80) || '(vide)') : '(vide)';
+      return q.label.split('—')[1].trim() + ': ' + val;
+    }).join(' || ');
+
     const params = new URLSearchParams({
-      eleve:               studentName,
-      date:                dateStr,
-      note:                `${score20}/20`,
-      taches:              pratique.score + ' | ' + pratique.rapport.replace(/\n/g,' '),
-      observations:        pratique.observations,
-      reponses_calculees:  numDetails.join(' | '),
-      reponses_textuelles: textDetails.join(' | '),
+      eleve: studentName,
+      date:  dateStr,
+      note:  score20 + '/20',
+      taches: pratique.score,
+      pratique: pratique.rapport.replace(/[☑☐]/g, s => s === '☑' ? 'OUI' : 'NON').replace(/\n/g, ' | '),
+      obs:   pratique.observations.substring(0, 200),
+      calc:  repCalc.substring(0, 800),
+      texte: repText.substring(0, 800),
     });
-    fetch(CONFIG.formspree_url + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
+
+    // Image pixel : aucun CORS, fonctionne toujours
+    const img = new Image();
+    img.src = CONFIG.formspree_url + '?' + params.toString();
   } catch(e) { console.warn('Envoi:', e); }
 }
 </script>
