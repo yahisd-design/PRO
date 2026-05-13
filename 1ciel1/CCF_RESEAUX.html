@@ -1573,57 +1573,44 @@ function gradeExam() {
 async function submitExam() {
   const btn = document.getElementById('btn-submit');
   btn.disabled = true;
+  document.getElementById('sending-msg').style.display = 'block';
   clearInterval(timerInterval);
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' à ' + now.toLocaleTimeString('fr-FR');
 
-  // Variables avec valeurs par défaut au cas où
-  let earnedAuto = 0, score20 = 0, numDetails = [], textDetails = [], pratique = { rapport:'', score:'', observations:'' };
+  let earnedAuto = 0, score20 = 0, numDetails = [], textDetails = [];
+  let pratique = { rapport:'', score:'', observations:'' };
 
-  try { const g = gradeExam(); earnedAuto = g.earnedAuto; score20 = g.score20; numDetails = g.numDetails; textDetails = g.textDetails; } catch(e) { console.warn('gradeExam:', e); }
-  try { pratique = getPratiqueReport(); } catch(e) { console.warn('getPratique:', e); }
+  try { const g = gradeExam(); earnedAuto=g.earnedAuto; score20=g.score20; numDetails=g.numDetails; textDetails=g.textDetails; } catch(e) {}
+  try { pratique = getPratiqueReport(); } catch(e) {}
 
   // 1. Bloquer immédiatement
   try {
     localStorage.setItem('ccf_1ciel1_submitted', JSON.stringify({ nom: studentName, date: dateStr, score: score20 }));
   } catch(e) {}
 
-  // 2. Afficher la confirmation IMMÉDIATEMENT
+  // 2. Confirmation immédiate
   document.getElementById('exam-container').style.display = 'none';
   document.getElementById('confirm-name').textContent = studentName;
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
   document.getElementById('confirmation').style.display = 'flex';
 
-  // 3. Envoyer via Google Apps Script (pixel technique — contourne CORS)
+  // 3. Envoi — noms des paramètres IDENTIQUES à ce que doGet(e) lit
   try {
-    // Format compact des réponses calculées
-    const repCalc = ANSWERS.map(q => {
-      const { ok, answer } = checkAnswer(q);
-      return q.label.split('—')[1].trim() + ': ' + (answer||'?') + (ok?' ✓':' ✗');
-    }).join(' | ');
-
-    // Format compact des réponses textuelles
-    const repText = TEXT_QUESTIONS.map(q => {
-      const el = document.getElementById(q.id);
-      const val = el ? (el.value.trim().substring(0,80) || '(vide)') : '(vide)';
-      return q.label.split('—')[1].trim() + ': ' + val;
-    }).join(' || ');
-
     const params = new URLSearchParams({
-      eleve: studentName,
-      date:  dateStr,
-      note:  score20 + '/20',
-      taches: pratique.score,
-      pratique: pratique.rapport.replace(/[☑☐]/g, s => s === '☑' ? 'OUI' : 'NON').replace(/\n/g, ' | '),
-      obs:   pratique.observations.substring(0, 200),
-      calc:  repCalc.substring(0, 800),
-      texte: repText.substring(0, 800),
+      eleve:               studentName,
+      date:                dateStr,
+      note:                score20 + '/20',
+      taches:              pratique.score + ' | ' + pratique.rapport.replace(/\n/g,' '),
+      observations:        pratique.observations.substring(0, 300),
+      reponses_calculees:  numDetails.join(' | ').substring(0, 1000),
+      reponses_textuelles: textDetails.join(' | ').substring(0, 1000),
     });
 
-    // Image pixel : aucun CORS, fonctionne toujours
+    // Pixel technique : évite les erreurs CORS
     const img = new Image();
-    img.src = CONFIG.formspree_url + '?' + params.toString();
+    img.src = "https://script.google.com/macros/s/AKfycbwvK5nIOt6nvOqxIxDTXWQ1pt_hsd2Z3m_8pPd2tu_tKGaxb5fSYKGONkqvVvz3VuJw/exec" + params.toString();
   } catch(e) { console.warn('Envoi:', e); }
 }
 </script>
