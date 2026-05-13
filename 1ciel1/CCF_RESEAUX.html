@@ -1573,39 +1573,44 @@ async function submitExam() {
   btn.disabled = true;
   clearInterval(timerInterval);
 
-  const { earnedAuto, score20, numDetails, textDetails } = gradeExam();
-  const pratique = getPratiqueReport();
   const now = new Date();
   const dateStr = now.toLocaleDateString('fr-FR') + ' à ' + now.toLocaleTimeString('fr-FR');
 
-  // 1. Bloquer immédiatement (avant tout)
-  localStorage.setItem('ccf_1ciel1_submitted', JSON.stringify({
-    nom: studentName, date: dateStr, score: score20
-  }));
+  // Variables avec valeurs par défaut au cas où
+  let earnedAuto = 0, score20 = 0, numDetails = [], textDetails = [], pratique = { rapport:'', score:'', observations:'' };
 
-  // 2. Afficher la confirmation TOUT DE SUITE — sans attendre le réseau
+  try { const g = gradeExam(); earnedAuto = g.earnedAuto; score20 = g.score20; numDetails = g.numDetails; textDetails = g.textDetails; } catch(e) { console.warn('gradeExam:', e); }
+  try { pratique = getPratiqueReport(); } catch(e) { console.warn('getPratique:', e); }
+
+  // 1. Bloquer immédiatement
+  try {
+    localStorage.setItem('ccf_1ciel1_submitted', JSON.stringify({ nom: studentName, date: dateStr, score: score20 }));
+  } catch(e) {}
+
+  // 2. Afficher la confirmation IMMÉDIATEMENT
   document.getElementById('exam-container').style.display = 'none';
   document.getElementById('confirm-name').textContent = studentName;
   document.getElementById('confirm-score').textContent = `${score20} / 20`;
   document.getElementById('confirmation').style.display = 'flex';
 
-  // 3. Envoyer en arrière-plan (n'impacte plus l'élève)
-  const payload = {
-    _subject:              `CCF Réseau 1CIEL1 — ${studentName}`,
-    Élève:                 studentName,
-    Date:                  dateStr,
-    Note_automatique:      `${score20}/20 (auto: ${earnedAuto.toFixed(1)}/${TOTAL_AUTO_PTS} pts)`,
-    Réalisation_pratique:  pratique.rapport,
-    Tâches_réalisées:      pratique.score,
-    Observations_élève:    pratique.observations,
-    Réponses_calculées:    numDetails.join('\n\n'),
-    Réponses_textuelles:   textDetails.join('\n\n'),
-  };
-  fetch(CONFIG.formspree_url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify(payload),
-  }).catch(e => console.warn('Formspree:', e.message));
+  // 3. Envoyer en arrière-plan
+  try {
+    fetch(CONFIG.formspree_url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject:             `CCF Réseau 1CIEL1 — ${studentName}`,
+        Eleve:                studentName,
+        Date:                 dateStr,
+        Note_automatique:     `${score20}/20`,
+        Realisation_pratique: pratique.rapport,
+        Taches_realisees:     pratique.score,
+        Observations:         pratique.observations,
+        Reponses_calculees:   numDetails.join('\n\n'),
+        Reponses_textuelles:  textDetails.join('\n\n'),
+      }),
+    });
+  } catch(e) { console.warn('Envoi:', e); }
 }
 </script>
 
