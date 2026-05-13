@@ -1595,21 +1595,19 @@ async function submitExam() {
 
   // 3. Envoyer en arrière-plan
   try {
-    fetch(CONFIG.formspree_url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        _subject:             `CCF Réseau 1CIEL1 — ${studentName}`,
-        Eleve:                studentName,
-        Date:                 dateStr,
-        Note_automatique:     `${score20}/20`,
-        Realisation_pratique: pratique.rapport,
-        Taches_realisees:     pratique.score,
-        Observations:         pratique.observations,
-        Reponses_calculees:   numDetails.join('\n\n'),
-        Reponses_textuelles:  textDetails.join('\n\n'),
-      }),
-    });
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({
+      _subject:             `CCF Réseau 1CIEL1 — ${studentName}`,
+      Eleve:                studentName,
+      Date:                 dateStr,
+      Note_automatique:     `${score20}/20`,
+      Realisation_pratique: pratique.rapport,
+      Taches_realisees:     pratique.score,
+      Observations:         pratique.observations,
+      Reponses_calculees:   numDetails.join('\n\n'),
+      Reponses_textuelles:  textDetails.join('\n\n'),
+    }));
+    fetch(CONFIG.formspree_url, { method: 'POST', body: formData, mode: 'no-cors' });
   } catch(e) { console.warn('Envoi:', e); }
 }
 </script>
